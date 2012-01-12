@@ -58,7 +58,7 @@ end
 
 ## Supported callbacks
 
-In the above example I show only two rails callbacks. Here's a list of the supported callbacks you also can disable with it
+In the above example I show only two rails callbacks. Here's a list of the supported callbacks you also can disable with it.
 
   - `:after_initialize`
   - `:after_find`
@@ -80,4 +80,4 @@ In the above example I show only two rails callbacks. Here's a list of the suppo
   - `:after_commit`
   - `:after_rollback`
 
-Hope these could help you out some day :)
+Hope these could help you out some day =)
