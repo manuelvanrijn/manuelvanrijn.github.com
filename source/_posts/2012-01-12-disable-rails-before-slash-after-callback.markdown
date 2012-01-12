@@ -9,7 +9,7 @@ published: true
 
 {% img left /images/posts/skip-step.png 240 240 Skip Step %}
 
-Today I've had some difficulties with a Rails migration, that took ages to complete. After some debugging I figured out the that the issues was because of the `before_save` and `after_save` callbacks.
+Today I've had some difficulties with a Rails migration, that took ages to complete. After some debugging I figured out that the issues was because of the `before_save` and `after_save` callbacks.
 
 Of course we could remove the before and after save callbacks to speed up the process, but I don't like the idea of releasing a model that misses these behavior. I mean they're not there for no reason right?
 
