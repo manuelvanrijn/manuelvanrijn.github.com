@@ -4,7 +4,7 @@ title: "Disable Rails callback"
 date: 2012-01-12 21:30
 comments: true
 categories: [rails, code, optimize, performance]
-published: false
+published: true
 ---
 
 {% img left /images/posts/skip-step.png 240 240 Skip Step %}
