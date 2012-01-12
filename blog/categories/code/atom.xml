@@ -4,7 +4,7 @@
   <title><![CDATA[Category: code | Manuel van Rijn]]></title>
   <link href="http://manuel.manuelles.nl/blog/categories/code/atom.xml" rel="self"/>
   <link href="http://manuel.manuelles.nl/"/>
-  <updated>2012-01-12T17:20:37+01:00</updated>
+  <updated>2012-01-12T21:52:03+01:00</updated>
   <id>http://manuel.manuelles.nl/</id>
   <author>
     <name><![CDATA[Manuel van Rijn]]></name>
@@ -20,7 +20,7 @@
     <id>http://manuel.manuelles.nl/blog/2011/12/22/shrinking-your-git-repository</id>
     <content type="html"><![CDATA[<p>In the past weeks I've looked into a problem that kept us from releasing to <a href="http://www.heroku.com/" title="Heroku">Heroku</a>, because the git repository was to large. In time the repository has grown to approximate <strong>180 Mb</strong>.</p>
 
-<p><img class="right" src="/images/posts/shrink-mario.jpg" width="140" height="140" title="Place Kitten #3" ></p>
+<p><img class="right" src="/images/posts/shrink-mario.jpg" width="140" height="140" title="Shrink!" ></p>
 
 <p>In the past we've made some decisions that we probably wouldn't take again. We for example, we decided to store the gem files in the vendor folder and having the rails code included in our repository. Our goal then was, that releasing the project with <a href="http://www.capify.org" title="Capistrano">Capistrano</a> would be easier and faster, because it didn't have to download all the gem's.</p>
 
