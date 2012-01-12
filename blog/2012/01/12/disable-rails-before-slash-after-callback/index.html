@@ -5,7 +5,7 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Manuel van Rijn</title>
+  <title>Disable Rails callback - Manuel van Rijn</title>
   <meta name="author" content="Manuel van Rijn">
 
   
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://manuel.manuelles.nl">
+  <link rel="canonical" href="http://manuel.manuelles.nl/blog/2012/01/12/disable-rails-before-slash-after-callback">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -74,15 +74,12 @@
 </nav>
   <div id="main">
     <div id="content">
-      <div class="blog-index">
+      <div>
+<article class="hentry" role="article">
   
-  
-  
-    <article>
-      
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2012/01/12/disable-rails-before-slash-after-callback/">Disable Rails Callback</a></h1>
+      <h1 class="entry-title">Disable Rails Callback</h1>
     
     
       <p class="meta">
@@ -105,7 +102,7 @@
   </header>
 
 
-  <div class="entry-content"><p><img class="left" src="/images/posts/skip-step.png" width="240" height="240" title="Skip Step" ></p>
+<div class="entry-content"><p><img class="left" src="/images/posts/skip-step.png" width="240" height="240" title="Skip Step" ></p>
 
 <p>Today I&#8217;ve had some difficulties with a Rails migration, that took ages to complete. After some debugging I figured out the that the issues was because of the <code>before_save</code> and <code>after_save</code> callbacks.</p>
 
@@ -218,20 +215,65 @@
 
 <p>Hope these could help you out some day :)</p>
 </div>
+
+
+  <footer>
+    <p class="meta">
+      
   
+
+<span class="byline author vcard">Posted by <span class="fn">Manuel van Rijn</span></span>
+
+      
+
+
+
+
+
+
+
+
   
 
 
-    </article>
+<time datetime="2012-01-12T21:30:00+01:00" pubdate data-updated="true">Jan 12<span>th</span>, 2012</time>
+      
+
+<span class="categories">
   
-  <div class="pagination">
+    <a class='category' href='/blog/categories/code/'>code</a>, <a class='category' href='/blog/categories/optimize/'>optimize</a>, <a class='category' href='/blog/categories/performance/'>performance</a>, <a class='category' href='/blog/categories/rails/'>rails</a>
+  
+</span>
+
+
+    </p>
     
-      <a class="prev" href="/blog/page/2/">&larr; Older</a>
-    
-    <a href="/blog/archives">Blog Archives</a>
-    
-  </div>
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://manuel.manuelles.nl/blog/2012/01/12/disable-rails-before-slash-after-callback/" data-via="" data-counturl="http://manuel.manuelles.nl/blog/2012/01/12/disable-rails-before-slash-after-callback/" >Tweet</a>
+  
+  
+  
 </div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2011/12/22/shrinking-your-git-repository/" title="Previous Post: Shrinking your git repository">&laquo; Shrinking your git repository</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
 <aside class="sidebar">
   
     <section>
@@ -285,6 +327,7 @@
   
 </aside>
 
+
     </div>
   </div>
   <footer role="contentinfo"><p>
@@ -299,7 +342,10 @@
       var disqus_shortname = 'manuelvanrijn';
       
         
-        var disqus_script = 'count.js';
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://manuel.manuelles.nl/blog/2012/01/12/disable-rails-before-slash-after-callback/';
+        var disqus_url = 'http://manuel.manuelles.nl/blog/2012/01/12/disable-rails-before-slash-after-callback/';
+        var disqus_script = 'embed.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

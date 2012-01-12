@@ -4,7 +4,7 @@
   <title><![CDATA[Manuel van Rijn]]></title>
   <link href="http://manuel.manuelles.nl/atom.xml" rel="self"/>
   <link href="http://manuel.manuelles.nl/"/>
-  <updated>2012-01-12T21:52:03+01:00</updated>
+  <updated>2012-01-12T21:54:49+01:00</updated>
   <id>http://manuel.manuelles.nl/</id>
   <author>
     <name><![CDATA[Manuel van Rijn]]></name>
@@ -12,6 +12,126 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Disable Rails callback]]></title>
+    <link href="http://manuel.manuelles.nl/blog/2012/01/12/disable-rails-before-slash-after-callback/"/>
+    <updated>2012-01-12T21:30:00+01:00</updated>
+    <id>http://manuel.manuelles.nl/blog/2012/01/12/disable-rails-before-slash-after-callback</id>
+    <content type="html"><![CDATA[<p><img class="left" src="http://manuel.manuelles.nl/images/posts/skip-step.png" width="240" height="240" title="Skip Step" ></p>
+
+<p>Today I&#8217;ve had some difficulties with a Rails migration, that took ages to complete. After some debugging I figured out the that the issues was because of the <code>before_save</code> and <code>after_save</code> callbacks.</p>
+
+<p>Of course we could remove the before and after save callbacks to speed up the process, but I don&#8217;t like the idea of releasing a model that misses these behavior. I mean they&#8217;re not there for no reason right?</p>
+
+<p>After some googling I found a quick and easy way to disable the callbacks without modifying the model. Here&#8217;s an simple example of a model class and a migration the disable the callbacks only within the migration.</p>
+
+<h2>Code solution</h2>
+
+<figure class='code'><figcaption><span>app/models/some_model.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">SomeModel</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+</span><span class='line'>  <span class="n">before_save</span> <span class="ss">:before_action</span>
+</span><span class='line'>  <span class="n">after_save</span> <span class="ss">:after_action</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kp">private</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">before_action</span>
+</span><span class='line'>      <span class="c1"># heavy calculation/queries</span>
+</span><span class='line'>      <span class="nb">puts</span> <span class="s2">&quot;you shouldn&#39;t see this&quot;</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">after_action</span>
+</span><span class='line'>      <span class="c1"># another heavy calculation/queries</span>
+</span><span class='line'>      <span class="nb">puts</span> <span class="s2">&quot;you shouldn&#39;t see this&quot;</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>db/migrations/20120112092136_update_some_model.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">UpdateSomeModel</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">up</span>
+</span><span class='line'>    <span class="c1"># disable the before_save</span>
+</span><span class='line'>    <span class="no">SomeModel</span><span class="o">.</span><span class="n">skip_callback</span><span class="p">(</span><span class="ss">:save</span><span class="p">,</span> <span class="ss">:before</span><span class="p">,</span> <span class="ss">:before_action</span><span class="p">)</span>
+</span><span class='line'>    <span class="c1"># disable the after_save</span>
+</span><span class='line'>    <span class="no">SomeModel</span><span class="o">.</span><span class="n">skip_callback</span><span class="p">(</span><span class="ss">:save</span><span class="p">,</span> <span class="ss">:after</span><span class="p">,</span> <span class="ss">:after_action</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="no">SomeModel</span><span class="o">.</span><span class="n">all</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span> <span class="n">obj</span> <span class="o">|</span>
+</span><span class='line'>      <span class="c1"># .. modify obj ...</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="n">obj</span><span class="o">.</span><span class="n">save</span>
+</span><span class='line'>      <span class="c1"># you shouldn&#39;t see the puts defined in the SomeModel before and after actions</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">down</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Supported callbacks</h2>
+
+<p>In the above example I show only two rails callbacks. Here&#8217;s a list of the supported callbacks you also can disable with it</p>
+
+<ul>
+<li><code>:after_initialize</code></li>
+<li><code>:after_find</code></li>
+<li><code>:after_touch</code></li>
+<li><code>:before_validation</code></li>
+<li><code>:after_validation</code></li>
+<li><code>:before_save</code></li>
+<li><code>:around_save</code></li>
+<li><code>:after_save</code></li>
+<li><code>:before_create</code></li>
+<li><code>:around_create</code></li>
+<li><code>:after_create</code></li>
+<li><code>:before_update</code></li>
+<li><code>:around_update</code></li>
+<li><code>:after_update</code></li>
+<li><code>:before_destroy</code></li>
+<li><code>:around_destroy</code></li>
+<li><code>:after_destroy</code></li>
+<li><code>:after_commit</code></li>
+<li><code>:after_rollback</code></li>
+</ul>
+
+
+<p>Hope these could help you out some day :)</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Shrinking your git repository]]></title>
