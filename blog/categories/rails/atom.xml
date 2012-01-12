@@ -4,7 +4,7 @@
   <title><![CDATA[Category: rails | Manuel van Rijn]]></title>
   <link href="http://manuel.manuelles.nl/blog/categories/rails/atom.xml" rel="self"/>
   <link href="http://manuel.manuelles.nl/"/>
-  <updated>2012-01-12T22:03:19+01:00</updated>
+  <updated>2012-01-12T23:35:33+01:00</updated>
   <id>http://manuel.manuelles.nl/</id>
   <author>
     <name><![CDATA[Manuel van Rijn]]></name>
@@ -20,7 +20,7 @@
     <id>http://manuel.manuelles.nl/blog/2012/01/12/disable-rails-before-slash-after-callback</id>
     <content type="html"><![CDATA[<p><img class="left" src="/images/posts/skip-step.png" width="240" height="240" title="Skip Step" ></p>
 
-<p>Today I've had some difficulties with a Rails migration, that took ages to complete. After some debugging I figured out the that the issues was because of the <code>before_save</code> and <code>after_save</code> callbacks.</p>
+<p>Today I've had some difficulties with a Rails migration, that took ages to complete. After some debugging I figured out that the issues was because of the <code>before_save</code> and <code>after_save</code> callbacks.</p>
 
 <p>Of course we could remove the before and after save callbacks to speed up the process, but I don't like the idea of releasing a model that misses these behavior. I mean they're not there for no reason right?</p>
 

@@ -9,7 +9,7 @@
   <meta name="author" content="Manuel van Rijn">
 
   
-  <meta name="description" content="Today I&#8217;ve had some difficulties with a Rails migration, that took ages to complete. After some debugging I figured out the that the issues &hellip;">
+  <meta name="description" content="Today I&#8217;ve had some difficulties with a Rails migration, that took ages to complete. After some debugging I figured out that the issues was &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -107,7 +107,7 @@
 
   <div class="entry-content"><p><img class="left" src="/images/posts/skip-step.png" width="240" height="240" title="Skip Step" ></p>
 
-<p>Today I&#8217;ve had some difficulties with a Rails migration, that took ages to complete. After some debugging I figured out the that the issues was because of the <code>before_save</code> and <code>after_save</code> callbacks.</p>
+<p>Today I&#8217;ve had some difficulties with a Rails migration, that took ages to complete. After some debugging I figured out that the issues was because of the <code>before_save</code> and <code>after_save</code> callbacks.</p>
 
 <p>Of course we could remove the before and after save callbacks to speed up the process, but I don&#8217;t like the idea of releasing a model that misses these behavior. I mean they&#8217;re not there for no reason right?</p>
 
