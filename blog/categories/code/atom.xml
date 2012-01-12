@@ -4,7 +4,7 @@
   <title><![CDATA[Category: code | Manuel van Rijn]]></title>
   <link href="http://manuel.manuelles.nl/blog/categories/code/atom.xml" rel="self"/>
   <link href="http://manuel.manuelles.nl/"/>
-  <updated>2012-01-12T21:54:49+01:00</updated>
+  <updated>2012-01-12T22:01:34+01:00</updated>
   <id>http://manuel.manuelles.nl/</id>
   <author>
     <name><![CDATA[Manuel van Rijn]]></name>
@@ -75,7 +75,7 @@ end
 
 <h2>Supported callbacks</h2>
 
-<p>In the above example I show only two rails callbacks. Here's a list of the supported callbacks you also can disable with it</p>
+<p>In the above example I show only two rails callbacks. Here's a list of the supported callbacks you also can disable with it.</p>
 
 <ul>
 <li><code>:after_initialize</code></li>
@@ -100,7 +100,7 @@ end
 </ul>
 
 
-<p>Hope these could help you out some day :)</p>
+<p>Hope these could help you out some day =)</p>
 ]]></content>
   </entry>
   
