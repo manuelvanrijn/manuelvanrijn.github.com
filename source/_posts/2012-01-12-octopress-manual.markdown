@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "'octopress manual'"
+title: "octopress manual"
 date: 2012-01-12 16:13
 comments: false
 categories: [CSS3, Sass, Media Queries]
