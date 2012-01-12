@@ -7,6 +7,15 @@ categories: [CSS3, Sass, Media Queries]
 published: false
 ---
 
+## Git Checkout
+
+```
+git clone ***** octopress
+cd octopress
+git checkout source
+git clone ***** _deploy
+```
+
 ## To create/preview and deploy
 
 ```
