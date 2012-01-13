@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: optimize | Manuel van Rijn]]></title>
+  <link href="http://manuel.manuelles.nl/blog/categories/optimize/atom.xml" rel="self"/>
+  <link href="http://manuel.manuelles.nl/"/>
+  <updated>2012-01-12T23:35:33+01:00</updated>
+  <id>http://manuel.manuelles.nl/</id>
+  <author>
+    <name><![CDATA[Manuel van Rijn]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Disable Rails callback]]></title>
+    <link href="http://manuel.manuelles.nl/blog/2012/01/12/disable-rails-before-slash-after-callback/"/>
+    <updated>2012-01-12T21:30:00+01:00</updated>
+    <id>http://manuel.manuelles.nl/blog/2012/01/12/disable-rails-before-slash-after-callback</id>
+    <content type="html"><![CDATA[<p><img class="left" src="/images/posts/skip-step.png" width="240" height="240" title="Skip Step" ></p>
+
+<p>Today I've had some difficulties with a Rails migration, that took ages to complete. After some debugging I figured out that the issues was because of the <code>before_save</code> and <code>after_save</code> callbacks.</p>
+
+<p>Of course we could remove the before and after save callbacks to speed up the process, but I don't like the idea of releasing a model that misses these behavior. I mean they're not there for no reason right?</p>
+
+<p>After some googling I found a quick and easy way to disable the callbacks without modifying the model. Here's an simple example of a model class and a migration the disable the callbacks only within the migration.</p>
+
+<h2>Code solution</h2>
+
+<p>``` ruby app/models/some_model.rb
+class SomeModel &lt; ActiveRecord::Base
+  before_save :before_action
+  after_save :after_action</p>
+
+<p>  private</p>
+
+<pre><code>def before_action
+  # heavy calculation/queries
+  puts "you shouldn't see this"
+end
+
+def after_action
+  # another heavy calculation/queries
+  puts "you shouldn't see this"
+end
+</code></pre>
+
+<p>end
+```</p>
+
+<p>``` ruby db/migrations/20120112092136_update_some_model.rb
+class UpdateSomeModel &lt; ActiveRecord::Migration
+  def up</p>
+
+<pre><code># disable the before_save
+SomeModel.skip_callback(:save, :before, :before_action)
+# disable the after_save
+SomeModel.skip_callback(:save, :after, :after_action)
+
+SomeModel.all.each do | obj |
+  # .. modify obj ...
+
+  obj.save
+  # you shouldn't see the puts defined in the SomeModel before and after actions
+end
+</code></pre>
+
+<p>  end</p>
+
+<p>  def down
+  end
+end
+```</p>
+
+<h2>Supported callbacks</h2>
+
+<p>In the above example I show only two rails callbacks. Here's a list of the supported callbacks you also can disable with it.</p>
+
+<ul>
+<li><code>:after_initialize</code></li>
+<li><code>:after_find</code></li>
+<li><code>:after_touch</code></li>
+<li><code>:before_validation</code></li>
+<li><code>:after_validation</code></li>
+<li><code>:before_save</code></li>
+<li><code>:around_save</code></li>
+<li><code>:after_save</code></li>
+<li><code>:before_create</code></li>
+<li><code>:around_create</code></li>
+<li><code>:after_create</code></li>
+<li><code>:before_update</code></li>
+<li><code>:around_update</code></li>
+<li><code>:after_update</code></li>
+<li><code>:before_destroy</code></li>
+<li><code>:around_destroy</code></li>
+<li><code>:after_destroy</code></li>
+<li><code>:after_commit</code></li>
+<li><code>:after_rollback</code></li>
+</ul>
+
+
+<p>Hope these could help you out some day =)</p>
+]]></content>
+  </entry>
+  
+</feed>

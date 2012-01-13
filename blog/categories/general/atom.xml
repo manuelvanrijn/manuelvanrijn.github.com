@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: General | Manuel van Rijn]]></title>
+  <link href="http://manuel.manuelles.nl/blog/categories/general/atom.xml" rel="self"/>
+  <link href="http://manuel.manuelles.nl/"/>
+  <updated>2012-01-12T23:35:33+01:00</updated>
+  <id>http://manuel.manuelles.nl/</id>
+  <author>
+    <name><![CDATA[Manuel van Rijn]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Intro: Start blogging like a hacker(?)]]></title>
+    <link href="http://manuel.manuelles.nl/blog/2011/12/08/intro-start-blogging-like-a-hacker/"/>
+    <updated>2011-12-08T15:28:00+01:00</updated>
+    <id>http://manuel.manuelles.nl/blog/2011/12/08/intro-start-blogging-like-a-hacker</id>
+    <content type="html"><![CDATA[<p>I've just decided to switch from <a href="http://www.wordpress.com/" title="Wordpress">Wordpress</a> to <a href="http://octopress.org/" title="Octopress">Octopress</a> because I wanted something new and not something over-featured</p>
+
+<p>All the plugins and choice's I had to made, and the maintenance of all these, just kept me from doing what I supposed to do with it, blogging.</p>
+
+<p><span class='pullquote-right' data-pullquote='A blogging framework for hackers. '>
+So after some googling what a good alternative would be for Wordpress I found <em>Octopress</em> A blogging framework for hackers. Alright +1 for the title
+</span></p>
+
+<p>So basically Octopress generates (bakes) HTML content from the <a href="http://daringfireball.net/projects/markdown/" title="Markdown">Markdown</a> content you write. I like this simplicity and I love the syntax.</p>
+
+<p><a href="http://octopress.org/" title="Octopress">Octopress</a> give's you the functionality to host it on your own server, but also to host it on <a href="http://www.heroku.com/" title="Heroku">Heroku</a> or <a href="https://github.com/" title="Github">Github</a>. Beside the Git approach (push your source and deploy the generated code to the master branch) you can use RSync to sync files to your server. I use <a href="https://github.com" title="Github">Github</a> to store my source and generated html.</p>
+
+<p>Enough talking about <a href="http://octopress.org/" title="Octopress">Octopress</a> for now. I'll hope to post my next post soon.</p>
+]]></content>
+  </entry>
+  
+</feed>
