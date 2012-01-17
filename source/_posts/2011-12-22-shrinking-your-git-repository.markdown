@@ -9,7 +9,7 @@ published: true
 
 In the past weeks I've looked into a problem that kept us from releasing to [Heroku](http://www.heroku.com/ "Heroku"), because the git repository was to large. In time the repository has grown to approximate __180 Mb__.
 
-{% img right /images/posts/shrink-mario.jpg 140 140 Place Kitten #3 %}
+{% img right /images/posts/shrink-mario.jpg 140 140 Shrink! %}
 
 In the past we've made some decisions that we probably wouldn't take again. We for example, we decided to store the gem files in the vendor folder and having the rails code included in our repository. Our goal then was, that releasing the project with [Capistrano](http://www.capify.org "Capistrano") would be easier and faster, because it didn't have to download all the gem's.
 

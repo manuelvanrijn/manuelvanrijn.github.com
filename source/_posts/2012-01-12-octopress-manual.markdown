@@ -1,11 +1,20 @@
 ---
 layout: post
-title: "'octopress manual'"
+title: "octopress manual"
 date: 2012-01-12 16:13
 comments: false
 categories: [CSS3, Sass, Media Queries]
 published: false
 ---
+
+## Git Checkout
+
+```
+git clone ***** octopress
+cd octopress
+git checkout source
+git clone ***** _deploy
+```
 
 ## To create/preview and deploy
 
