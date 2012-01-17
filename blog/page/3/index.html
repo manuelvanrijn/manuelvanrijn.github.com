@@ -9,7 +9,7 @@
   <meta name="author" content="Manuel van Rijn">
 
   
-  <meta name="description" content="I&#8217;ve just decided to switch from Wordpress to Octopress because I wanted something new and not something over-featured All the plugins and &hellip;">
+  <meta name="description" content="In the past weeks I&#8217;ve looked into a problem that kept us from releasing to Heroku, because the git repository was to large. In time the &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -82,7 +82,7 @@
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2011/12/08/intro-start-blogging-like-a-hacker/">Intro: Start Blogging Like a Hacker(?)</a></h1>
+      <h1 class="entry-title"><a href="/blog/2011/12/22/shrinking-your-git-repository/">Shrinking Your Git Repository</a></h1>
     
     
       <p class="meta">
@@ -98,26 +98,183 @@
   
 
 
-<time datetime="2011-12-08T15:28:00+01:00" pubdate data-updated="true">Dec 8<span>th</span>, 2011</time>
+<time datetime="2011-12-22T15:01:00+01:00" pubdate data-updated="true">Dec 22<span>nd</span>, 2011</time>
         
       </p>
     
   </header>
 
 
-  <div class="entry-content"><p>I&#8217;ve just decided to switch from <a href="http://www.wordpress.com/" title="Wordpress">Wordpress</a> to <a href="http://octopress.org/" title="Octopress">Octopress</a> because I wanted something new and not something over-featured</p>
+  <div class="entry-content"><p>In the past weeks I&#8217;ve looked into a problem that kept us from releasing to <a href="http://www.heroku.com/" title="Heroku">Heroku</a>, because the git repository was to large. In time the repository has grown to approximate <strong>180 Mb</strong>.</p>
 
-<p>All the plugins and choice&#8217;s I had to made, and the maintenance of all these, just kept me from doing what I supposed to do with it, blogging.</p>
+<p><img class="right" src="/images/posts/shrink-mario.jpg" width="140" height="140" title="Shrink!" ></p>
 
-<p><span class='pullquote-right' data-pullquote='A blogging framework for hackers. '>
-So after some googling what a good alternative would be for Wordpress I found <em>Octopress</em> A blogging framework for hackers. Alright +1 for the title
-</span></p>
+<p>In the past we&#8217;ve made some decisions that we probably wouldn&#8217;t take again. We for example, we decided to store the gem files in the vendor folder and having the rails code included in our repository. Our goal then was, that releasing the project with <a href="http://www.capify.org" title="Capistrano">Capistrano</a> would be easier and faster, because it didn&#8217;t have to download all the gem&#8217;s.</p>
 
-<p>So basically Octopress generates (bakes) HTML content from the <a href="http://daringfireball.net/projects/markdown/" title="Markdown">Markdown</a> content you write. I like this simplicity and I love the syntax.</p>
+<p>Anyway at this point we don&#8217;t have the gem&#8217;s stored anymore in the vendor folder. Since tools like <a href="http://beginrescueend.com/" title="Ruby version Manager">RVM</a> and <a href="https://github.com/sstephenson/rbenv/" title="rbenv">rbenv</a> we store these within the ruby/rails version of that specific project.</p>
 
-<p><a href="http://octopress.org/" title="Octopress">Octopress</a> give&#8217;s you the functionality to host it on your own server, but also to host it on <a href="http://www.heroku.com/" title="Heroku">Heroku</a> or <a href="https://github.com/" title="Github">Github</a>. Beside the Git approach (push your source and deploy the generated code to the master branch) you can use RSync to sync files to your server. I use <a href="https://github.com" title="Github">Github</a> to store my source and generated html.</p>
+<p>Still we have the problem that the repository contains files etc. we want to remove to shrink the size of it.</p>
 
-<p>Enough talking about <a href="http://octopress.org/" title="Octopress">Octopress</a> for now. I&#8217;ll hope to post my next post soon.</p>
+<h2>Find large files from your git history</h2>
+
+<p>First we have to track down what files are making our repository so large. I&#8217;ve found a perl script that scans your repository for files of a specific size. Here&#8217;s the code:</p>
+
+<div><script src='https://gist.github.com/1354502.js?file='></script>
+<noscript><pre><code>#!/usr/bin/perl
+use 5.008;
+use strict;
+use Memoize;
+
+# usage:
+# git-large-files 500k
+# git-large-files 0.5m
+# git-large-files 5b
+
+sub usage { die &quot;usage: git-large-files &lt;size[b|k|m]&gt; [&lt;git-log arguments ...&gt;]\n&quot; }
+
+@ARGV or usage();
+my ( $max_size, $unit ) = ( shift =~ /^(\d+)([bkm]?)\z/ ) ? ( $1, $2 ) : usage();
+
+my $exp = 10 * ( $unit eq 'b' ? 0 : $unit eq 'k' ? 1 : 2 );
+my $cutoff = $max_size * 2**$exp;
+
+sub walk_tree {
+    my ( $tree, @path ) = @_;
+    my @subtree;
+    my @r;
+
+    {
+        open my $ls_tree, '-|', git =&gt; 'ls-tree' =&gt; -l =&gt; $tree
+            or die &quot;Couldn't open pipe to git-ls-tree: $!\n&quot;;
+
+        while ( &lt;$ls_tree&gt; ) {
+            my ( $type, $sha1, $size, $name ) = /\A[0-7]{6} (\S+) (\S+) +(\S+)\t(.*)/;
+            if ( $type eq 'tree' ) {
+                push @subtree, [ $sha1, $name ];
+            }
+            elsif ( $type eq 'blob' and $size &gt;= $cutoff ) {
+                push @r, [ $size, @path, $name ];
+            }
+        }
+    }
+
+    push @r, walk_tree( $_-&gt;[0], @path, $_-&gt;[1] )
+        for @subtree;
+
+    return @r;
+}
+
+memoize 'walk_tree';
+
+open my $log, '-|', git =&gt; log =&gt; @ARGV, '--pretty=format:%T %h %cr'
+    or die &quot;Couldn't open pipe to git-log: $!\n&quot;;
+
+my %seen;
+while ( &lt;$log&gt; ) {
+    chomp;
+    my ( $tree, $commit, $age ) = split &quot; &quot;, $_, 3;
+    my $is_header_printed;
+    for ( walk_tree( $tree ) ) {
+        my ( $size, @path ) = @$_;
+        my $path = join '/', @path;
+        next if $seen{ $path }++;
+        print &quot;$commit $age\n&quot; if not $is_header_printed++;
+        print &quot;\t$size\t$path\n&quot;;
+    }
+}</code></pre></noscript></div>
+
+
+<p>So I&#8217;ve placed this file within my repository and executed the below command to see all files, from all commits, that are bigger then <strong>500 Kb</strong></p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>perl git-large-files.pl 500k</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This give&#8217;s you an output like:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>9794784 6 weeks ago
+</span><span class='line'>  609280  vendor/cache/builder-3.0.0.gem
+</span><span class='line'>  823808  vendor/cache/ffi-1.0.9.gem
+</span><span class='line'>  801792  vendor/cache/gherkin-2.4.21.gem
+</span><span class='line'>.... more ....
+</span><span class='line'>874451c 3 months ago
+</span><span class='line'>  609280  vendor/bundle/ruby/1.9.1/cache/builder-3.0.0.gem
+</span><span class='line'>  823808  vendor/bundle/ruby/1.9.1/cache/ffi-1.0.9.gem
+</span><span class='line'>  801792  vendor/bundle/ruby/1.9.1/cache/gherkin-2.4.21.gem
+</span><span class='line'>.... more ....
+</span><span class='line'>47ebdca 1 year, 1 month ago
+</span><span class='line'>  15467626  vendor/gems/webrat-0.7.1/vendor/selenium-server.jar
+</span><span class='line'>  6185324 vendor/rails/activerecord/examples/performance.sql
+</span><span class='line'>  14465482  log/development.log</span></code></pre></td></tr></table></div></figure>
+
+
+<p>As you can see the following folders contain data that we don&#8217;t need anymore and fills our repository with unused data:</p>
+
+<ol>
+<li>vendor/cache/*</li>
+<li>vendor/bundle/*</li>
+<li>vendor/rails/*</li>
+<li>log/development.log</li>
+</ol>
+
+
+<h2>Removing the files from git</h2>
+
+<p>To remove the folders specified above I used the commands specified by the <a href="http://help.github.com/remove-sensitive-data/" title="GitHub Help: Remove sensitive data">Remove sensitive data</a> post from GitHub Help</p>
+
+<p>The only thing I changed was adding <code>-rf</code> to the <code>git rm</code> command to recursively force remove the files because I am dealing with multiple files/folders within the target folder.</p>
+
+<h3>Rewrite history</h3>
+
+<p>The final command I used was:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>git filter-branch -f --index-filter 'git rm -rf --cached --ignore-unmatch vendor/cache/* vendor/bundle/* vendor/rails/* log/development.log' --prune-empty -- --all</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Mind the <code>vendor/cache/* vendor/bundle/* vendor/rails/* log/development.log</code> part. You can provide multiple path&#8217;s</p>
+
+<p>When the command is finished, the history has been rewritten, but still the size of the repository hasn&#8217;t changed at this point.</p>
+
+<h3>Cleanup and reclaim space</h3>
+
+<p>You have to execute the following commands to also remove the files from you local repository.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>rm -rf .git/refs/original/
+</span><span class='line'>git reflog expire --expire=now --all
+</span><span class='line'>git gc --aggressive --prune=now</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now we can force push our repository so that others can enjoy our effort.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>git push origin master --force</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>The result (98,55% smaller)</h2>
+
+<p>After following the above steps our repository was shrinked by <strong>98,55 %!</strong>. First the repository was 180 Mb and now it is <strong>2.6 Mb</strong></p>
+
+<p>Ofcourse we had this numbers because there were alot of gem files within our repository that were updated frequently and pushed over and over again to the master branch.</p>
+
+<p>I hope this post will help other&#8217;s to track large files within there git repository and how they can remove them to shrink the size of there repostiories.</p>
 </div>
   
   
@@ -126,6 +283,8 @@ So after some googling what a good alternative would be for Wordpress I found <e
     </article>
   
   <div class="pagination">
+    
+      <a class="prev" href="/blog/page/4/">&larr; Older</a>
     
     <a href="/blog/archives">Blog Archives</a>
     
@@ -154,6 +313,10 @@ So after some googling what a good alternative would be for Wordpress I found <e
 <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/01/18/convert-postgresql-to-sqlite/">Convert PostgreSQL to SQLite</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2012/01/12/disable-rails-before-slash-after-callback/">Disable Rails callback</a>
@@ -210,6 +373,15 @@ So after some googling what a good alternative would be for Wordpress I found <e
 </script>
 
 
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
 
 
 

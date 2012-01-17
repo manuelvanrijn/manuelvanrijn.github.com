@@ -4,7 +4,7 @@
   <title><![CDATA[Category: code | Manuel van Rijn]]></title>
   <link href="http://manuel.manuelles.nl/blog/categories/code/atom.xml" rel="self"/>
   <link href="http://manuel.manuelles.nl/"/>
-  <updated>2012-01-12T23:35:33+01:00</updated>
+  <updated>2012-01-18T00:53:12+01:00</updated>
   <id>http://manuel.manuelles.nl/</id>
   <author>
     <name><![CDATA[Manuel van Rijn]]></name>
@@ -12,6 +12,149 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Convert PostgreSQL to SQLite]]></title>
+    <link href="http://manuel.manuelles.nl/blog/2012/01/18/convert-postgresql-to-sqlite/"/>
+    <updated>2012-01-18T00:30:00+01:00</updated>
+    <id>http://manuel.manuelles.nl/blog/2012/01/18/convert-postgresql-to-sqlite</id>
+    <content type="html"><![CDATA[<p><img class="right" src="/images/posts/postgres-to-sqlite.png" width="220" height="220" title="Postgres to SQLite" ></p>
+
+<p>Today I'd like to share the steps I take when I need to convert a <a href="http://www.postgresql.org/" title="PostgreSQL">PostgreSQL</a> database into a <a href="http://www.sqlite.org/" title="SQLite">SQLite</a> database.</p>
+
+<p>Commonly I have to do this when a <a href="http://rubyonrails.org/" title="Ruby on Rails">Ruby on Rails</a> application is in production and I have to check some issues with the production data. In the production environment we usually use a PostgreSQL database and for developing I use a SQLite database, so we need some conversion.</p>
+
+<h2>Short story a.k.a I know what I'm doing.</h2>
+
+<ol>
+<li>Create a dump of the PostgreSQL database.
+<code>ssh -C username@hostname.com pg_dump --data-only --inserts YOUR_DB_NAME &gt; dump.sql</code></li>
+<li>Remove/modify the dump.
+
+<ul>
+<li>Remove the lines starting with <code>SET</code></li>
+<li>Remove the lines starting with <code>SELECT pg_catalog.setval</code></li>
+<li>Replace true for 't'</li>
+<li>Replace false for 'f'</li>
+<li>Add <code>BEGIN;</code> as first line and <code>END;</code> as last line</li>
+</ul>
+</li>
+<li>Recreate an empty development database.
+<code>bundle exec rake db:migrate</code></li>
+<li>Import the dump.
+<code>bash
+sqlite3 db/development.sqlite3
+sqlite&gt; delete from schema_migrations;
+sqlite&gt; .read dump.sql
+</code>
+
+<h2>Longer story a.k.a please explain a little more.</h2></li>
+</ol>
+
+
+<p>So basically you can do the following 4 major steps to convert the PostgreSQL database into a SQLite database.</p>
+
+<h3>1. Generate a SQL dump</h3>
+
+<p>First we have to create a sql dump on the production server. I use the following command that results in a <code>dump.sql</code> file in the current folder:</p>
+
+<p><code>bash
+pg_dump --data-only --inserts YOUR_DB_NAME &gt; dump.sql
+</code></p>
+
+<p>I use the <code>--data-only</code> option, so it doesn't generate the schema. Converting the pg_dump generate schema to a valid SQLite schema gave me a lot of difficulties so I chose to generate the schema with the <code>rake db</code> task (we'll discuss this in the next step).</p>
+
+<p>After you created the dump, you have to download/transfer/mail/etc. that file so you have local access to it.</p>
+
+<h4>Trick: Got ssh access?</h4>
+
+<p>If you have ssh access, you can also run the following command, which will output the file directly on you local drive</p>
+
+<p><code>bash
+ssh -C username@hostname.com pg_dump --data-only --inserts YOUR_DB_NAME &gt; dump.sql
+</code></p>
+
+<h3>2. Modify the dump.sql</h3>
+
+<p>There are a few manual find/replace and delete action's you have to perform on the <code>dump.sql</code> file by hand.</p>
+
+<h4>2.1 Remove the <code>SET</code> statements at the top</h4>
+
+<p>You will see some statements at the top of the file like <code>SET statement_timeout = 0;</code> and <code>SET client_encoding = 'SQL_ASCII';</code> etc. Remove all of these lines that start with <code>SET</code>, because SQLite doesn't use these.</p>
+
+<h4>2.2 Remove the setval sequence queries</h4>
+
+<p>Under the <code>SET</code> queries you'll see some queries to set the correct sequence for auto incrementing the id's. SQLite doesn't keep these value's in a catalog and must be removed to prevent errors.</p>
+
+<p>Remove all the line's that look like <code>SELECT pg_catalog.setval('MY_OBJECT_id_seq', 10, true);</code></p>
+
+<h4>2.3 Replace true => 't' and false => 'f'</h4>
+
+<p>The <code>pg_dump</code> generate's <code>true</code> and <code>false</code> as value's for the <code>INSERT INTO</code> statements. If we want to import these to SQLite we have to replace these to 't' and 'f'.</p>
+
+<p><code>sql
+-- These:
+INSERT INTO table_name VALUES (1, true, false);
+-- Should be replace to:
+INSERT INTO table_name VALUES (1, 't', 'f');
+</code></p>
+
+<h4>2.4 Transactions. Make it fast!</h4>
+
+<p>The first time I imported the dump (that was 2 mb) it took like 12 minutes to complete! After some googling I found out that SQLite's default behavior is putting each statement into a transaction, which seems to be the time waster (after the fix it toke 12 seconds).</p>
+
+<p>To prevent this behavior you can run the script within 1 transaction by specifying <code>BEGIN;</code> at the top of the <code>dump.sql</code> and <code>END;</code> at the end of the file.</p>
+
+<p>So you would have:</p>
+
+<p><code>sql
+BEGIN;
+-- a lot of INSERT INTO statments
+END;
+</code></p>
+
+<h3>3. Recreate the development database</h3>
+
+<p>So now we have fetched the production data from the PostgreSQL database, we need to recreate the <code>development.sqlite3</code> database.</p>
+
+<p>Make a backup and run the migration task</p>
+
+<p><code>bash
+mv db/development.sqlite3 db/development.backup.sqlite3
+bundle exec rake db:migrate
+</code></p>
+
+<h4>Side note when migrating</h4>
+
+<p>You must run the migration <strong>until</strong> the migrated version that is active on the production database. If not, you could have the situation where you have dropped a column and can't import the dump because the data depends on that column.</p>
+
+<p>Check the <code>dump.sql</code> for the latest version number in the <code>schema_migrations</code> table and migrate to that version.</p>
+
+<p>For example for the version <code>20121701120000</code> you would do:</p>
+
+<p><code>bash
+bundle exec rake db:migrate VERSION=20121701120000
+</code></p>
+
+<h3>4. Import the dump</h3>
+
+<p>The final step is importing the dump file. To do this we have to execute the following command within a terminal:</p>
+
+<p><code>bash
+sqlite3 db/development.sqlite3
+sqlite&gt; delete from schema_migrations;
+sqlite&gt; .read dump.sql
+</code></p>
+
+<p>As you can see we first remove the records from the <code>schema_migrations</code> table, because these are also included in the <code>dump.sql</code>. Of course you could also remove the lines from the file, but I prefer this way.</p>
+
+<p>The <code>.read</code> command just execute's all the lines within the specified file.</p>
+
+<h2>Result</h2>
+
+<p>And that's it! You now have a stuffed <code>development.sqlite3</code> database with all the production data out of the PostgreSQL database.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Disable Rails callback]]></title>
