@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Shrinking your git repository"
+title: "Shrinking your Git repository"
 date: 2011-12-22 15:01
 comments: true
 categories: [git, code]
@@ -16,6 +16,8 @@ In the past we've made some decisions that we probably wouldn't take again. We f
 Anyway at this point we don't have the gem's stored anymore in the vendor folder. Since tools like [RVM](http://beginrescueend.com/ "Ruby version Manager") and [rbenv](https://github.com/sstephenson/rbenv/ "rbenv") we store these within the ruby/rails version of that specific project.
 
 Still we have the problem that the repository contains files etc. we want to remove to shrink the size of it.
+
+<!-- more -->
 
 ## Find large files from your git history
 

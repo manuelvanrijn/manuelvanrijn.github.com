@@ -13,6 +13,8 @@ Today I'd like to share the steps I take when I need to convert a [PostgreSQL](h
 
 Commonly I have to do this when a [Ruby on Rails](http://rubyonrails.org/ "Ruby on Rails") application is in production and I have to check some issues with the production data. In the production environment we usually use a PostgreSQL database and for developing I use a SQLite database, so we need some conversion.
 
+<!-- more -->
+
 ## Short story a.k.a I know what I'm doing.
 
   1. Create a dump of the PostgreSQL database.
@@ -60,7 +62,7 @@ ssh -C username@hostname.com pg_dump --data-only --inserts YOUR_DB_NAME > dump.s
 There are a few manual find/replace and delete action's you have to perform on the `dump.sql` file by hand.
 
 #### 2.1 Remove the `SET` statements at the top
-  
+
 You will see some statements at the top of the file like `SET statement_timeout = 0;` and `SET client_encoding = 'SQL_ASCII';` etc. Remove all of these lines that start with `SET`, because SQLite doesn't use these.
 
 #### 2.2 Remove the setval sequence queries

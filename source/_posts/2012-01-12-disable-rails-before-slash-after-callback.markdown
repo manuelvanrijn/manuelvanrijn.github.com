@@ -13,6 +13,8 @@ Today I've had some difficulties with a Rails migration, that took ages to compl
 
 Of course we could remove the before and after save callbacks to speed up the process, but I don't like the idea of releasing a model that misses these behavior. I mean they're not there for no reason right?
 
+<!-- more -->
+
 After some googling I found a quick and easy way to disable the callbacks without modifying the model. Here's an simple example of a model class and a migration the disable the callbacks only within the migration.
 
 ## Code solution
@@ -21,13 +23,13 @@ After some googling I found a quick and easy way to disable the callbacks withou
 class SomeModel < ActiveRecord::Base
   before_save :before_action
   after_save :after_action
-  
+
   private
     def before_action
       # heavy calculation/queries
       puts "you shouldn't see this"
     end
-  
+
     def after_action
       # another heavy calculation/queries
       puts "you shouldn't see this"
@@ -42,7 +44,7 @@ class UpdateSomeModel < ActiveRecord::Migration
     SomeModel.skip_callback(:save, :before, :before_action)
     # disable the after_save
     SomeModel.skip_callback(:save, :after, :after_action)
-    
+
     SomeModel.all.each do | obj |
       # .. modify obj ...
 
