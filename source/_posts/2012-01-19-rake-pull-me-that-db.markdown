@@ -44,16 +44,16 @@ bundle exec rake db:pull
 
 ### No SSH?
 
-If you want to skip step where the rake tasks get's the dump using ssh, you have to copy the dump.sql into the tmp folder by your self (note that the name __must__ be `dump.sql`)
+If you want to skip the step where the rake tasks get's the dump using ssh, you have to copy the dump.sql into the tmp folder by yourself (note that the name __must__ be `dump.sql`)
 
-After you copied it, you should execute to generate the development database with the dumped sql.
+After you copied it, you should execute the following commands, to generate the development database with the dumped sql.
 
 ```
 bundle exec rake db:optimze_pg_dump_for_sqlite
 bundle exec rake db:recreate_with_dump
 ```
 
-### Want to skip entering the ssh password everytime?
+### Want to skip entering the ssh password every time?
 
 You could generate a public/private key pair with RSA and append that key to the production server so you don't have to enter the password over and over again to connect with ssh.
 
@@ -71,16 +71,16 @@ This command creates an RSA public/private key pair in your `$HOME/.ssh` directo
 
 #### 2. Install public key on remote machine
 
-Now we can copy our public key to the remote machine by executing the following command:
+Now you can copy the public key to the remote machine by executing the following command:
 
 ```
-ssh-copy-id -i username@your_production_server.org
+ssh-copy-id -i root@productionserver.com
 ```
 
-This command will ask you to enter the ssh password for the ssh user "username" for the hostname "your_production_server.org".
+This command will ask you to enter the ssh password for the ssh user "root" for the hostname "productionserver.com".
 
 After you've enter the password (for the last time) you can create a ssh connection without entering the password by executing:
 
 ```
-ssh username@your_production_server.org
+ssh root@productionserver.com
 ```
