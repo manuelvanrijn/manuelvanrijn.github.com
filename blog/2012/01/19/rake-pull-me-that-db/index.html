@@ -1,0 +1,487 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>“Rake, pull me that DB!” - Manuel van Rijn</title>
+  <meta name="author" content="Manuel van Rijn">
+
+  
+  <meta name="description" content="After writing my last article how to Convert PostgreSQL to SQLite, I was asked why this couldn&#8217;t be automated? So I started coding and managed &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://manuel.manuelles.nl/blog/2012/01/19/rake-pull-me-that-db">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Manuel van Rijn" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-17149124-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Manuel van Rijn</a></h1>
+  
+    <h2>Bit blog</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:manuel.manuelles.nl" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">“Rake, pull me that DB!”</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-01-19T15:15:00+01:00" pubdate data-updated="true">Jan 19<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>After writing my last article how to <a href="http://manuel.manuelles.nl/blog/2012/01/18/convert-postgresql-to-sqlite/" title="How to: Convert a PostgreSQL database to a SQLite database">Convert PostgreSQL to SQLite</a>, I was asked why this couldn&#8217;t be automated?</p>
+
+<p>So I started coding and managed to create a <a href="http://rake.rubyforge.org/" title="Rake -- Ruby Make">Rake</a> task that will do all of the steps I described in the article in just a few seconds!</p>
+
+<!-- more -->
+
+
+<h2>What will it do?</h2>
+
+<ol>
+<li>remove old dump and ssh the new dump to <code>tmp/dump.sql</code></li>
+<li>converts the dumped SQL in to a valid format for SQLite</li>
+<li>remembers the version number of the migration on the production db</li>
+<li>backup, create and migrates the development SQLite to the version remembered</li>
+<li>import the SQL</li>
+<li>tell you all went well</li>
+</ol>
+
+
+<h2>Configuration</h2>
+
+<p>To use the Rake task, you have to add 2 additional fields (<code>ssh_user</code> and <code>ssh_host</code>) to your <code>database.yml</code> file. These fields are used to create an ssh connection for retrieving the PostgreSQL dump.</p>
+
+<p>Here&#8217;s example of a modified <code>config/database.yml</code>:</p>
+
+<div><script src='https://gist.github.com/1640429.js?file=database.yml'></script>
+<noscript><pre><code>development:
+  adapter: sqlite3
+  database: db/development.sqlite3
+  pool: 5
+  timeout: 5000
+
+production:
+  ssh_user: root                  # &lt;-- add username for ssh
+  ssh_host: productionserver.com  # &lt;-- add hostname for ssh
+  adapter: postgresql
+  host: localhost
+  port: 5432
+  username: db_user
+  password: db_pass
+  database: db_name
+  schema_search_path: public
+  encoding: utf8
+  template: template0</code></pre></noscript></div>
+
+
+<h2>Get the Rake file</h2>
+
+<p>Put the following code into <code>libs/tasks/database.rake</code></p>
+
+<div><script src='https://gist.github.com/1640429.js?file=database.rake'></script>
+<noscript><pre><code>require 'fileutils'
+
+namespace :db do
+  desc 'pull the production PostgreSQL database into the development SQLite'
+  task :pull do
+    Rake::Task['db:download_pg_dump'].invoke
+    Rake::Task['db:optimze_pg_dump_for_sqlite'].invoke
+    Rake::Task['db:recreate_with_dump'].invoke
+  end
+
+  desc 'download the pg_dump content into tmp/dump.sql'
+  task :download_pg_dump do
+    config = Rails.application.config.database_configuration
+
+    abort &quot;Missing production database config&quot; if config['production'].blank?
+
+    dev  = config['development']
+    prod = config['production']
+
+    abort &quot;Development db is not sqlite3&quot; unless dev['adapter'] =~ /sqlite3/
+    abort &quot;Production db is not postgresql&quot; unless prod['adapter'] =~ /postgresql/
+    abort &quot;Missing ssh host&quot; if prod['ssh_host'].blank?
+    abort &quot;Missing database name&quot; if prod['database'].blank?
+
+    # remove the old one
+    if File.exists?(pg_dump_file_path)
+      File.delete(pg_dump_file_path)
+    end
+
+    cmd  = &quot;ssh -C &quot;
+    cmd &lt;&lt; &quot;#{prod['ssh_user']}@&quot; if prod['ssh_user'].present?
+    cmd &lt;&lt; &quot;#{prod['ssh_host']} &quot;
+    cmd &lt;&lt; &quot;PGPASSWORD=#{prod['password']} &quot;
+    cmd &lt;&lt; &quot;pg_dump --data-only --inserts &quot;
+    cmd &lt;&lt; &quot;--username=#{prod['username']} #{prod['database']} &gt; &quot;
+    cmd &lt;&lt; pg_dump_file_path
+
+    system `#{cmd}`
+  end
+
+  desc 'remove unused statements and optimze sql for SQLite'
+  task :optimze_pg_dump_for_sqlite do
+    result = []
+    lines = File.readlines(pg_dump_file_path)
+    @version = 0
+    lines.each do | line |
+      next if line =~ /SELECT pg_catalog.setval/  # sequence value's
+      next if line =~ /SET /                      # postgres specific config
+      next if line =~ /--/                        # comment
+
+      if line =~ /INSERT INTO schema_migrations/
+        @version = line.match(/INSERT INTO schema_migrations VALUES \('([\d]*)/)[1]
+      end
+
+      # replace true and false for 't' and 'f'
+      line.gsub!(&quot;true&quot;,&quot;'t'&quot;)
+      line.gsub!(&quot;false&quot;,&quot;'f'&quot;)
+      result &lt;&lt; line
+    end
+
+    File.open(pg_dump_file_path, &quot;w&quot;) do |f|
+      # Add BEGIN and END so we add it to 1 transaction. Increase speed!
+      f.puts(&quot;BEGIN;&quot;)
+      result.each{|line| f.puts(line) unless line.blank?}
+      f.puts(&quot;END;&quot;)
+    end
+  end
+
+  desc 'backup development.sqlite3 and create a new one with the dumped data'
+  task :recreate_with_dump do
+    # sqlite so backup
+    database = Rails.configuration.database_configuration['development']['database']
+    database_path = File.expand_path(&quot;#{Rails.root}/#{database}&quot;)
+    # remove old backup
+    if File.exists?(database_path + '.backup')
+      File.delete(database_path + '.backup')
+    end
+    # copy current for backup
+    FileUtils.cp database_path, database_path + '.backup' if File.exists?(database_path)
+
+    # dropping and re-creating db
+    ENV['VERSION'] = @version
+    Rake::Task['db:drop'].invoke
+    Rake::Task[&quot;db:migrate&quot;].invoke
+
+    puts &quot;migrated to version: #{@version}&quot;
+    puts &quot;importing...&quot;
+    # remove migration info
+    system `sqlite3 #{database_path} &quot;delete from schema_migrations;&quot;`
+    # import dump.sql
+    system `sqlite3 #{database_path} &quot;.read #{pg_dump_file_path}&quot;`
+
+    puts &quot;DONE!&quot;
+    puts &quot;NOTE: you're now migrated to version #{@version}. Please run db:migrate to apply newer migrations&quot;
+  end
+
+  def pg_dump_file_path
+    File.expand_path(&quot;#{Rails.root}/tmp/dump.sql&quot;)
+  end
+end</code></pre></noscript></div>
+
+
+<h2>Usage</h2>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>bundle exec rake db:pull</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>No SSH?</h3>
+
+<p>If you want to skip the step where the rake tasks get&#8217;s the dump using ssh, you have to copy the dump.sql into the tmp folder by yourself (note that the name <strong>must</strong> be <code>dump.sql</code>)</p>
+
+<p>After you copied it, you should execute the following commands, to generate the development database with the dumped sql.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>bundle exec rake db:optimze_pg_dump_for_sqlite
+</span><span class='line'>bundle exec rake db:recreate_with_dump</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Want to skip entering the ssh password every time?</h3>
+
+<p>You could generate a public/private key pair with RSA and append that key to the production server so you don&#8217;t have to enter the password over and over again to connect with ssh.</p>
+
+<h4>1. Generate a public/private key pair with RSA</h4>
+
+<p>First check if you haven&#8217;t already generated a <code>id_rsa</code> file in your <code>$HOME/.shh</code> folder. If you already have a <code>id_rsa</code> file continue with step 2.</p>
+
+<p>Run the following command on you local machine and accept the defaults.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>ssh-keygen -t rsa</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This command creates an RSA public/private key pair in your <code>$HOME/.ssh</code> directory. The private key is <code>~/.ssh/id_rsa</code> and the public key is <code>~/.ssh/id_rsa.pub</code></p>
+
+<h4>2. Install public key on remote machine</h4>
+
+<p>Now you can copy the public key to the remote machine by executing the following command:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>ssh-copy-id -i root@productionserver.com</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This command will ask you to enter the ssh password for the ssh user &#8220;root&#8221; for the hostname &#8220;productionserver.com&#8221;.</p>
+
+<p>After you&#8217;ve enter the password (for the last time) you can create a ssh connection without entering the password by executing:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>ssh root@productionserver.com</span></code></pre></td></tr></table></div></figure>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Manuel van Rijn</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-01-19T15:15:00+01:00" pubdate data-updated="true">Jan 19<span>th</span>, 2012</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/code/'>code</a>, <a class='category' href='/blog/categories/postgresql/'>postgresql</a>, <a class='category' href='/blog/categories/rails/'>rails</a>, <a class='category' href='/blog/categories/rake/'>rake</a>, <a class='category' href='/blog/categories/ruby/'>ruby</a>, <a class='category' href='/blog/categories/sqlite/'>sqlite</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://manuel.manuelles.nl/blog/2012/01/19/rake-pull-me-that-db/" data-via="" data-counturl="http://manuel.manuelles.nl/blog/2012/01/19/rake-pull-me-that-db/" >Tweet</a>
+  
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2012/01/18/convert-postgresql-to-sqlite/" title="Previous Post: Convert PostgreSQL to SQLite">&laquo; Convert PostgreSQL to SQLite</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>About Me</h1>
+  <p>
+    <img class="left" src="http://www.gravatar.com/avatar/5c42621691011e9f8fcabf1b4e23d4ad?s=80" title="Manuel van Rijn" />
+    <small>
+      Manuel van Rijn<br />
+      26 years old<br />
+      Front- Backend Developer
+      Work: <a href="http://www.auxilium.nl/">www.auxilium.nl</a><br /><br />
+      <a href="https://github.com/manuelvanrijn/"><img src="/images/icons/github.png" title="GitHub" alt="GitHub" class="icon" /></a>
+      <a href="http://nl.linkedin.com/in/manuelvanrijn"><img src="/images/icons/linkedin.png" title="LinkedIn" alt="LinkedIn" class="icon" /></a>
+      <a href="http://facebook.com/manuelvanrijn/"><img src="/images/icons/facebook.png" alt="Facebook" title="Facebook" class="icon" /></a>
+      <a href="http://twitter.com/manuelvanrijn/"><img src="/images/icons/twitter.png" alt="Twitter" title="Twitter" class="icon" /></a>
+    </small>
+  </p>
+</section>
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/01/19/rake-pull-me-that-db/">“Rake, pull me that DB!”</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/01/18/convert-postgresql-to-sqlite/">Convert PostgreSQL to SQLite</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/01/12/disable-rails-before-slash-after-callback/">Disable Rails callback</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/12/22/shrinking-your-git-repository/">Shrinking your Git repository</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/12/08/intro-start-blogging-like-a-hacker/">Intro: Start blogging like a hacker(?)</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+
+<section id="stackoverflow">
+  <h1>Stack Overflow</h1>
+  <a href="http://stackoverflow.com/users/959041/manuel-van-rijn">
+  <img src="http://stackoverflow.com/users/flair/959041.png?theme=default" width="208" height="58" alt="profile for Manuel van Rijn at Stack Overflow, Q&amp;A for professional and enthusiast programmers" title="profile for Manuel van Rijn at Stack Overflow, Q&amp;A for professional and enthusiast programmers">
+  </a>
+</section>
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2012 - Manuel van Rijn -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'manuelvanrijn';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://manuel.manuelles.nl/blog/2012/01/19/rake-pull-me-that-db/';
+        var disqus_url = 'http://manuel.manuelles.nl/blog/2012/01/19/rake-pull-me-that-db/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

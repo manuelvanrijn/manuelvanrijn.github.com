@@ -9,7 +9,7 @@
   <meta name="author" content="Manuel van Rijn">
 
   
-  <meta name="description" content="Today I&#8217;ve had some difficulties with a Rails migration, that took ages to complete. After some debugging I figured out that the issues was &hellip;">
+  <meta name="description" content="In the past weeks I&#8217;ve looked into a problem that kept us from releasing to Heroku, because the git repository was to large. In time the &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -49,7 +49,7 @@
   <header role="banner"><hgroup>
   <h1><a href="/">Manuel van Rijn</a></h1>
   
-    <h2>Personal blog</h2>
+    <h2>Bit blog</h2>
   
 </hgroup>
 
@@ -82,7 +82,7 @@
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2012/01/12/disable-rails-before-slash-after-callback/">Disable Rails Callback</a></h1>
+      <h1 class="entry-title"><a href="/blog/2011/12/22/shrinking-your-git-repository/">Shrinking your Git repository</a></h1>
     
     
       <p class="meta">
@@ -98,125 +98,75 @@
   
 
 
-<time datetime="2012-01-12T21:30:00+01:00" pubdate data-updated="true">Jan 12<span>th</span>, 2012</time>
+<time datetime="2011-12-22T15:01:00+01:00" pubdate data-updated="true">Dec 22<span>nd</span>, 2011</time>
         
       </p>
     
   </header>
 
 
-  <div class="entry-content"><p><img class="left" src="/images/posts/skip-step.png" width="240" height="240" title="Skip Step" ></p>
+  <div class="entry-content"><p>In the past weeks I&#8217;ve looked into a problem that kept us from releasing to <a href="http://www.heroku.com/" title="Heroku">Heroku</a>, because the git repository was to large. In time the repository has grown to approximate <strong>180 Mb</strong>.</p>
 
-<p>Today I&#8217;ve had some difficulties with a Rails migration, that took ages to complete. After some debugging I figured out that the issues was because of the <code>before_save</code> and <code>after_save</code> callbacks.</p>
+<p><img class="right" src="/images/posts/shrink-mario.jpg" width="140" height="140" title="Shrink!" ></p>
 
-<p>Of course we could remove the before and after save callbacks to speed up the process, but I don&#8217;t like the idea of releasing a model that misses these behavior. I mean they&#8217;re not there for no reason right?</p>
+<p>In the past we&#8217;ve made some decisions that we probably wouldn&#8217;t take again. We for example, we decided to store the gem files in the vendor folder and having the rails code included in our repository. Our goal then was, that releasing the project with <a href="http://www.capify.org" title="Capistrano">Capistrano</a> would be easier and faster, because it didn&#8217;t have to download all the gem&#8217;s.</p>
 
-<p>After some googling I found a quick and easy way to disable the callbacks without modifying the model. Here&#8217;s an simple example of a model class and a migration the disable the callbacks only within the migration.</p>
+<p>Anyway at this point we don&#8217;t have the gem&#8217;s stored anymore in the vendor folder. Since tools like <a href="http://beginrescueend.com/" title="Ruby version Manager">RVM</a> and <a href="https://github.com/sstephenson/rbenv/" title="rbenv">rbenv</a> we store these within the ruby/rails version of that specific project.</p>
 
-<h2>Code solution</h2>
+<p>Still we have the problem that the repository contains files etc. we want to remove to shrink the size of it.</p>
 
-<figure class='code'><figcaption><span>app/models/some_model.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">SomeModel</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-</span><span class='line'>  <span class="n">before_save</span> <span class="ss">:before_action</span>
-</span><span class='line'>  <span class="n">after_save</span> <span class="ss">:after_action</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="kp">private</span>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">before_action</span>
-</span><span class='line'>      <span class="c1"># heavy calculation/queries</span>
-</span><span class='line'>      <span class="nb">puts</span> <span class="s2">&quot;you shouldn&#39;t see this&quot;</span>
-</span><span class='line'>    <span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">after_action</span>
-</span><span class='line'>      <span class="c1"># another heavy calculation/queries</span>
-</span><span class='line'>      <span class="nb">puts</span> <span class="s2">&quot;you shouldn&#39;t see this&quot;</span>
-</span><span class='line'>    <span class="k">end</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2011/12/22/shrinking-your-git-repository/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2011/12/08/intro-start-blogging-like-a-hacker/">Intro: Start blogging like a hacker(?)</a></h1>
+    
+    
+      <p class="meta">
+        
 
 
 
 
-<figure class='code'><figcaption><span>db/migrations/20120112092136_update_some_model.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">UpdateSomeModel</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span>
-</span><span class='line'>  <span class="k">def</span> <span class="nf">up</span>
-</span><span class='line'>    <span class="c1"># disable the before_save</span>
-</span><span class='line'>    <span class="no">SomeModel</span><span class="o">.</span><span class="n">skip_callback</span><span class="p">(</span><span class="ss">:save</span><span class="p">,</span> <span class="ss">:before</span><span class="p">,</span> <span class="ss">:before_action</span><span class="p">)</span>
-</span><span class='line'>    <span class="c1"># disable the after_save</span>
-</span><span class='line'>    <span class="no">SomeModel</span><span class="o">.</span><span class="n">skip_callback</span><span class="p">(</span><span class="ss">:save</span><span class="p">,</span> <span class="ss">:after</span><span class="p">,</span> <span class="ss">:after_action</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="no">SomeModel</span><span class="o">.</span><span class="n">all</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span> <span class="n">obj</span> <span class="o">|</span>
-</span><span class='line'>      <span class="c1"># .. modify obj ...</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="n">obj</span><span class="o">.</span><span class="n">save</span>
-</span><span class='line'>      <span class="c1"># you shouldn&#39;t see the puts defined in the SomeModel before and after actions</span>
-</span><span class='line'>    <span class="k">end</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">def</span> <span class="nf">down</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
 
 
-<h2>Supported callbacks</h2>
-
-<p>In the above example I show only two rails callbacks. Here&#8217;s a list of the supported callbacks you also can disable with it.</p>
-
-<ul>
-<li><code>:after_initialize</code></li>
-<li><code>:after_find</code></li>
-<li><code>:after_touch</code></li>
-<li><code>:before_validation</code></li>
-<li><code>:after_validation</code></li>
-<li><code>:before_save</code></li>
-<li><code>:around_save</code></li>
-<li><code>:after_save</code></li>
-<li><code>:before_create</code></li>
-<li><code>:around_create</code></li>
-<li><code>:after_create</code></li>
-<li><code>:before_update</code></li>
-<li><code>:around_update</code></li>
-<li><code>:after_update</code></li>
-<li><code>:before_destroy</code></li>
-<li><code>:around_destroy</code></li>
-<li><code>:after_destroy</code></li>
-<li><code>:after_commit</code></li>
-<li><code>:after_rollback</code></li>
-</ul>
 
 
-<p>Hope these could help you out some day =)</p>
+  
+
+
+<time datetime="2011-12-08T15:28:00+01:00" pubdate data-updated="true">Dec 8<span>th</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>I&#8217;ve just decided to switch from <a href="http://www.wordpress.com/" title="Wordpress">Wordpress</a> to <a href="http://octopress.org/" title="Octopress">Octopress</a> because I wanted something new and not something over-featured</p>
+
+<p>All the plugins and choice&#8217;s I had to made, and the maintenance of all these, just kept me from doing what I supposed to do with it, blogging.</p>
+
+<p><span class='pullquote-right' data-pullquote='A blogging framework for hackers. '>
+So after some googling what a good alternative would be for Wordpress I found <em>Octopress</em> A blogging framework for hackers. Alright +1 for the title
+</span></p>
+
+<p>So basically Octopress generates (bakes) HTML content from the <a href="http://daringfireball.net/projects/markdown/" title="Markdown">Markdown</a> content you write. I like this simplicity and I love the syntax.</p>
+
+<p><a href="http://octopress.org/" title="Octopress">Octopress</a> give&#8217;s you the functionality to host it on your own server, but also to host it on <a href="http://www.heroku.com/" title="Heroku">Heroku</a> or <a href="https://github.com/" title="Github">Github</a>. Beside the Git approach (push your source and deploy the generated code to the master branch) you can use RSync to sync files to your server. I use <a href="https://github.com" title="Github">Github</a> to store my source and generated html.</p>
+
+<p>Enough talking about <a href="http://octopress.org/" title="Octopress">Octopress</a> for now. I&#8217;ll hope to post my next post soon.</p>
 </div>
   
   
@@ -225,8 +175,6 @@
     </article>
   
   <div class="pagination">
-    
-      <a class="prev" href="/blog/page/3/">&larr; Older</a>
     
     <a href="/blog/archives">Blog Archives</a>
     
@@ -257,6 +205,10 @@
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2012/01/19/rake-pull-me-that-db/">“Rake, pull me that DB!”</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2012/01/18/convert-postgresql-to-sqlite/">Convert PostgreSQL to SQLite</a>
       </li>
     
@@ -265,7 +217,7 @@
       </li>
     
       <li class="post">
-        <a href="/blog/2011/12/22/shrinking-your-git-repository/">Shrinking your git repository</a>
+        <a href="/blog/2011/12/22/shrinking-your-git-repository/">Shrinking your Git repository</a>
       </li>
     
       <li class="post">

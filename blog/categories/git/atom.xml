@@ -4,7 +4,7 @@
   <title><![CDATA[Category: git | Manuel van Rijn]]></title>
   <link href="http://manuel.manuelles.nl/blog/categories/git/atom.xml" rel="self"/>
   <link href="http://manuel.manuelles.nl/"/>
-  <updated>2012-01-18T18:27:42+01:00</updated>
+  <updated>2012-01-20T18:14:42+01:00</updated>
   <id>http://manuel.manuelles.nl/</id>
   <author>
     <name><![CDATA[Manuel van Rijn]]></name>
@@ -14,7 +14,7 @@
 
   
   <entry>
-    <title type="html"><![CDATA[Shrinking your git repository]]></title>
+    <title type="html"><![CDATA[Shrinking your Git repository]]></title>
     <link href="http://manuel.manuelles.nl/blog/2011/12/22/shrinking-your-git-repository/"/>
     <updated>2011-12-22T15:01:00+01:00</updated>
     <id>http://manuel.manuelles.nl/blog/2011/12/22/shrinking-your-git-repository</id>
@@ -27,6 +27,9 @@
 <p>Anyway at this point we don't have the gem's stored anymore in the vendor folder. Since tools like <a href="http://beginrescueend.com/" title="Ruby version Manager">RVM</a> and <a href="https://github.com/sstephenson/rbenv/" title="rbenv">rbenv</a> we store these within the ruby/rails version of that specific project.</p>
 
 <p>Still we have the problem that the repository contains files etc. we want to remove to shrink the size of it.</p>
+
+<!-- more -->
+
 
 <h2>Find large files from your git history</h2>
 

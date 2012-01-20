@@ -4,7 +4,7 @@
   <title><![CDATA[Manuel van Rijn]]></title>
   <link href="http://manuel.manuelles.nl/atom.xml" rel="self"/>
   <link href="http://manuel.manuelles.nl/"/>
-  <updated>2012-01-18T18:27:42+01:00</updated>
+  <updated>2012-01-20T18:14:42+01:00</updated>
   <id>http://manuel.manuelles.nl/</id>
   <author>
     <name><![CDATA[Manuel van Rijn]]></name>
@@ -12,6 +12,216 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[“Rake, pull me that DB!”]]></title>
+    <link href="http://manuel.manuelles.nl/blog/2012/01/19/rake-pull-me-that-db/"/>
+    <updated>2012-01-19T15:15:00+01:00</updated>
+    <id>http://manuel.manuelles.nl/blog/2012/01/19/rake-pull-me-that-db</id>
+    <content type="html"><![CDATA[<p>After writing my last article how to <a href="http://manuel.manuelles.nl/blog/2012/01/18/convert-postgresql-to-sqlite/" title="How to: Convert a PostgreSQL database to a SQLite database">Convert PostgreSQL to SQLite</a>, I was asked why this couldn&#8217;t be automated?</p>
+
+<p>So I started coding and managed to create a <a href="http://rake.rubyforge.org/" title="Rake -- Ruby Make">Rake</a> task that will do all of the steps I described in the article in just a few seconds!</p>
+
+<!-- more -->
+
+
+<h2>What will it do?</h2>
+
+<ol>
+<li>remove old dump and ssh the new dump to <code>tmp/dump.sql</code></li>
+<li>converts the dumped SQL in to a valid format for SQLite</li>
+<li>remembers the version number of the migration on the production db</li>
+<li>backup, create and migrates the development SQLite to the version remembered</li>
+<li>import the SQL</li>
+<li>tell you all went well</li>
+</ol>
+
+
+<h2>Configuration</h2>
+
+<p>To use the Rake task, you have to add 2 additional fields (<code>ssh_user</code> and <code>ssh_host</code>) to your <code>database.yml</code> file. These fields are used to create an ssh connection for retrieving the PostgreSQL dump.</p>
+
+<p>Here&#8217;s example of a modified <code>config/database.yml</code>:</p>
+
+<div><script src='https://gist.github.com/1640429.js?file=database.yml'></script>
+<noscript><pre><code>development:
+  adapter: sqlite3
+  database: db/development.sqlite3
+  pool: 5
+  timeout: 5000
+
+production:
+  ssh_user: root                  # &lt;-- add username for ssh
+  ssh_host: productionserver.com  # &lt;-- add hostname for ssh
+  adapter: postgresql
+  host: localhost
+  port: 5432
+  username: db_user
+  password: db_pass
+  database: db_name
+  schema_search_path: public
+  encoding: utf8
+  template: template0</code></pre></noscript></div>
+
+
+<h2>Get the Rake file</h2>
+
+<p>Put the following code into <code>libs/tasks/database.rake</code></p>
+
+<div><script src='https://gist.github.com/1640429.js?file=database.rake'></script>
+<noscript><pre><code>require 'fileutils'
+
+namespace :db do
+  desc 'pull the production PostgreSQL database into the development SQLite'
+  task :pull do
+    Rake::Task['db:download_pg_dump'].invoke
+    Rake::Task['db:optimze_pg_dump_for_sqlite'].invoke
+    Rake::Task['db:recreate_with_dump'].invoke
+  end
+
+  desc 'download the pg_dump content into tmp/dump.sql'
+  task :download_pg_dump do
+    config = Rails.application.config.database_configuration
+
+    abort &quot;Missing production database config&quot; if config['production'].blank?
+
+    dev  = config['development']
+    prod = config['production']
+
+    abort &quot;Development db is not sqlite3&quot; unless dev['adapter'] =~ /sqlite3/
+    abort &quot;Production db is not postgresql&quot; unless prod['adapter'] =~ /postgresql/
+    abort &quot;Missing ssh host&quot; if prod['ssh_host'].blank?
+    abort &quot;Missing database name&quot; if prod['database'].blank?
+
+    # remove the old one
+    if File.exists?(pg_dump_file_path)
+      File.delete(pg_dump_file_path)
+    end
+
+    cmd  = &quot;ssh -C &quot;
+    cmd &lt;&lt; &quot;#{prod['ssh_user']}@&quot; if prod['ssh_user'].present?
+    cmd &lt;&lt; &quot;#{prod['ssh_host']} &quot;
+    cmd &lt;&lt; &quot;PGPASSWORD=#{prod['password']} &quot;
+    cmd &lt;&lt; &quot;pg_dump --data-only --inserts &quot;
+    cmd &lt;&lt; &quot;--username=#{prod['username']} #{prod['database']} &gt; &quot;
+    cmd &lt;&lt; pg_dump_file_path
+
+    system `#{cmd}`
+  end
+
+  desc 'remove unused statements and optimze sql for SQLite'
+  task :optimze_pg_dump_for_sqlite do
+    result = []
+    lines = File.readlines(pg_dump_file_path)
+    @version = 0
+    lines.each do | line |
+      next if line =~ /SELECT pg_catalog.setval/  # sequence value's
+      next if line =~ /SET /                      # postgres specific config
+      next if line =~ /--/                        # comment
+
+      if line =~ /INSERT INTO schema_migrations/
+        @version = line.match(/INSERT INTO schema_migrations VALUES \('([\d]*)/)[1]
+      end
+
+      # replace true and false for 't' and 'f'
+      line.gsub!(&quot;true&quot;,&quot;'t'&quot;)
+      line.gsub!(&quot;false&quot;,&quot;'f'&quot;)
+      result &lt;&lt; line
+    end
+
+    File.open(pg_dump_file_path, &quot;w&quot;) do |f|
+      # Add BEGIN and END so we add it to 1 transaction. Increase speed!
+      f.puts(&quot;BEGIN;&quot;)
+      result.each{|line| f.puts(line) unless line.blank?}
+      f.puts(&quot;END;&quot;)
+    end
+  end
+
+  desc 'backup development.sqlite3 and create a new one with the dumped data'
+  task :recreate_with_dump do
+    # sqlite so backup
+    database = Rails.configuration.database_configuration['development']['database']
+    database_path = File.expand_path(&quot;#{Rails.root}/#{database}&quot;)
+    # remove old backup
+    if File.exists?(database_path + '.backup')
+      File.delete(database_path + '.backup')
+    end
+    # copy current for backup
+    FileUtils.cp database_path, database_path + '.backup' if File.exists?(database_path)
+
+    # dropping and re-creating db
+    ENV['VERSION'] = @version
+    Rake::Task['db:drop'].invoke
+    Rake::Task[&quot;db:migrate&quot;].invoke
+
+    puts &quot;migrated to version: #{@version}&quot;
+    puts &quot;importing...&quot;
+    # remove migration info
+    system `sqlite3 #{database_path} &quot;delete from schema_migrations;&quot;`
+    # import dump.sql
+    system `sqlite3 #{database_path} &quot;.read #{pg_dump_file_path}&quot;`
+
+    puts &quot;DONE!&quot;
+    puts &quot;NOTE: you're now migrated to version #{@version}. Please run db:migrate to apply newer migrations&quot;
+  end
+
+  def pg_dump_file_path
+    File.expand_path(&quot;#{Rails.root}/tmp/dump.sql&quot;)
+  end
+end</code></pre></noscript></div>
+
+
+<h2>Usage</h2>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>bundle exec rake db:pull</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>No SSH?</h3>
+
+<p>If you want to skip the step where the rake tasks get&#8217;s the dump using ssh, you have to copy the dump.sql into the tmp folder by yourself (note that the name <strong>must</strong> be <code>dump.sql</code>)</p>
+
+<p>After you copied it, you should execute the following commands, to generate the development database with the dumped sql.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>bundle exec rake db:optimze_pg_dump_for_sqlite
+</span><span class='line'>bundle exec rake db:recreate_with_dump</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Want to skip entering the ssh password every time?</h3>
+
+<p>You could generate a public/private key pair with RSA and append that key to the production server so you don&#8217;t have to enter the password over and over again to connect with ssh.</p>
+
+<h4>1. Generate a public/private key pair with RSA</h4>
+
+<p>First check if you haven&#8217;t already generated a <code>id_rsa</code> file in your <code>$HOME/.shh</code> folder. If you already have a <code>id_rsa</code> file continue with step 2.</p>
+
+<p>Run the following command on you local machine and accept the defaults.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>ssh-keygen -t rsa</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This command creates an RSA public/private key pair in your <code>$HOME/.ssh</code> directory. The private key is <code>~/.ssh/id_rsa</code> and the public key is <code>~/.ssh/id_rsa.pub</code></p>
+
+<h4>2. Install public key on remote machine</h4>
+
+<p>Now you can copy the public key to the remote machine by executing the following command:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>ssh-copy-id -i root@productionserver.com</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This command will ask you to enter the ssh password for the ssh user &#8220;root&#8221; for the hostname &#8220;productionserver.com&#8221;.</p>
+
+<p>After you&#8217;ve enter the password (for the last time) you can create a ssh connection without entering the password by executing:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>ssh root@productionserver.com</span></code></pre></td></tr></table></div></figure>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Convert PostgreSQL to SQLite]]></title>
@@ -23,6 +233,9 @@
 <p>Today I&#8217;d like to share the steps I take when I need to convert a <a href="http://www.postgresql.org/" title="PostgreSQL">PostgreSQL</a> database into a <a href="http://www.sqlite.org/" title="SQLite">SQLite</a> database.</p>
 
 <p>Commonly I have to do this when a <a href="http://rubyonrails.org/" title="Ruby on Rails">Ruby on Rails</a> application is in production and I have to check some issues with the production data. In the production environment we usually use a PostgreSQL database and for developing I use a SQLite database, so we need some conversion.</p>
+
+<!-- more -->
+
 
 <h2>Short story a.k.a I know what I&#8217;m doing.</h2>
 
@@ -186,6 +399,9 @@
 
 <p>Of course we could remove the before and after save callbacks to speed up the process, but I don&#8217;t like the idea of releasing a model that misses these behavior. I mean they&#8217;re not there for no reason right?</p>
 
+<!-- more -->
+
+
 <p>After some googling I found a quick and easy way to disable the callbacks without modifying the model. Here&#8217;s an simple example of a model class and a migration the disable the callbacks only within the migration.</p>
 
 <h2>Code solution</h2>
@@ -296,7 +512,7 @@
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[Shrinking your git repository]]></title>
+    <title type="html"><![CDATA[Shrinking your Git repository]]></title>
     <link href="http://manuel.manuelles.nl/blog/2011/12/22/shrinking-your-git-repository/"/>
     <updated>2011-12-22T15:01:00+01:00</updated>
     <id>http://manuel.manuelles.nl/blog/2011/12/22/shrinking-your-git-repository</id>
@@ -309,6 +525,9 @@
 <p>Anyway at this point we don&#8217;t have the gem&#8217;s stored anymore in the vendor folder. Since tools like <a href="http://beginrescueend.com/" title="Ruby version Manager">RVM</a> and <a href="https://github.com/sstephenson/rbenv/" title="rbenv">rbenv</a> we store these within the ruby/rails version of that specific project.</p>
 
 <p>Still we have the problem that the repository contains files etc. we want to remove to shrink the size of it.</p>
+
+<!-- more -->
+
 
 <h2>Find large files from your git history</h2>
 
