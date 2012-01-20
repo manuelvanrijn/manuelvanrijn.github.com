@@ -11,6 +11,8 @@ After writing my last article how to [Convert PostgreSQL to SQLite](http://manue
 
 So I started coding and managed to create a [Rake](http://rake.rubyforge.org/ "Rake -- Ruby Make") task that will do all of the steps I described in the article in just a few seconds!
 
+<!-- more -->
+
 ## What will it do?
 
 1. remove old dump and ssh the new dump to `tmp/dump.sql`
