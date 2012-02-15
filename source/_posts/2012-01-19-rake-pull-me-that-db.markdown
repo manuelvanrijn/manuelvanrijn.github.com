@@ -13,6 +13,12 @@ So I started coding and managed to create a [Rake](http://rake.rubyforge.org/ "R
 
 <!-- more -->
 
+## Update
+
+Today a found a project that does exactly the samething as the below rake task, but with support for more db providers. [Heroku](http://www.herko.com) uses this project for retrieving and pushing you database to the heroku database server.
+
+The project is called Taps and can be found here: [http://adam.heroku.com/past/2009/2/11/taps_for_easy_database_transfers](http://adam.heroku.com/past/2009/2/11/taps_for_easy_database_transfers/)
+
 ## What will it do?
 
 1. remove old dump and ssh the new dump to `tmp/dump.sql`
