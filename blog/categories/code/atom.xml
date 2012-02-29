@@ -4,7 +4,7 @@
   <title><![CDATA[Category: code | Manuel van Rijn]]></title>
   <link href="http://manuel.manuelles.nl/blog/categories/code/atom.xml" rel="self"/>
   <link href="http://manuel.manuelles.nl/"/>
-  <updated>2012-01-20T18:14:42+01:00</updated>
+  <updated>2012-02-29T22:06:28+01:00</updated>
   <id>http://manuel.manuelles.nl/</id>
   <author>
     <name><![CDATA[Manuel van Rijn]]></name>
@@ -24,6 +24,12 @@
 
 <!-- more -->
 
+
+<h2>Update</h2>
+
+<p>Today a found a project that does exactly the samething as the below rake task, but with support for more db providers. <a href="http://www.herko.com">Heroku</a> uses this project for retrieving and pushing you database to the heroku database server.</p>
+
+<p>The project is called Taps and can be found here: <a href="http://adam.heroku.com/past/2009/2/11/taps_for_easy_database_transfers/">http://adam.heroku.com/past/2009/2/11/taps_for_easy_database_transfers</a></p>
 
 <h2>What will it do?</h2>
 
