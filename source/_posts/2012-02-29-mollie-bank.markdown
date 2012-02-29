@@ -3,7 +3,7 @@ layout: post
 title: "Mollie Bank"
 date: 2012-02-29 21:29
 comments: true
-categories: 
+categories: [code, gem, ruby, sinatra, mollie-bank]
 published: true
 ---
 
