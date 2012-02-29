@@ -15,7 +15,7 @@ When you want to test a iDeal transaction with the Mollie test bank, you **MUST*
 
 <!-- more -->
 
-## Mollie Bank
+## There's a gem for that!
 
 I've came op with a gem that runs a small [Sinatra](http://www.sinatrarb.com/) application that does exactly the same as the Mollie test bank, only it runs on your local machine, which means you can redirect to `localhost` and more important, it can perform the payment check.
 
