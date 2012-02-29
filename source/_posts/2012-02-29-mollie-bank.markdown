@@ -39,7 +39,7 @@ mollie-bank
 
 At this point, you can go to [http://localhost:4567/](http://localhost:4567/) and you'll see an intro page.
 
-## Setup you application
+## Setup your application
 
 Alright so now you only have to make sure that when you're developing on your local machine, you don't make the requests to Mollie but to your locally running Mollie Bank.
 
