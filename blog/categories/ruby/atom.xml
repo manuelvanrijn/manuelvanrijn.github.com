@@ -4,7 +4,7 @@
   <title><![CDATA[Category: ruby | Manuel van Rijn]]></title>
   <link href="http://manuel.manuelles.nl/blog/categories/ruby/atom.xml" rel="self"/>
   <link href="http://manuel.manuelles.nl/"/>
-  <updated>2012-02-29T22:10:28+01:00</updated>
+  <updated>2012-02-29T22:12:36+01:00</updated>
   <id>http://manuel.manuelles.nl/</id>
   <author>
     <name><![CDATA[Manuel van Rijn]]></name>
@@ -12,6 +12,56 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Mollie Bank]]></title>
+    <link href="http://manuel.manuelles.nl/blog/2012/02/29/mollie-bank/"/>
+    <updated>2012-02-29T21:29:00+01:00</updated>
+    <id>http://manuel.manuelles.nl/blog/2012/02/29/mollie-bank</id>
+    <content type="html"><![CDATA[<p>The past week I've been working with the iDeal API from Mollie. <a href="http://www.mollie.nl/">Mollie</a> is a company that give's us developers an easy way to make iDeal payments through there API, for a small fee.</p>
+
+<p>After a long search I wasn't able to find a stable, well tested gem, I could use in our Rails project, so I developed the <a href="https://rubygems.org/gems/ideal-mollie">ideal-mollie gem</a>. After I finishing this gem, there was only one problem.</p>
+
+<p>When you want to test a iDeal transaction with the Mollie test bank, you <strong>MUST</strong> do some routing, so that Mollie can send you a request if the payment paid or not, to your local machine from the internet. So I made a alternative Mollie test bank you can use for what ever programming language you use for making Mollie iDeal payments without the routing problems.</p>
+
+<!-- more -->
+
+
+<h2>There's a gem for that!</h2>
+
+<p>I've came op with a gem that runs a small <a href="http://www.sinatrarb.com/">Sinatra</a> application that does exactly the same as the Mollie test bank, only it runs on your local machine, which means you can redirect to <code>localhost</code> and more important, it can perform the payment check.</p>
+
+<p>Here you can find the <a href="https://rubygems.org/gems/mollie-bank">mollie-bank gem</a>, and the <a href="https://github.com/manuelvanrijn/mollie-bank">source code</a></p>
+
+<p><img src="/images/posts/mollie-bank.png"></p>
+
+<h2>Install en run!</h2>
+
+<p>To use mollie-bank just install the gem by running</p>
+
+<p><code>
+gem install mollie-bank
+</code></p>
+
+<p>and then run it</p>
+
+<p><code>
+mollie-bank
+</code></p>
+
+<p>At this point, you can go to <a href="http://localhost:4567/">http://localhost:4567/</a> and you'll see an intro page.</p>
+
+<h2>Setup you application</h2>
+
+<p>Alright so now you only have to make sure that when you're developing on your local machine, you don't make the requests to Mollie but to your locally running Mollie Bank.</p>
+
+<p>To do this you just have to change <code>https://secure.mollie.nl</code> into <code>http://localhost:4567</code> in you code.</p>
+
+<h2>Todo</h2>
+
+<p>At this point I've only wrote a sample implementation for <a href="http://rubyonrails.org/" title="Ruby on Rails">Ruby on Rails</a> on the <a href="https://github.com/manuelvanrijn/mollie-bank/wiki/Implement-into-existing-modules">Implement into existing modules Wiki</a> page, but soon there will be more examples.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[“Rake, pull me that DB!”]]></title>

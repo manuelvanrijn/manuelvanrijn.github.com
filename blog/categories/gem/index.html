@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Mollie Bank - Manuel van Rijn</title>
+  <title>Category: gem - Manuel van Rijn</title>
   <meta name="author" content="Manuel van Rijn">
 
   
-  <meta name="description" content="The past week I&#8217;ve been working with the iDeal API from Mollie. Mollie is a company that give&#8217;s us developers an easy way to make iDeal &hellip;">
+  <meta name="description" content="Category: gem">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://manuel.manuelles.nl/blog/2012/02/29/mollie-bank">
+  <link rel="canonical" href="http://manuel.manuelles.nlblog/categories/gem">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -75,134 +75,36 @@
   <div id="main">
     <div id="content">
       <div>
-<article class="hentry" role="article">
+<article role="article">
   
   <header>
-    
-      <h1 class="entry-title">Mollie Bank</h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-02-29T21:29:00+01:00" pubdate data-updated="true">Feb 29<span>th</span>, 2012</time>
-        
-      </p>
+    <h1 class="entry-title">Category: gem</h1>
     
   </header>
-
-
-<div class="entry-content"><p>The past week I&#8217;ve been working with the iDeal API from Mollie. <a href="http://www.mollie.nl/">Mollie</a> is a company that give&#8217;s us developers an easy way to make iDeal payments through there API, for a small fee.</p>
-
-<p>After a long search I wasn&#8217;t able to find a stable, well tested gem, I could use in our Rails project, so I developed the <a href="https://rubygems.org/gems/ideal-mollie">ideal-mollie gem</a>. After I finishing this gem, there was only one problem.</p>
-
-<p>When you want to test a iDeal transaction with the Mollie test bank, you <strong>MUST</strong> do some routing, so that Mollie can send you a request if the payment paid or not, to your local machine from the internet. So I made a alternative Mollie test bank you can use for what ever programming language you use for making Mollie iDeal payments without the routing problems.</p>
-
-<!-- more -->
-
-
-<h2>There&#8217;s a gem for that!</h2>
-
-<p>I&#8217;ve came op with a gem that runs a small <a href="http://www.sinatrarb.com/">Sinatra</a> application that does exactly the same as the Mollie test bank, only it runs on your local machine, which means you can redirect to <code>localhost</code> and more important, it can perform the payment check.</p>
-
-<p>Here you can find the <a href="https://rubygems.org/gems/mollie-bank">mollie-bank gem</a>, and the <a href="https://github.com/manuelvanrijn/mollie-bank">source code</a></p>
-
-<p><img src="/images/posts/mollie-bank.png"></p>
-
-<h2>Install en run!</h2>
-
-<p>To use mollie-bank just install the gem by running</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>gem install mollie-bank</span></code></pre></td></tr></table></div></figure>
-
-
-<p>and then run it</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>mollie-bank</span></code></pre></td></tr></table></div></figure>
-
-
-<p>At this point, you can go to <a href="http://localhost:4567/">http://localhost:4567/</a> and you&#8217;ll see an intro page.</p>
-
-<h2>Setup you application</h2>
-
-<p>Alright so now you only have to make sure that when you&#8217;re developing on your local machine, you don&#8217;t make the requests to Mollie but to your locally running Mollie Bank.</p>
-
-<p>To do this you just have to change <code>https://secure.mollie.nl</code> into <code>http://localhost:4567</code> in you code.</p>
-
-<h2>Todo</h2>
-
-<p>At this point I&#8217;ve only wrote a sample implementation for <a href="http://rubyonrails.org/" title="Ruby on Rails">Ruby on Rails</a> on the <a href="https://github.com/manuelvanrijn/mollie-bank/wiki/Implement-into-existing-modules">Implement into existing modules Wiki</a> page, but soon there will be more examples.</p>
-</div>
-
-
-  <footer>
-    <p class="meta">
-      
   
-
-<span class="byline author vcard">Posted by <span class="fn">Manuel van Rijn</span></span>
-
-      
-
-
-
-
-
+  <div id="blog-archives" class="category">
 
 
 
   
+  <h2>2012</h2>
+
+<article>
+  
+<h1><a href="/blog/2012/02/29/mollie-bank/">Mollie Bank</a></h1>
+<time datetime="2012-02-29T21:29:00+01:00" pubdate><span class='month'>Feb</span> <span class='day'>29</span> <span class='year'>2012</span></time>
+
+<footer>
+  <span class="categories">posted in <a class='category' href='/blog/categories/code/'>code</a>, <a class='category' href='/blog/categories/gem/'>gem</a>, <a class='category' href='/blog/categories/mollie-bank/'>mollie-bank</a>, <a class='category' href='/blog/categories/ruby/'>ruby</a>, <a class='category' href='/blog/categories/sinatra/'>sinatra</a></span>
+</footer>
 
 
-<time datetime="2012-02-29T21:29:00+01:00" pubdate data-updated="true">Feb 29<span>th</span>, 2012</time>
-      
-
-<span class="categories">
-  
-    <a class='category' href='/blog/categories/code/'>code</a>, <a class='category' href='/blog/categories/gem/'>gem</a>, <a class='category' href='/blog/categories/mollie-bank/'>mollie-bank</a>, <a class='category' href='/blog/categories/ruby/'>ruby</a>, <a class='category' href='/blog/categories/sinatra/'>sinatra</a>
-  
-</span>
-
-
-    </p>
-    
-      <div class="sharing">
-  
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://manuel.manuelles.nl/blog/2012/02/29/mollie-bank/" data-via="" data-counturl="http://manuel.manuelles.nl/blog/2012/02/29/mollie-bank/" >Tweet</a>
-  
-  
-  
-    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
-  
-</div>
-
-    
-    <p class="meta">
-      
-        <a class="basic-alignment left" href="/blog/2012/01/19/rake-pull-me-that-db/" title="Previous Post: “Rake, pull me that DB!”">&laquo; “Rake, pull me that DB!”</a>
-      
-      
-    </p>
-  </footer>
 </article>
 
-  <section>
-    <h1>Comments</h1>
-    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 </div>
-  </section>
+
+  
+</article>
 
 </div>
 
@@ -286,10 +188,7 @@
       var disqus_shortname = 'manuelvanrijn';
       
         
-        // var disqus_developer = 1;
-        var disqus_identifier = 'http://manuel.manuelles.nl/blog/2012/02/29/mollie-bank/';
-        var disqus_url = 'http://manuel.manuelles.nl/blog/2012/02/29/mollie-bank/';
-        var disqus_script = 'embed.js';
+        var disqus_script = 'count.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
