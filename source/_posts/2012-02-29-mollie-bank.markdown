@@ -11,7 +11,7 @@ The past week I've been working with the iDeal API from Mollie. [Mollie](http://
 
 After a long search I wasn't able to find a stable, well tested gem, I could use in our Rails project, so I developed the [ideal-mollie gem](https://rubygems.org/gems/ideal-mollie). After I finishing this gem, there was only one problem. 
 
-When you want to test a iDeal transaction with the Mollie test bank, you **MUST** do some routing, so that Mollie can send you a request if the payment paid or not, to your local machine from the internet. So I made a alternative Mollie test bank you can use for what ever programming language you use for making Mollie iDeal payments without the routing problems.
+When you want to test a iDeal transaction with the Mollie test bank, you **MUST** do some routing, so that Mollie can send you a request if the payment was paid or not, to your local machine from the internet. So I made a alternative Mollie test bank you can use for what ever programming language you use for making Mollie iDeal payments without the routing problems.
 
 <!-- more -->
 
