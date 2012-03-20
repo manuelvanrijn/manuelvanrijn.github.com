@@ -4,7 +4,7 @@
   <title><![CDATA[Manuel van Rijn]]></title>
   <link href="http://manuel.manuelles.nl/atom.xml" rel="self"/>
   <link href="http://manuel.manuelles.nl/"/>
-  <updated>2012-03-20T13:40:40+01:00</updated>
+  <updated>2012-03-20T13:41:36+01:00</updated>
   <id>http://manuel.manuelles.nl/</id>
   <author>
     <name><![CDATA[Manuel van Rijn]]></name>
@@ -59,36 +59,6 @@ Today I had to reinstall my Linux installation because my harddisk died a quick 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class=''><span class='line'>sudo apt-get install libqtwebkit-dev</span></code></pre></td></tr></table></div></figure>
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Encoding with Brail like a boss]]></title>
-    <link href="http://manuel.manuelles.nl/blog/2012/03/15/encoding-with-brail-like-a-boss/"/>
-    <updated>2012-03-15T21:29:00+01:00</updated>
-    <id>http://manuel.manuelles.nl/blog/2012/03/15/encoding-with-brail-like-a-boss</id>
-    <content type="html"><![CDATA[<p>Today was a one of those days you search hours for a solution, which finally results in a a quite dissapointing answer. However on the end of this journal you don&#8217;t care about that last part anymore.</p>
-
-<!-- more -->
-
-
-<h2>How it started</h2>
-
-<p>Yesterday a customer reported that there were some weird questionmark signs when generating a PDF. Obviously this is probably caused by some html encoding or something. So me and my <a href="http://blog.dltr.nl">college</a> desided to fix this minor bug after we solved some major rocket science bug. We thought &#8220;let&#8217;s do something easy to cool down a bit&#8221;</p>
-
-<h2>Encoding</h2>
-
-<p> changed the meta Content-Type charset to utf-8, ISO-8859-1</p>
-
-<h2>When does it stop!</h2>
-
-<p>Ok so at some point all our options/ideas leaded to nothing!</p>
-
-<p>Ofcourse we read <a href="http://www.joelonsoftware.com/articles/Unicode.html">The Absolute Minimum Every Software Developer Absolutely, Positively Must Know About Unicode and Character Sets (No Excuses!)</a> by Joel Spolsky, but at the header &#8220;IT&#8217;S NOG THAT HARD&#8221; we did wonder why that article was that LONG!</p>
-
-<h2>The solution</h2>
-
-<p>The <a href="http://stw.castleproject.org/MonoRail.Brail.ashx#HTML_Encoding_15">solution</a> &#8230;. a <code>!</code> instead of a <code>$</code> would do the trick&#8230;.</p>
 ]]></content>
   </entry>
   
