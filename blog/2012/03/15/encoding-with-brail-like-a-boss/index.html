@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Intro: Start blogging like a hacker(?) - Manuel van Rijn</title>
+  <title>Encoding with Brail like a boss - Manuel van Rijn</title>
   <meta name="author" content="Manuel van Rijn">
 
   
-  <meta name="description" content="I&#8217;ve just decided to switch from Wordpress to Octopress because I wanted something new and not something over-featured All the plugins and &hellip;">
+  <meta name="description" content="Today was a one of those days you search hours for a solution, which finally results in a a quite dissapointing answer. However on the end of this &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://manuel.manuelles.nl/blog/2011/12/08/intro-start-blogging-like-a-hacker">
+  <link rel="canonical" href="http://manuel.manuelles.nl/blog/2012/03/15/encoding-with-brail-like-a-boss">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -79,7 +79,7 @@
   
   <header>
     
-      <h1 class="entry-title">Intro: Start blogging like a hacker(?)</h1>
+      <h1 class="entry-title">Encoding with Brail like a boss</h1>
     
     
       <p class="meta">
@@ -95,26 +95,35 @@
   
 
 
-<time datetime="2011-12-08T15:28:00+01:00" pubdate data-updated="true">Dec 8<span>th</span>, 2011</time>
+<time datetime="2012-03-15T21:29:00+01:00" pubdate data-updated="true">Mar 15<span>th</span>, 2012</time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p>I&#8217;ve just decided to switch from <a href="http://www.wordpress.com/" title="Wordpress">Wordpress</a> to <a href="http://octopress.org/" title="Octopress">Octopress</a> because I wanted something new and not something over-featured</p>
+<div class="entry-content"><p>Today was a one of those days you search hours for a solution, which finally results in a a quite dissapointing answer. However on the end of this journal you don&#8217;t care about that last part anymore.</p>
 
-<p>All the plugins and choice&#8217;s I had to made, and the maintenance of all these, just kept me from doing what I supposed to do with it, blogging.</p>
+<!-- more -->
 
-<p><span class='pullquote-right' data-pullquote='A blogging framework for hackers. '>
-So after some googling what a good alternative would be for Wordpress I found <em>Octopress</em> A blogging framework for hackers. Alright +1 for the title
-</span></p>
 
-<p>So basically Octopress generates (bakes) HTML content from the <a href="http://daringfireball.net/projects/markdown/" title="Markdown">Markdown</a> content you write. I like this simplicity and I love the syntax.</p>
+<h2>How it started</h2>
 
-<p><a href="http://octopress.org/" title="Octopress">Octopress</a> give&#8217;s you the functionality to host it on your own server, but also to host it on <a href="http://www.heroku.com/" title="Heroku">Heroku</a> or <a href="https://github.com/" title="Github">Github</a>. Beside the Git approach (push your source and deploy the generated code to the master branch) you can use RSync to sync files to your server. I use <a href="https://github.com" title="Github">Github</a> to store my source and generated html.</p>
+<p>Yesterday a customer reported that there were some weird questionmark signs when generating a PDF. Obviously this is probably caused by some html encoding or something. So me and my <a href="http://blog.dltr.nl">college</a> desided to fix this minor bug after we solved some major rocket science bug. We thought &#8220;let&#8217;s do something easy to cool down a bit&#8221;</p>
 
-<p>Enough talking about <a href="http://octopress.org/" title="Octopress">Octopress</a> for now. I&#8217;ll hope to post my next post soon.</p>
+<h2>Encoding</h2>
+
+<p> changed the meta Content-Type charset to utf-8, ISO-8859-1</p>
+
+<h2>When does it stop!</h2>
+
+<p>Ok so at some point all our options/ideas leaded to nothing!</p>
+
+<p>Ofcourse we read <a href="http://www.joelonsoftware.com/articles/Unicode.html">The Absolute Minimum Every Software Developer Absolutely, Positively Must Know About Unicode and Character Sets (No Excuses!)</a> by Joel Spolsky, but at the header &#8220;IT&#8217;S NOG THAT HARD&#8221; we did wonder why that article was that LONG!</p>
+
+<h2>The solution</h2>
+
+<p>The <a href="http://stw.castleproject.org/MonoRail.Brail.ashx#HTML_Encoding_15">solution</a> &#8230;. a <code>!</code> instead of a <code>$</code> would do the trick&#8230;.</p>
 </div>
 
 
@@ -137,12 +146,12 @@ So after some googling what a good alternative would be for Wordpress I found <e
   
 
 
-<time datetime="2011-12-08T15:28:00+01:00" pubdate data-updated="true">Dec 8<span>th</span>, 2011</time>
+<time datetime="2012-03-15T21:29:00+01:00" pubdate data-updated="true">Mar 15<span>th</span>, 2012</time>
       
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/general/'>General</a>
+    <a class='category' href='/blog/categories/-net/'>.net</a>, <a class='category' href='/blog/categories/brail/'>brail</a>, <a class='category' href='/blog/categories/code/'>code</a>, <a class='category' href='/blog/categories/encoding/'>encoding</a>
   
 </span>
 
@@ -151,7 +160,7 @@ So after some googling what a good alternative would be for Wordpress I found <e
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://manuel.manuelles.nl/blog/2011/12/08/intro-start-blogging-like-a-hacker/" data-via="" data-counturl="http://manuel.manuelles.nl/blog/2011/12/08/intro-start-blogging-like-a-hacker/" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://manuel.manuelles.nl/blog/2012/03/15/encoding-with-brail-like-a-boss/" data-via="" data-counturl="http://manuel.manuelles.nl/blog/2012/03/15/encoding-with-brail-like-a-boss/" >Tweet</a>
   
   
   
@@ -162,8 +171,10 @@ So after some googling what a good alternative would be for Wordpress I found <e
     
     <p class="meta">
       
+        <a class="basic-alignment left" href="/blog/2012/02/29/mollie-bank/" title="Previous Post: Mollie Bank">&laquo; Mollie Bank</a>
       
-        <a class="basic-alignment right" href="/blog/2011/12/22/shrinking-your-git-repository/" title="next Post: Shrinking your Git repository">Shrinking your Git repository &raquo;</a>
+      
+        <a class="basic-alignment right" href="/blog/2012/03/20/failed-to-build-gem-native-extension/" title="next Post: Failed to build gem native extension">Failed to build gem native extension &raquo;</a>
       
     </p>
   </footer>
@@ -266,8 +277,8 @@ So after some googling what a good alternative would be for Wordpress I found <e
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://manuel.manuelles.nl/blog/2011/12/08/intro-start-blogging-like-a-hacker/';
-        var disqus_url = 'http://manuel.manuelles.nl/blog/2011/12/08/intro-start-blogging-like-a-hacker/';
+        var disqus_identifier = 'http://manuel.manuelles.nl/blog/2012/03/15/encoding-with-brail-like-a-boss/';
+        var disqus_url = 'http://manuel.manuelles.nl/blog/2012/03/15/encoding-with-brail-like-a-boss/';
         var disqus_script = 'embed.js';
       
     (function () {

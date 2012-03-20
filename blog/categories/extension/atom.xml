@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: extension | Manuel van Rijn]]></title>
+  <link href="http://manuel.manuelles.nl/blog/categories/extension/atom.xml" rel="self"/>
+  <link href="http://manuel.manuelles.nl/"/>
+  <updated>2012-03-20T13:40:40+01:00</updated>
+  <id>http://manuel.manuelles.nl/</id>
+  <author>
+    <name><![CDATA[Manuel van Rijn]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Failed to build gem native extension]]></title>
+    <link href="http://manuel.manuelles.nl/blog/2012/03/20/failed-to-build-gem-native-extension/"/>
+    <updated>2012-03-20T13:14:00+01:00</updated>
+    <id>http://manuel.manuelles.nl/blog/2012/03/20/failed-to-build-gem-native-extension</id>
+    <content type="html"><![CDATA[<p><img class="left" src="/images/posts/failed-gem.jpg" width="140" height="140" title="Go fix!" >
+Today I had to reinstall my Linux installation because my harddisk died a quick dead. While configuring all the software I use to develop I got some weird error after I'd installed <a href="https://github.com/sstephenson/rbenv">rbenv</a> and tried to execute <code>bundle install</code> on one of our projects.<br /><br /></p>
+
+<!-- more -->
+
+
+<h2>The error</h2>
+
+<p>The following error was raised when I tried to install capybara-webkit</p>
+
+<p>```
+Installing capybara-webkit (0.10.1) with native extensions
+Gem::Installer::ExtensionBuildError: ERROR: Failed to build gem native extension.</p>
+
+<p>/home/manuel/.rbenv/versions/1.9.3-p125/bin/ruby extconf.rb
+sh: qmake: not found</p>
+
+<p>Gem files will remain installed in /home/manuel/.rbenv/versions/1.9.3-p125/lib/ruby/gems/1.9.1/gems/capybara-webkit-0.10.1 for inspection.
+Results logged to /home/manuel/.rbenv/versions/1.9.3-p125/lib/ruby/gems/1.9.1/gems/capybara-webkit-0.10.1/./gem_make.out
+An error occured while installing capybara-webkit (0.10.1), and Bundler cannot continue.
+Make sure that <code>gem install capybara-webkit -v '0.10.1'</code> succeeds before bundling.
+```</p>
+
+<h2>The solution</h2>
+
+<p>I first thought there were some problems with <code>make</code> or <code>cmake</code> because that's what the error says. <code>qmake: not found</code>, but that didn't seem to be te real problem.</p>
+
+<p>After some googlefoo I found out that I was missing the <code>libqtwebkit-dev</code> package. So the problem in this case was easily resolved by running:</p>
+
+<p><code>
+sudo apt-get install libqtwebkit-dev
+</code></p>
+]]></content>
+  </entry>
+  
+</feed>

@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Intro: Start blogging like a hacker(?) - Manuel van Rijn</title>
+  <title>Failed to build gem native extension - Manuel van Rijn</title>
   <meta name="author" content="Manuel van Rijn">
 
   
-  <meta name="description" content="I&#8217;ve just decided to switch from Wordpress to Octopress because I wanted something new and not something over-featured All the plugins and &hellip;">
+  <meta name="description" content="Today I had to reinstall my Linux installation because my harddisk died a quick dead. While configuring all the software I use to develop I got some &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://manuel.manuelles.nl/blog/2011/12/08/intro-start-blogging-like-a-hacker">
+  <link rel="canonical" href="http://manuel.manuelles.nl/blog/2012/03/20/failed-to-build-gem-native-extension">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -79,7 +79,7 @@
   
   <header>
     
-      <h1 class="entry-title">Intro: Start blogging like a hacker(?)</h1>
+      <h1 class="entry-title">Failed to build gem native extension</h1>
     
     
       <p class="meta">
@@ -95,26 +95,54 @@
   
 
 
-<time datetime="2011-12-08T15:28:00+01:00" pubdate data-updated="true">Dec 8<span>th</span>, 2011</time>
+<time datetime="2012-03-20T13:14:00+01:00" pubdate data-updated="true">Mar 20<span>th</span>, 2012</time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p>I&#8217;ve just decided to switch from <a href="http://www.wordpress.com/" title="Wordpress">Wordpress</a> to <a href="http://octopress.org/" title="Octopress">Octopress</a> because I wanted something new and not something over-featured</p>
+<div class="entry-content"><p><img class="left" src="/images/posts/failed-gem.jpg" width="140" height="140" title="Go fix!" >
+Today I had to reinstall my Linux installation because my harddisk died a quick dead. While configuring all the software I use to develop I got some weird error after I&#8217;d installed <a href="https://github.com/sstephenson/rbenv">rbenv</a> and tried to execute <code>bundle install</code> on one of our projects.<br /><br /></p>
 
-<p>All the plugins and choice&#8217;s I had to made, and the maintenance of all these, just kept me from doing what I supposed to do with it, blogging.</p>
+<!-- more -->
 
-<p><span class='pullquote-right' data-pullquote='A blogging framework for hackers. '>
-So after some googling what a good alternative would be for Wordpress I found <em>Octopress</em> A blogging framework for hackers. Alright +1 for the title
-</span></p>
 
-<p>So basically Octopress generates (bakes) HTML content from the <a href="http://daringfireball.net/projects/markdown/" title="Markdown">Markdown</a> content you write. I like this simplicity and I love the syntax.</p>
+<h2>The error</h2>
 
-<p><a href="http://octopress.org/" title="Octopress">Octopress</a> give&#8217;s you the functionality to host it on your own server, but also to host it on <a href="http://www.heroku.com/" title="Heroku">Heroku</a> or <a href="https://github.com/" title="Github">Github</a>. Beside the Git approach (push your source and deploy the generated code to the master branch) you can use RSync to sync files to your server. I use <a href="https://github.com" title="Github">Github</a> to store my source and generated html.</p>
+<p>The following error was raised when I tried to install capybara-webkit</p>
 
-<p>Enough talking about <a href="http://octopress.org/" title="Octopress">Octopress</a> for now. I&#8217;ll hope to post my next post soon.</p>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Installing capybara-webkit (0.10.1) with native extensions
+</span><span class='line'>Gem::Installer::ExtensionBuildError: ERROR: Failed to build gem native extension.
+</span><span class='line'>
+</span><span class='line'>/home/manuel/.rbenv/versions/1.9.3-p125/bin/ruby extconf.rb
+</span><span class='line'>sh: qmake: not found
+</span><span class='line'>
+</span><span class='line'>Gem files will remain installed in /home/manuel/.rbenv/versions/1.9.3-p125/lib/ruby/gems/1.9.1/gems/capybara-webkit-0.10.1 for inspection.
+</span><span class='line'>Results logged to /home/manuel/.rbenv/versions/1.9.3-p125/lib/ruby/gems/1.9.1/gems/capybara-webkit-0.10.1/./gem_make.out
+</span><span class='line'>An error occured while installing capybara-webkit (0.10.1), and Bundler cannot continue.
+</span><span class='line'>Make sure that `gem install capybara-webkit -v '0.10.1'` succeeds before bundling.</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>The solution</h2>
+
+<p>I first thought there were some problems with <code>make</code> or <code>cmake</code> because that&#8217;s what the error says. <code>qmake: not found</code>, but that didn&#8217;t seem to be te real problem.</p>
+
+<p>After some googlefoo I found out that I was missing the <code>libqtwebkit-dev</code> package. So the problem in this case was easily resolved by running:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>sudo apt-get install libqtwebkit-dev</span></code></pre></td></tr></table></div></figure>
+
 </div>
 
 
@@ -137,12 +165,12 @@ So after some googling what a good alternative would be for Wordpress I found <e
   
 
 
-<time datetime="2011-12-08T15:28:00+01:00" pubdate data-updated="true">Dec 8<span>th</span>, 2011</time>
+<time datetime="2012-03-20T13:14:00+01:00" pubdate data-updated="true">Mar 20<span>th</span>, 2012</time>
       
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/general/'>General</a>
+    <a class='category' href='/blog/categories/capybara-webkit/'>capybara-webkit</a>, <a class='category' href='/blog/categories/code/'>code</a>, <a class='category' href='/blog/categories/extension/'>extension</a>, <a class='category' href='/blog/categories/gem/'>gem</a>, <a class='category' href='/blog/categories/ruby/'>ruby</a>
   
 </span>
 
@@ -151,7 +179,7 @@ So after some googling what a good alternative would be for Wordpress I found <e
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://manuel.manuelles.nl/blog/2011/12/08/intro-start-blogging-like-a-hacker/" data-via="" data-counturl="http://manuel.manuelles.nl/blog/2011/12/08/intro-start-blogging-like-a-hacker/" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://manuel.manuelles.nl/blog/2012/03/20/failed-to-build-gem-native-extension/" data-via="" data-counturl="http://manuel.manuelles.nl/blog/2012/03/20/failed-to-build-gem-native-extension/" >Tweet</a>
   
   
   
@@ -162,8 +190,8 @@ So after some googling what a good alternative would be for Wordpress I found <e
     
     <p class="meta">
       
+        <a class="basic-alignment left" href="/blog/2012/03/15/encoding-with-brail-like-a-boss/" title="Previous Post: Encoding with Brail like a boss">&laquo; Encoding with Brail like a boss</a>
       
-        <a class="basic-alignment right" href="/blog/2011/12/22/shrinking-your-git-repository/" title="next Post: Shrinking your Git repository">Shrinking your Git repository &raquo;</a>
       
     </p>
   </footer>
@@ -266,8 +294,8 @@ So after some googling what a good alternative would be for Wordpress I found <e
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://manuel.manuelles.nl/blog/2011/12/08/intro-start-blogging-like-a-hacker/';
-        var disqus_url = 'http://manuel.manuelles.nl/blog/2011/12/08/intro-start-blogging-like-a-hacker/';
+        var disqus_identifier = 'http://manuel.manuelles.nl/blog/2012/03/20/failed-to-build-gem-native-extension/';
+        var disqus_url = 'http://manuel.manuelles.nl/blog/2012/03/20/failed-to-build-gem-native-extension/';
         var disqus_script = 'embed.js';
       
     (function () {

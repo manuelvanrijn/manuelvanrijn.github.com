@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: encoding | Manuel van Rijn]]></title>
+  <link href="http://manuel.manuelles.nl/blog/categories/encoding/atom.xml" rel="self"/>
+  <link href="http://manuel.manuelles.nl/"/>
+  <updated>2012-03-20T13:40:40+01:00</updated>
+  <id>http://manuel.manuelles.nl/</id>
+  <author>
+    <name><![CDATA[Manuel van Rijn]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Encoding with Brail like a boss]]></title>
+    <link href="http://manuel.manuelles.nl/blog/2012/03/15/encoding-with-brail-like-a-boss/"/>
+    <updated>2012-03-15T21:29:00+01:00</updated>
+    <id>http://manuel.manuelles.nl/blog/2012/03/15/encoding-with-brail-like-a-boss</id>
+    <content type="html"><![CDATA[<p>Today was a one of those days you search hours for a solution, which finally results in a a quite dissapointing answer. However on the end of this journal you don't care about that last part anymore.</p>
+
+<!-- more -->
+
+
+<h2>How it started</h2>
+
+<p>Yesterday a customer reported that there were some weird questionmark signs when generating a PDF. Obviously this is probably caused by some html encoding or something. So me and my <a href="http://blog.dltr.nl">college</a> desided to fix this minor bug after we solved some major rocket science bug. We thought "let's do something easy to cool down a bit"</p>
+
+<h2>Encoding</h2>
+
+<p> changed the meta Content-Type charset to utf-8, ISO-8859-1</p>
+
+<h2>When does it stop!</h2>
+
+<p>Ok so at some point all our options/ideas leaded to nothing!</p>
+
+<p>Ofcourse we read <a href="http://www.joelonsoftware.com/articles/Unicode.html">The Absolute Minimum Every Software Developer Absolutely, Positively Must Know About Unicode and Character Sets (No Excuses!)</a> by Joel Spolsky, but at the header "IT'S NOG THAT HARD" we did wonder why that article was that LONG!</p>
+
+<h2>The solution</h2>
+
+<p>The <a href="http://stw.castleproject.org/MonoRail.Brail.ashx#HTML_Encoding_15">solution</a> .... a <code>!</code> instead of a <code>$</code> would do the trick....</p>
+]]></content>
+  </entry>
+  
+</feed>
