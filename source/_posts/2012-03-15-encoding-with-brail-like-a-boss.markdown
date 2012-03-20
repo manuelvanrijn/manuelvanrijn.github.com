@@ -4,7 +4,7 @@ title: "Encoding with Brail like a boss"
 date: 2012-03-15 21:29
 comments: true
 categories: [brail, .net, encoding, code]
-published: true
+published: false
 ---
 
 Today was a one of those days you search hours for a solution, which finally results in a a quite dissapointing answer. However on the end of this journal you don't care about that last part anymore.
@@ -18,7 +18,7 @@ Yesterday a customer reported that there were some weird questionmark signs when
 ## Encoding
 
  changed the meta Content-Type charset to utf-8, ISO-8859-1
- 
+
 ## When does it stop!
 
 Ok so at some point all our options/ideas leaded to nothing!
