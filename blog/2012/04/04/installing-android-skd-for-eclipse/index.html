@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Category: git - Manuel van Rijn</title>
+  <title>Installing Android SKD for Eclipse - Manuel van Rijn</title>
   <meta name="author" content="Manuel van Rijn">
 
   
-  <meta name="description" content="Category: git">
+  <meta name="description" content="Today I was trying to install the Android SDK for Eclipse for a new project I&#8217;ll work on. After downloading the necessary packages I got some &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://manuel.manuelles.nlblog/categories/git">
+  <link rel="canonical" href="http://manuel.manuelles.nl/blog/2012/04/04/installing-android-skd-for-eclipse">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -75,36 +75,122 @@
   <div id="main">
     <div id="content">
       <div>
-<article role="article">
+<article class="hentry" role="article">
   
   <header>
-    <h1 class="entry-title">Category: git</h1>
+    
+      <h1 class="entry-title">Installing Android SKD for Eclipse</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-04-04T09:53:00+02:00" pubdate data-updated="true">Apr 4<span>th</span>, 2012</time>
+        
+      </p>
     
   </header>
-  
-  <div id="blog-archives" class="category">
+
+
+<div class="entry-content"><p><img class="right" src="/images/posts/android.jpg" width="140" height="140" title="Android!" > Today I was trying to install the Android SDK for Eclipse for a new project I&#8217;ll work on. After downloading the necessary packages I got some strange error I couldn&#8217;t resolve quickly, so I like to share the solution with you guys.</p>
+
+<p>The error Eclipse returned was</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Cannot complete the install because one or more required items could not be found.
+</span><span class='line'>Software being installed: Android Development Tools **** (com.android.ide.eclipse.adt.feature.group ****)
+</span><span class='line'>Missing requirement: Android Development Tools **** (com.android.ide.eclipse.adt.feature.group ****)
+</span><span class='line'>requires 'org.eclipse.wst.sse.core 0.0.0' but it could not be found</span></code></pre></td></tr></table></div></figure>
 
 
 
-  
-  <h2>2011</h2>
 
-<article>
-  
-<h1><a href="/blog/2011/12/22/shrinking-your-git-repository/">Shrinking your Git repository</a></h1>
-<time datetime="2011-12-22T15:01:00+01:00" pubdate><span class='month'>Dec</span> <span class='day'>22</span> <span class='year'>2011</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/code/'>code</a>, <a class='category' href='/blog/categories/git/'>git</a></span>
-</footer>
+<!-- more -->
 
 
-</article>
+<h2>What I did to produce the error</h2>
 
+<p>I installed Eclipse and the Android SDK tested the Android SDK by creating an AVD.</p>
+
+<p>After running Eclipse I tried to add the <code>https://dl-ssl.google.com/android/eclipse/</code> url to my Available Software Sites to install the Eclipse package. After selecting all the Developer Tools in the filtered list for this Software Site and hitting Next I received the error as I added above</p>
+
+<h2>The solution</h2>
+
+<p>After some googling I found a tip that I needed to add another Software Site to Eclipse.</p>
+
+<p>After adding <code>http://download.eclipse.org/releases/indigo</code> and retrying to install the Android Developer Tools all went well.</p>
 </div>
 
+
+  <footer>
+    <p class="meta">
+      
   
+
+<span class="byline author vcard">Posted by <span class="fn">Manuel van Rijn</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-04-04T09:53:00+02:00" pubdate data-updated="true">Apr 4<span>th</span>, 2012</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/android/'>android</a>, <a class='category' href='/blog/categories/code/'>code</a>, <a class='category' href='/blog/categories/eclipse/'>eclipse</a>, <a class='category' href='/blog/categories/java/'>java</a>, <a class='category' href='/blog/categories/linux/'>linux</a>, <a class='category' href='/blog/categories/mobile/'>mobile</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://manuel.manuelles.nl/blog/2012/04/04/installing-android-skd-for-eclipse/" data-via="" data-counturl="http://manuel.manuelles.nl/blog/2012/04/04/installing-android-skd-for-eclipse/" >Tweet</a>
+  
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2012/03/20/failed-to-build-gem-native-extension/" title="Previous Post: Failed to build gem native extension">&laquo; Failed to build gem native extension</a>
+      
+      
+    </p>
+  </footer>
 </article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
 
 </div>
 
@@ -196,7 +282,10 @@
       var disqus_shortname = 'manuelvanrijn';
       
         
-        var disqus_script = 'count.js';
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://manuel.manuelles.nl/blog/2012/04/04/installing-android-skd-for-eclipse/';
+        var disqus_url = 'http://manuel.manuelles.nl/blog/2012/04/04/installing-android-skd-for-eclipse/';
+        var disqus_script = 'embed.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: code | Manuel van Rijn]]></title>
   <link href="http://manuel.manuelles.nl/blog/categories/code/atom.xml" rel="self"/>
   <link href="http://manuel.manuelles.nl/"/>
-  <updated>2012-03-20T13:45:28+01:00</updated>
+  <updated>2012-04-10T16:56:42+02:00</updated>
   <id>http://manuel.manuelles.nl/</id>
   <author>
     <name><![CDATA[Manuel van Rijn]]></name>
@@ -12,6 +12,39 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Installing Android SKD for Eclipse]]></title>
+    <link href="http://manuel.manuelles.nl/blog/2012/04/04/installing-android-skd-for-eclipse/"/>
+    <updated>2012-04-04T09:53:00+02:00</updated>
+    <id>http://manuel.manuelles.nl/blog/2012/04/04/installing-android-skd-for-eclipse</id>
+    <content type="html"><![CDATA[<p><img class="right" src="/images/posts/android.jpg" width="140" height="140" title="Android!" > Today I was trying to install the Android SDK for Eclipse for a new project I'll work on. After downloading the necessary packages I got some strange error I couldn't resolve quickly, so I like to share the solution with you guys.</p>
+
+<p>The error Eclipse returned was</p>
+
+<p><code>
+Cannot complete the install because one or more required items could not be found.
+Software being installed: Android Development Tools **** (com.android.ide.eclipse.adt.feature.group ****)
+Missing requirement: Android Development Tools **** (com.android.ide.eclipse.adt.feature.group ****)
+requires 'org.eclipse.wst.sse.core 0.0.0' but it could not be found
+</code></p>
+
+<!-- more -->
+
+
+<h2>What I did to produce the error</h2>
+
+<p>I installed Eclipse and the Android SDK tested the Android SDK by creating an AVD.</p>
+
+<p>After running Eclipse I tried to add the <code>https://dl-ssl.google.com/android/eclipse/</code> url to my Available Software Sites to install the Eclipse package. After selecting all the Developer Tools in the filtered list for this Software Site and hitting Next I received the error as I added above</p>
+
+<h2>The solution</h2>
+
+<p>After some googling I found a tip that I needed to add another Software Site to Eclipse.</p>
+
+<p>After adding <code>http://download.eclipse.org/releases/indigo</code> and retrying to install the Android Developer Tools all went well.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Failed to build gem native extension]]></title>
@@ -461,100 +494,6 @@ sqlite&gt; .read dump.sql
 <h2>Result</h2>
 
 <p>And that's it! You now have a stuffed <code>development.sqlite3</code> database with all the production data out of the PostgreSQL database.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Disable Rails callback]]></title>
-    <link href="http://manuel.manuelles.nl/blog/2012/01/12/disable-rails-before-slash-after-callback/"/>
-    <updated>2012-01-12T21:30:00+01:00</updated>
-    <id>http://manuel.manuelles.nl/blog/2012/01/12/disable-rails-before-slash-after-callback</id>
-    <content type="html"><![CDATA[<p><img class="left" src="/images/posts/skip-step.png" width="240" height="240" title="Skip Step" ></p>
-
-<p>Today I've had some difficulties with a Rails migration, that took ages to complete. After some debugging I figured out that the issues was because of the <code>before_save</code> and <code>after_save</code> callbacks.</p>
-
-<p>Of course we could remove the before and after save callbacks to speed up the process, but I don't like the idea of releasing a model that misses these behavior. I mean they're not there for no reason right?</p>
-
-<!-- more -->
-
-
-<p>After some googling I found a quick and easy way to disable the callbacks without modifying the model. Here's an simple example of a model class and a migration the disable the callbacks only within the migration.</p>
-
-<h2>Code solution</h2>
-
-<p>``` ruby app/models/some_model.rb
-class SomeModel &lt; ActiveRecord::Base
-  before_save :before_action
-  after_save :after_action</p>
-
-<p>  private</p>
-
-<pre><code>def before_action
-  # heavy calculation/queries
-  puts "you shouldn't see this"
-end
-
-def after_action
-  # another heavy calculation/queries
-  puts "you shouldn't see this"
-end
-</code></pre>
-
-<p>end
-```</p>
-
-<p>``` ruby db/migrations/20120112092136_update_some_model.rb
-class UpdateSomeModel &lt; ActiveRecord::Migration
-  def up</p>
-
-<pre><code># disable the before_save
-SomeModel.skip_callback(:save, :before, :before_action)
-# disable the after_save
-SomeModel.skip_callback(:save, :after, :after_action)
-
-SomeModel.all.each do | obj |
-  # .. modify obj ...
-
-  obj.save
-  # you shouldn't see the puts defined in the SomeModel before and after actions
-end
-</code></pre>
-
-<p>  end</p>
-
-<p>  def down
-  end
-end
-```</p>
-
-<h2>Supported callbacks</h2>
-
-<p>In the above example I show only two rails callbacks. Here's a list of the supported callbacks you also can disable with it.</p>
-
-<ul>
-<li><code>:after_initialize</code></li>
-<li><code>:after_find</code></li>
-<li><code>:after_touch</code></li>
-<li><code>:before_validation</code></li>
-<li><code>:after_validation</code></li>
-<li><code>:before_save</code></li>
-<li><code>:around_save</code></li>
-<li><code>:after_save</code></li>
-<li><code>:before_create</code></li>
-<li><code>:around_create</code></li>
-<li><code>:after_create</code></li>
-<li><code>:before_update</code></li>
-<li><code>:around_update</code></li>
-<li><code>:after_update</code></li>
-<li><code>:before_destroy</code></li>
-<li><code>:around_destroy</code></li>
-<li><code>:after_destroy</code></li>
-<li><code>:after_commit</code></li>
-<li><code>:after_rollback</code></li>
-</ul>
-
-
-<p>Hope these could help you out some day =)</p>
 ]]></content>
   </entry>
   
