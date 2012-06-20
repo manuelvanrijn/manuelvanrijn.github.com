@@ -2,46 +2,50 @@
 <urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
     <url>
         <loc>http://manuel.manuelles.nl/blog/2011/12/08/intro-start-blogging-like-a-hacker/</loc>
-        <lastmod>2012-03-20T09:55:40+01:00</lastmod>
+        <lastmod>2012-06-20T10:33:49+02:00</lastmod>
     </url>
     <url>
         <loc>http://manuel.manuelles.nl/blog/2011/12/22/shrinking-your-git-repository/</loc>
-        <lastmod>2012-03-20T09:55:40+01:00</lastmod>
+        <lastmod>2012-06-20T10:33:49+02:00</lastmod>
     </url>
     <url>
         <loc>
             http://manuel.manuelles.nl/blog/2012/01/12/disable-rails-before-slash-after-callback/
         </loc>
-        <lastmod>2012-03-20T09:55:40+01:00</lastmod>
+        <lastmod>2012-06-20T10:33:49+02:00</lastmod>
     </url>
     <url>
         <loc>http://manuel.manuelles.nl/blog/2012/01/18/convert-postgresql-to-sqlite/</loc>
-        <lastmod>2012-03-20T09:55:40+01:00</lastmod>
+        <lastmod>2012-06-20T10:33:49+02:00</lastmod>
     </url>
     <url>
         <loc>http://manuel.manuelles.nl/blog/2012/01/19/rake-pull-me-that-db/</loc>
-        <lastmod>2012-03-20T09:55:40+01:00</lastmod>
+        <lastmod>2012-06-20T10:33:49+02:00</lastmod>
     </url>
     <url>
         <loc>http://manuel.manuelles.nl/blog/2012/02/29/mollie-bank/</loc>
-        <lastmod>2012-03-20T09:55:40+01:00</lastmod>
+        <lastmod>2012-06-20T10:33:49+02:00</lastmod>
     </url>
     <url>
         <loc>
             http://manuel.manuelles.nl/blog/2012/03/20/failed-to-build-gem-native-extension/
         </loc>
-        <lastmod>2012-03-20T13:44:55+01:00</lastmod>
+        <lastmod>2012-06-20T10:33:49+02:00</lastmod>
     </url>
     <url>
         <loc>http://manuel.manuelles.nl/blog/2012/04/04/installing-android-skd-for-eclipse/</loc>
-        <lastmod>2012-04-10T16:55:26+02:00</lastmod>
+        <lastmod>2012-06-20T10:33:49+02:00</lastmod>
     </url>
     <url>
-        <loc>http://manuel.manuelles.nl/</loc>
-        <lastmod>2012-04-10T16:55:26+02:00</lastmod>
+        <loc>http://manuel.manuelles.nl/blog/2012/06/20/taking-memsql-for-a-spin/</loc>
+        <lastmod>2012-06-20T11:48:54+02:00</lastmod>
     </url>
     <url>
         <loc>http://manuel.manuelles.nl/blog/archives/</loc>
-        <lastmod>2012-04-10T16:55:26+02:00</lastmod>
+        <lastmod>2012-06-20T11:48:54+02:00</lastmod>
+    </url>
+    <url>
+        <loc>http://manuel.manuelles.nl/</loc>
+        <lastmod>2012-06-20T11:48:54+02:00</lastmod>
     </url>
 </urlset>
