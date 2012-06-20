@@ -92,11 +92,11 @@ On the MemSQL server I got the following output:
 ... etc ...
 ```
 
-As you can see, generating the compiled version for every query toke about 7 seconds.
+As you can see, generating the compiled version for every query took about 7 seconds.
 
 ## Performance MemSQL
 
-So bellow again the same table with results. The first line is the time with generating all the compiled queries:
+So below again the same table with results. The first line is the time with generating all the compiled queries:
 
 ```
 run       user     system      total        real
@@ -106,7 +106,7 @@ run       user     system      total        real
 ```
 
 {% pullquote %}
-The performance boost is quite huge! The average result is {" 6.635ms for 6850 queries "} if we skipping the first result. This means it's like 7.677ms faster!
+The performance boost is quite huge! The average result is {" 6.635ms for 6850 queries "} if we are skipping the first result. This means it's like 7.677ms faster!
 {% endpullquote %}
 
 ### Cold boot of MemSQL
@@ -123,7 +123,7 @@ run       user     system      total        real
 ```
 
 {% pullquote %}
-The first time it toke just a bit longer, but with an average of {" 7.044ms for 6850 queries "} this is still faster than running it on PostgreSQL!
+The first time it took just a bit longer, but with an average of {" 7.044ms for 6850 queries "} this is still faster than running it on PostgreSQL!
 {% endpullquote %}
 
 ## Pros and Cons
