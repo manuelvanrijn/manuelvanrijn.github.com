@@ -4,7 +4,7 @@
   <title><![CDATA[Category: rails | Manuel van Rijn]]></title>
   <link href="http://manuel.manuelles.nl/blog/categories/rails/atom.xml" rel="self"/>
   <link href="http://manuel.manuelles.nl/"/>
-  <updated>2012-06-20T11:50:54+02:00</updated>
+  <updated>2012-06-20T12:10:50+02:00</updated>
   <id>http://manuel.manuelles.nl/</id>
   <author>
     <name><![CDATA[Manuel van Rijn]]></name>
@@ -108,11 +108,11 @@ So after resolving all these issues I was able to run the benchmark, but the fir
 <p>... etc ...
 ```</p>
 
-<p>As you can see, generating the compiled version for every query toke about 7 seconds.</p>
+<p>As you can see, generating the compiled version for every query took about 7 seconds.</p>
 
 <h2>Performance MemSQL</h2>
 
-<p>So bellow again the same table with results. The first line is the time with generating all the compiled queries:</p>
+<p>So below again the same table with results. The first line is the time with generating all the compiled queries:</p>
 
 <p>```
 run       user     system      total        real</p>
@@ -126,7 +126,7 @@ run       user     system      total        real</p>
 <p>```</p>
 
 <p><span class='pullquote-right' data-pullquote='6.635ms for 6850 queries'>
-The performance boost is quite huge! The average result is 6.635ms for 6850 queries if we skipping the first result. This means it's like 7.677ms faster!
+The performance boost is quite huge! The average result is 6.635ms for 6850 queries if we are skipping the first result. This means it's like 7.677ms faster!
 </span></p>
 
 <h3>Cold boot of MemSQL</h3>
@@ -147,7 +147,7 @@ run       user     system      total        real</p>
 <p>```</p>
 
 <p><span class='pullquote-right' data-pullquote='7.044ms for 6850 queries'>
-The first time it toke just a bit longer, but with an average of 7.044ms for 6850 queries this is still faster than running it on PostgreSQL!
+The first time it took just a bit longer, but with an average of 7.044ms for 6850 queries this is still faster than running it on PostgreSQL!
 </span></p>
 
 <h2>Pros and Cons</h2>
