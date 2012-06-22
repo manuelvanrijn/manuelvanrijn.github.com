@@ -4,7 +4,7 @@
   <title><![CDATA[Manuel van Rijn]]></title>
   <link href="http://manuel.manuelles.nl/atom.xml" rel="self"/>
   <link href="http://manuel.manuelles.nl/"/>
-  <updated>2012-06-20T12:10:50+02:00</updated>
+  <updated>2012-06-22T16:51:36+02:00</updated>
   <id>http://manuel.manuelles.nl/</id>
   <author>
     <name><![CDATA[Manuel van Rijn]]></name>
@@ -12,6 +12,118 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Integrate Travis CI into Grunt]]></title>
+    <link href="http://manuel.manuelles.nl/blog/2012/06/22/integrate-travis-ci-into-grunt/"/>
+    <updated>2012-06-22T15:04:00+02:00</updated>
+    <id>http://manuel.manuelles.nl/blog/2012/06/22/integrate-travis-ci-into-grunt</id>
+    <content type="html"><![CDATA[<p><a href="http://manuel.manuelles.nl/blog/2012/06/22/integrate-travis-ci-into-grunt/"><img class="right" src="http://manuel.manuelles.nl/images/posts/travis-grunt.jpg" width="200" height="200" title="Code Fail" ></a> Today I&#8217;ve done some research how to get my latest jQuery plugin (<a href="http://manuel.manuelles.nl/jquery-numeric_input/">jquery-numeric_input</a>) to be tested automatically with the help of <a href="http://travis-ci.org/">Travis CI</a>. Travis CI is a hosted continuous integration service for open source projects.</p>
+
+<p>Because I&#8217;ve just finished the latest functionality of the plugin I wanted to add the project to Travis CI, just like I do with all my other projects (the ones with unit tests).</p>
+
+<!-- more -->
+
+
+<h2>Grunt</h2>
+
+<p>For the development of the plugin I used <a href="http://gruntjs.com/">Grunt</a> which is a task-based command line build tool for JavaScript projects. Starting a new project is as easy as running <code>grunt init:jquery</code> and you have a entire generated jQuery plugin project.</p>
+
+<p>By default this command configures a jQuery plugin, QUnit test suite, sample plugin, sample tests and some grunt tasks you can use. Running the <code>grunt</code> command in your project folder will execute the following tasks:</p>
+
+<ol>
+<li>lint - Analysis your code with <a href="https://github.com/douglascrockford/JSLint/">JSLint</a></li>
+<li>qunit - Runs your QUnit tests using <a href="http://phantomjs.org/">PhantomJS</a> (so it supports the exit code for success or failure)</li>
+<li>concat - Concatenate your project files</li>
+<li>min - Minify your project files using <a href="https://github.com/mishoo/UglifyJS/">UglifyJS</a></li>
+</ol>
+
+
+<p>Really easy to get started coding instead of setting up your environment :)</p>
+
+<h2>Integration with Travis CI</h2>
+
+<p>Ok so at this point I want to add my project to Travis CI so that it tests my suite when pushing new branches/commits to Github. To do this we have to make a few changes.</p>
+
+<h3>TL;DR</h3>
+
+<p>Here&#8217;s the <a href="https://github.com/manuelvanrijn/jquery-numeric_input/commit/fd770092e569fbc407777de3f099d6d4d5d30bdf">travis ci integration commit</a> for my plugin.</p>
+
+<h3>Registering the travis task</h3>
+
+<p>I&#8217;d like to keep the Grunt tasks organized so I register a new task called <code>travis</code> below the <code>default</code> task.</p>
+
+<figure class='code'><figcaption><span>grunt.js</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="c1">// Default task.</span>
+</span><span class='line'><span class="nx">grunt</span><span class="p">.</span><span class="nx">registerTask</span><span class="p">(</span><span class="s1">&#39;default&#39;</span><span class="p">,</span> <span class="s1">&#39;lint qunit concat min&#39;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// Travis CI task.</span>
+</span><span class='line'><span class="nx">grunt</span><span class="p">.</span><span class="nx">registerTask</span><span class="p">(</span><span class="s1">&#39;travis&#39;</span><span class="p">,</span> <span class="s1">&#39;lint qunit&#39;</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>As you can see I only added <code>lint</code> and <code>qunit</code> because we don&#8217;t have to concatenate or minify a new build of our plugin. At this point you are able to run <code>grunt travis</code> from the command line.</p>
+
+<h3>Adding the dependency</h3>
+
+<p>Now we have to add Grunt as a dependency to our <code>package.json</code> file so that npm running on Travis CI knows it has to install Grunt. Mine dependencies block looks like this:</p>
+
+<figure class='code'><figcaption><span>package.json</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='json'><span class='line'><span class="s2">&quot;dependencies&quot;</span><span class="err">:</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nt">&quot;grunt&quot;</span><span class="p">:</span> <span class="s2">&quot;~0.3.9&quot;</span><span class="p">,</span>
+</span><span class='line'>  <span class="nt">&quot;jquery&quot;</span><span class="p">:</span> <span class="s2">&quot;~1.5&quot;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Adding the npm task</h3>
+
+<p>Travis CI runs <code>npm test</code> after it fetched your project and installed the dependencies, so we need to add this task to the <code>package.json</code> file.</p>
+
+<figure class='code'><figcaption><span>package.json</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='json'><span class='line'><span class="s2">&quot;scripts&quot;</span><span class="err">:</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nt">&quot;test&quot;</span><span class="p">:</span> <span class="s2">&quot;grunt travis --verbose&quot;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>I&#8217;ve added the <code>--verbose</code> option, so we&#8217;ll see more output of what is going on.</p>
+
+<h3>Adding the .travis.yml</h3>
+
+<p>Every Travis CI project needs to have a <code>.travis.yml</code> file in the root of the project folder, so it know what platform and version it should use to build/test your project. Here&#8217;s the one I used:</p>
+
+<figure class='code'><figcaption><span>.travis.yaml</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='yaml'><span class='line'><span class="l-Scalar-Plain">language</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">node_js</span>
+</span><span class='line'><span class="l-Scalar-Plain">node_js</span><span class="p-Indicator">:</span>
+</span><span class='line'>  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">0.6</span>
+</span><span class='line'><span class="l-Scalar-Plain">before_script</span><span class="p-Indicator">:</span>
+</span><span class='line'>  <span class="p-Indicator">-</span> <span class="s">&quot;export</span><span class="nv"> </span><span class="s">DISPLAY=:99.0&quot;</span>
+</span><span class='line'>  <span class="p-Indicator">-</span> <span class="s">&quot;sh</span><span class="nv"> </span><span class="s">-e</span><span class="nv"> </span><span class="s">/etc/init.d/xvfb</span><span class="nv"> </span><span class="s">start&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The commands within <code>before_script</code> takes care of running the PhantomJS on the headless server on Travis CI.</p>
+
+<h2>Ready to go!</h2>
+
+<p>Alright after these changes your project is ready to be continuously builded with Travis CI. But don&#8217;t forget to setup the Service Hook on Github!</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Taking MemSQL for a spin]]></title>

@@ -9,7 +9,7 @@
   <meta name="author" content="Manuel van Rijn">
 
   
-  <meta name="description" content="Today I&#8217;ve had some difficulties with a Rails migration, that took ages to complete. After some debugging I figured out that the issues was &hellip;">
+  <meta name="description" content="Today I&#8217;d like to share the steps I take when I need to convert a PostgreSQL database into a SQLite database. Commonly I have to do this when &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -76,6 +76,51 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/01/18/convert-postgresql-to-sqlite/">Convert PostgreSQL to SQLite</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-01-18T00:30:00+01:00" pubdate data-updated="true">Jan 18<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><img class="right" src="/images/posts/postgres-to-sqlite.png" width="220" height="220" title="Postgres to SQLite" ></p>
+
+<p>Today I&#8217;d like to share the steps I take when I need to convert a <a href="http://www.postgresql.org/" title="PostgreSQL">PostgreSQL</a> database into a <a href="http://www.sqlite.org/" title="SQLite">SQLite</a> database.</p>
+
+<p>Commonly I have to do this when a <a href="http://rubyonrails.org/" title="Ruby on Rails">Ruby on Rails</a> application is in production and I have to check some issues with the production data. In the production environment we usually use a PostgreSQL database and for developing I use a SQLite database, so we need some conversion.</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2012/01/18/convert-postgresql-to-sqlite/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -171,55 +216,9 @@
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2011/12/08/intro-start-blogging-like-a-hacker/">Intro: Start blogging like a hacker(?)</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2011-12-08T15:28:00+01:00" pubdate data-updated="true">Dec 8<span>th</span>, 2011</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>I&#8217;ve just decided to switch from <a href="http://www.wordpress.com/" title="Wordpress">Wordpress</a> to <a href="http://octopress.org/" title="Octopress">Octopress</a> because I wanted something new and not something over-featured</p>
-
-<p>All the plugins and choice&#8217;s I had to made, and the maintenance of all these, just kept me from doing what I supposed to do with it, blogging.</p>
-
-<p><span class='pullquote-right' data-pullquote='A blogging framework for hackers.'>
-So after some googling what a good alternative would be for Wordpress I found <em>Octopress</em> A blogging framework for hackers. Alright +1 for the title
-</span></p>
-
-<p>So basically Octopress generates (bakes) HTML content from the <a href="http://daringfireball.net/projects/markdown/" title="Markdown">Markdown</a> content you write. I like this simplicity and I love the syntax.</p>
-
-<p><a href="http://octopress.org/" title="Octopress">Octopress</a> give&#8217;s you the functionality to host it on your own server, but also to host it on <a href="http://www.heroku.com/" title="Heroku">Heroku</a> or <a href="https://github.com/" title="Github">Github</a>. Beside the Git approach (push your source and deploy the generated code to the master branch) you can use RSync to sync files to your server. I use <a href="https://github.com" title="Github">Github</a> to store my source and generated html.</p>
-
-<p>Enough talking about <a href="http://octopress.org/" title="Octopress">Octopress</a> for now. I&#8217;ll hope to post my next post soon.</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
+    
+      <a class="prev" href="/blog/page/4/">&larr; Older</a>
     
     <a href="/blog/archives">Blog Archives</a>
     
@@ -248,6 +247,10 @@ So after some googling what a good alternative would be for Wordpress I found <e
 <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/06/22/integrate-travis-ci-into-grunt/">Integrate Travis CI into Grunt</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2012/06/20/taking-memsql-for-a-spin/">Taking MemSQL for a spin</a>
