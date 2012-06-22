@@ -17,7 +17,7 @@ Because I've just finished the latest functionality of the plugin I wanted to ad
 
 For the development of the plugin I used [Grunt](http://gruntjs.com/) which is a task-based command line build tool for JavaScript projects. Starting a new project is as easy as running `grunt init:jquery` and you have a entire generated jQuery plugin project.
 
-By default this command configures a jQuery plugin, QUnit test suite, sample plugin, sample tests and some grunt commands you can use. Running the `grunt` command in your project folder will execute the following tasks:
+By default this command configures a jQuery plugin, QUnit test suite, sample plugin, sample tests and some grunt tasks you can use. Running the `grunt` command in your project folder will execute the default task meaning:
 
 1. lint - Analysis your code with [JSLint](https://github.com/douglascrockford/JSLint/)
 2. qunit - Runs your QUnit tests using [PhantomJS](http://phantomjs.org/) (so it supports the exit code for success or failure)
@@ -32,7 +32,7 @@ Ok so at this point I want to add my project to Travis CI so that it tests my su
 
 ### TL;DR
 
-Here's the [travis ci integration commit](https://github.com/manuelvanrijn/jquery-numeric_input/commit/fd770092e569fbc407777de3f099d6d4d5d30bdf) for my plugin.
+Here's the [travis ci integration commit](https://github.com/manuelvanrijn/jquery-numeric_input/commit/fd770092e569fbc407777de3f099d6d4d5d30bdf) from my plugin with all the steps described below.
 
 ### Registering the travis task
 
