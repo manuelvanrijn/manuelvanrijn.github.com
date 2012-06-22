@@ -4,7 +4,7 @@
   <title><![CDATA[Category: jquery | Manuel van Rijn]]></title>
   <link href="http://manuel.manuelles.nl/blog/categories/jquery/atom.xml" rel="self"/>
   <link href="http://manuel.manuelles.nl/"/>
-  <updated>2012-06-22T16:51:36+02:00</updated>
+  <updated>2012-06-22T16:55:40+02:00</updated>
   <id>http://manuel.manuelles.nl/</id>
   <author>
     <name><![CDATA[Manuel van Rijn]]></name>
@@ -29,7 +29,7 @@
 
 <p>For the development of the plugin I used <a href="http://gruntjs.com/">Grunt</a> which is a task-based command line build tool for JavaScript projects. Starting a new project is as easy as running <code>grunt init:jquery</code> and you have a entire generated jQuery plugin project.</p>
 
-<p>By default this command configures a jQuery plugin, QUnit test suite, sample plugin, sample tests and some grunt tasks you can use. Running the <code>grunt</code> command in your project folder will execute the following tasks:</p>
+<p>By default this command configures a jQuery plugin, QUnit test suite, sample plugin, sample tests and some grunt tasks you can use. Running the <code>grunt</code> command in your project folder will execute the default task meaning:</p>
 
 <ol>
 <li>lint - Analysis your code with <a href="https://github.com/douglascrockford/JSLint/">JSLint</a></li>
@@ -47,7 +47,7 @@
 
 <h3>TL;DR</h3>
 
-<p>Here's the <a href="https://github.com/manuelvanrijn/jquery-numeric_input/commit/fd770092e569fbc407777de3f099d6d4d5d30bdf">travis ci integration commit</a> for my plugin.</p>
+<p>Here's the <a href="https://github.com/manuelvanrijn/jquery-numeric_input/commit/fd770092e569fbc407777de3f099d6d4d5d30bdf">travis ci integration commit</a> from my plugin with all the steps described below.</p>
 
 <h3>Registering the travis task</h3>
 
