@@ -6,16 +6,10 @@ aside.sidebar {
     @extend .basic-alignment;
     @include shadow-box($border: #fff .3em solid);
   }
-  img.icon {
-    border: 0;
-    border-radius: 0;
-    -moz-border-radius: 0;
-    -webkit-border-radius: 0;
-    -khtml-border-radius: 0;
-
-    box-shadow: none;
-    -webkit-box-shadow: none;
+  a.zocial, a.zocial:hover {
+    color: #fff;
+  }
+  a.github, a.github:hover {
+    color: #000;
   }
 }
-
-a img:hover { cursor: pointer; }
