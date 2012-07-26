@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: heroku | Manuel van Rijn]]></title>
+  <link href="http://manuel.manuelles.nl/blog/categories/heroku/atom.xml" rel="self"/>
+  <link href="http://manuel.manuelles.nl/"/>
+  <updated>2012-07-26T17:14:25+02:00</updated>
+  <id>http://manuel.manuelles.nl/</id>
+  <author>
+    <name><![CDATA[Manuel van Rijn]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[SELECT total_rows FROM database]]></title>
+    <link href="http://manuel.manuelles.nl/blog/2012/07/26/select-total-rows-from-database/"/>
+    <updated>2012-07-26T14:34:00+02:00</updated>
+    <id>http://manuel.manuelles.nl/blog/2012/07/26/select-total-rows-from-database</id>
+    <content type="html"><![CDATA[<p><a href="/blog/2012/07/26/select-total-rows-from-database/"><img class="left" src="/images/posts/heroku-postgres.png" width="200" height="200" title="Heroku Postgres" ></a> On the first of August this year, <a href="http://www.heroku.com">Heroku</a> will add 2 new plans to their database add-on known as <strong>Dev</strong> and <strong>Basic</strong>. Both plans have a row limit restriction and that made me thinking how I could fetch that number with one simple query.</p>
+
+<!-- more -->
+
+
+
+
+<div class="clearfix"></div>
+
+
+<h2>TL;DR</h2>
+
+<p>Of course you already know the stuff described below so go to <a href="#final-query">the final query</a>.</p>
+
+<h2>Getting the list with tables</h2>
+
+<p>For retrieving almost any information about your database you can query the <code>pg_class</code> see <a href="http://www.postgresql.org/docs/9.1/static/catalog-pg-class.html">Postgres documentation</a>.</p>
+
+<ul>
+<li>The <code>relkind</code> is set to <code>r</code> to query only ordinary table information.</li>
+<li>We are joining the <code>pg_namespace</code> table to filter out the <code>pg_catalog</code> and <code>information_schema</code> tables</li>
+</ul>
+
+
+<p>As result we'll have on column called <code>tableName</code> with all tables from the database</p>
+
+<p><code>sql
+SELECT
+  pgClass.relname AS tableName
+FROM
+  pg_class pgClass
+LEFT JOIN
+  pg_namespace pgNamespace ON (pgNamespace.oid = pgClass.relnamespace)
+WHERE
+  pgNamespace.nspname NOT IN ('pg_catalog', 'information_schema') AND
+  pgClass.relkind='r'
+</code></p>
+
+<h3>Adding the row count</h3>
+
+<p>Adding the total number of rows was quite simple after reading the <a href="http://www.postgresql.org/docs/9.1/static/catalog-pg-class.html">Postgres documentation</a>. It seems that the <code>pg_class</code> contains a column called <code>reltuples</code> that holds the number of rows in the table.</p>
+
+<p>So adding this column to the select seems to do the trick:</p>
+
+<p><code>sql
+SELECT
+  pgClass.relname   AS tableName,
+  pgClass.reltuples AS rowCount
+FROM
+  pg_class pgClass
+LEFT JOIN
+  pg_namespace pgNamespace ON (pgNamespace.oid = pgClass.relnamespace)
+WHERE
+  pgNamespace.nspname NOT IN ('pg_catalog', 'information_schema') AND
+  pgClass.relkind='r'
+</code></p>
+
+<p><a id="final-query"></a></p>
+
+<h2>Selecting the total count</h2>
+
+<p>With this query it was easy to transform it into a SUM for all rowCount's we retrieve. Here's the final query to retrieve the total number of rows from all tables of a Postgres database</p>
+
+<p><code>sql
+SELECT
+  SUM(pgClass.reltuples) AS totalRowCount
+FROM
+  pg_class pgClass
+LEFT JOIN
+  pg_namespace pgNamespace ON (pgNamespace.oid = pgClass.relnamespace)
+WHERE
+  pgNamespace.nspname NOT IN ('pg_catalog', 'information_schema') AND
+  pgClass.relkind='r'
+</code></p>
+]]></content>
+  </entry>
+  
+</feed>

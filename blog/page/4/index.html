@@ -9,7 +9,7 @@
   <meta name="author" content="Manuel van Rijn">
 
   
-  <meta name="description" content="I&#8217;ve just decided to switch from Wordpress to Octopress because I wanted something new and not something over-featured All the plugins and &hellip;">
+  <meta name="description" content="In the past weeks I&#8217;ve looked into a problem that kept us from releasing to Heroku, because the git repository was to large. In time the &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -71,6 +71,7 @@
 <ul class="main-navigation">
   <li><a href="/">Blog</a></li>
   <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/work">Work</a></li>
 </ul>
 
 </nav>
@@ -78,6 +79,55 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2011/12/22/shrinking-your-git-repository/">Shrinking your Git repository</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-12-22T15:01:00+01:00" pubdate data-updated="true">Dec 22<span>nd</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>In the past weeks I&#8217;ve looked into a problem that kept us from releasing to <a href="http://www.heroku.com/" title="Heroku">Heroku</a>, because the git repository was to large. In time the repository has grown to approximate <strong>180 Mb</strong>.</p>
+
+<p><img class="right" src="/images/posts/shrink-mario.jpg" width="140" height="140" title="Shrink!" ></p>
+
+<p>In the past we&#8217;ve made some decisions that we probably wouldn&#8217;t take again. We for example, we decided to store the gem files in the vendor folder and having the rails code included in our repository. Our goal then was, that releasing the project with <a href="http://www.capify.org" title="Capistrano">Capistrano</a> would be easier and faster, because it didn&#8217;t have to download all the gem&#8217;s.</p>
+
+<p>Anyway at this point we don&#8217;t have the gem&#8217;s stored anymore in the vendor folder. Since tools like <a href="http://beginrescueend.com/" title="Ruby version Manager">RVM</a> and <a href="https://github.com/sstephenson/rbenv/" title="rbenv">rbenv</a> we store these within the ruby/rails version of that specific project.</p>
+
+<p>Still we have the problem that the repository contains files etc. we want to remove to shrink the size of it.</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2011/12/22/shrinking-your-git-repository/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -159,6 +209,10 @@ So after some googling what a good alternative would be for Wordpress I found <e
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2012/07/26/select-total-rows-from-database/">SELECT total_rows FROM database</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2012/06/22/integrate-travis-ci-into-grunt/">Integrate Travis CI into Grunt</a>
       </li>
     
@@ -192,10 +246,6 @@ So after some googling what a good alternative would be for Wordpress I found <e
     
       <li class="post">
         <a href="/blog/2011/12/22/shrinking-your-git-repository/">Shrinking your Git repository</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2011/12/08/intro-start-blogging-like-a-hacker/">Intro: Start blogging like a hacker(?)</a>
       </li>
     
   </ul>

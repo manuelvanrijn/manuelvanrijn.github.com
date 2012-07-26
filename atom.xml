@@ -4,7 +4,7 @@
   <title><![CDATA[Manuel van Rijn]]></title>
   <link href="http://manuel.manuelles.nl/atom.xml" rel="self"/>
   <link href="http://manuel.manuelles.nl/"/>
-  <updated>2012-07-20T10:01:47+02:00</updated>
+  <updated>2012-07-26T17:14:25+02:00</updated>
   <id>http://manuel.manuelles.nl/</id>
   <author>
     <name><![CDATA[Manuel van Rijn]]></name>
@@ -12,6 +12,116 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[SELECT total_rows FROM database]]></title>
+    <link href="http://manuel.manuelles.nl/blog/2012/07/26/select-total-rows-from-database/"/>
+    <updated>2012-07-26T14:34:00+02:00</updated>
+    <id>http://manuel.manuelles.nl/blog/2012/07/26/select-total-rows-from-database</id>
+    <content type="html"><![CDATA[<p><a href="http://manuel.manuelles.nl/blog/2012/07/26/select-total-rows-from-database/"><img class="left" src="http://manuel.manuelles.nl/images/posts/heroku-postgres.png" width="200" height="200" title="Heroku Postgres" ></a> On the first of August this year, <a href="http://www.heroku.com">Heroku</a> will add 2 new plans to their database add-on known as <strong>Dev</strong> and <strong>Basic</strong>. Both plans have a row limit restriction and that made me thinking how I could fetch that number with one simple query.</p>
+
+<!-- more -->
+
+
+
+
+<div class="clearfix"></div>
+
+
+<h2>TL;DR</h2>
+
+<p>Of course you already know the stuff described below so go to <a href="#final-query">the final query</a>.</p>
+
+<h2>Getting the list with tables</h2>
+
+<p>For retrieving almost any information about your database you can query the <code>pg_class</code> see <a href="http://www.postgresql.org/docs/9.1/static/catalog-pg-class.html">Postgres documentation</a>.</p>
+
+<ul>
+<li>The <code>relkind</code> is set to <code>r</code> to query only ordinary table information.</li>
+<li>We are joining the <code>pg_namespace</code> table to filter out the <code>pg_catalog</code> and <code>information_schema</code> tables</li>
+</ul>
+
+
+<p>As result we&#8217;ll have on column called <code>tableName</code> with all tables from the database</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="k">SELECT</span>
+</span><span class='line'>  <span class="n">pgClass</span><span class="p">.</span><span class="n">relname</span> <span class="k">AS</span> <span class="n">tableName</span>
+</span><span class='line'><span class="k">FROM</span>
+</span><span class='line'>  <span class="n">pg_class</span> <span class="n">pgClass</span>
+</span><span class='line'><span class="k">LEFT</span> <span class="k">JOIN</span>
+</span><span class='line'>  <span class="n">pg_namespace</span> <span class="n">pgNamespace</span> <span class="k">ON</span> <span class="p">(</span><span class="n">pgNamespace</span><span class="p">.</span><span class="n">oid</span> <span class="o">=</span> <span class="n">pgClass</span><span class="p">.</span><span class="n">relnamespace</span><span class="p">)</span>
+</span><span class='line'><span class="k">WHERE</span>
+</span><span class='line'>  <span class="n">pgNamespace</span><span class="p">.</span><span class="n">nspname</span> <span class="k">NOT</span> <span class="k">IN</span> <span class="p">(</span><span class="s1">&#39;pg_catalog&#39;</span><span class="p">,</span> <span class="s1">&#39;information_schema&#39;</span><span class="p">)</span> <span class="k">AND</span>
+</span><span class='line'>  <span class="n">pgClass</span><span class="p">.</span><span class="n">relkind</span><span class="o">=</span><span class="s1">&#39;r&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Adding the row count</h3>
+
+<p>Adding the total number of rows was quite simple after reading the <a href="http://www.postgresql.org/docs/9.1/static/catalog-pg-class.html">Postgres documentation</a>. It seems that the <code>pg_class</code> contains a column called <code>reltuples</code> that holds the number of rows in the table.</p>
+
+<p>So adding this column to the select seems to do the trick:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="k">SELECT</span>
+</span><span class='line'>  <span class="n">pgClass</span><span class="p">.</span><span class="n">relname</span>   <span class="k">AS</span> <span class="n">tableName</span><span class="p">,</span>
+</span><span class='line'>  <span class="n">pgClass</span><span class="p">.</span><span class="n">reltuples</span> <span class="k">AS</span> <span class="n">rowCount</span>
+</span><span class='line'><span class="k">FROM</span>
+</span><span class='line'>  <span class="n">pg_class</span> <span class="n">pgClass</span>
+</span><span class='line'><span class="k">LEFT</span> <span class="k">JOIN</span>
+</span><span class='line'>  <span class="n">pg_namespace</span> <span class="n">pgNamespace</span> <span class="k">ON</span> <span class="p">(</span><span class="n">pgNamespace</span><span class="p">.</span><span class="n">oid</span> <span class="o">=</span> <span class="n">pgClass</span><span class="p">.</span><span class="n">relnamespace</span><span class="p">)</span>
+</span><span class='line'><span class="k">WHERE</span>
+</span><span class='line'>  <span class="n">pgNamespace</span><span class="p">.</span><span class="n">nspname</span> <span class="k">NOT</span> <span class="k">IN</span> <span class="p">(</span><span class="s1">&#39;pg_catalog&#39;</span><span class="p">,</span> <span class="s1">&#39;information_schema&#39;</span><span class="p">)</span> <span class="k">AND</span>
+</span><span class='line'>  <span class="n">pgClass</span><span class="p">.</span><span class="n">relkind</span><span class="o">=</span><span class="s1">&#39;r&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><a id="final-query"></a></p>
+
+<h2>Selecting the total count</h2>
+
+<p>With this query it was easy to transform it into a SUM for all rowCount&#8217;s we retrieve. Here&#8217;s the final query to retrieve the total number of rows from all tables of a Postgres database</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="k">SELECT</span>
+</span><span class='line'>  <span class="k">SUM</span><span class="p">(</span><span class="n">pgClass</span><span class="p">.</span><span class="n">reltuples</span><span class="p">)</span> <span class="k">AS</span> <span class="n">totalRowCount</span>
+</span><span class='line'><span class="k">FROM</span>
+</span><span class='line'>  <span class="n">pg_class</span> <span class="n">pgClass</span>
+</span><span class='line'><span class="k">LEFT</span> <span class="k">JOIN</span>
+</span><span class='line'>  <span class="n">pg_namespace</span> <span class="n">pgNamespace</span> <span class="k">ON</span> <span class="p">(</span><span class="n">pgNamespace</span><span class="p">.</span><span class="n">oid</span> <span class="o">=</span> <span class="n">pgClass</span><span class="p">.</span><span class="n">relnamespace</span><span class="p">)</span>
+</span><span class='line'><span class="k">WHERE</span>
+</span><span class='line'>  <span class="n">pgNamespace</span><span class="p">.</span><span class="n">nspname</span> <span class="k">NOT</span> <span class="k">IN</span> <span class="p">(</span><span class="s1">&#39;pg_catalog&#39;</span><span class="p">,</span> <span class="s1">&#39;information_schema&#39;</span><span class="p">)</span> <span class="k">AND</span>
+</span><span class='line'>  <span class="n">pgClass</span><span class="p">.</span><span class="n">relkind</span><span class="o">=</span><span class="s1">&#39;r&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Integrate Travis CI into Grunt]]></title>
