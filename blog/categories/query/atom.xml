@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: postgres | Manuel van Rijn]]></title>
-  <link href="http://manuel.manuelles.nl/blog/categories/postgres/atom.xml" rel="self"/>
+  <title><![CDATA[Category: query | Manuel van Rijn]]></title>
+  <link href="http://manuel.manuelles.nl/blog/categories/query/atom.xml" rel="self"/>
   <link href="http://manuel.manuelles.nl/"/>
   <updated>2012-07-26T17:15:33+02:00</updated>
   <id>http://manuel.manuelles.nl/</id>
