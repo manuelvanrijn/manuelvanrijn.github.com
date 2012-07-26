@@ -17,7 +17,6 @@ footer: true
 
 1. **[jquery-numeric_input](http://manuel.manuelles.nl/jquery-numeric_input)** - Blocks all non numeric chars and helps with dot and comma input
 2. **[jquery-latestTweet](http://manuel.manuelles.nl/jquery-latestTweet)** - Plugin that fill's an element with the latest tweet from a user
-3. **[jquery-flickrPhotostream](http://manuel.manuelles.nl/jquery-flickrPhotostream)**
 
 ## <a id="net"></a>.NET
 
