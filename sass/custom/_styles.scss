@@ -13,3 +13,7 @@ aside.sidebar {
     color: #000;
   }
 }
+
+.clearfix:before, .clearfix:after { content: ""; display: table; }
+.clearfix:after { clear: both; }
+.clearfix { *zoom: 1; }
