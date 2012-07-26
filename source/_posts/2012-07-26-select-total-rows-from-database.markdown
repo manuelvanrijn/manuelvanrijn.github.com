@@ -3,7 +3,7 @@ layout: post
 title: "SELECT total_rows FROM database"
 date: 2012-07-26 14:34
 comments: true
-categories: [heroku, postgres, database]
+categories: [heroku, postgres, database, sql, query]
 published: true
 ---
 
