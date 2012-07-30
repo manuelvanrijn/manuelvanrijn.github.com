@@ -187,25 +187,18 @@
 
 <p>With this query it was easy to transform it into a SUM for all rowCount&#8217;s we retrieve. Here&#8217;s the final query to retrieve the total number of rows from all tables of a Postgres database</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="k">SELECT</span>
-</span><span class='line'>  <span class="k">SUM</span><span class="p">(</span><span class="n">pgClass</span><span class="p">.</span><span class="n">reltuples</span><span class="p">)</span> <span class="k">AS</span> <span class="n">totalRowCount</span>
-</span><span class='line'><span class="k">FROM</span>
-</span><span class='line'>  <span class="n">pg_class</span> <span class="n">pgClass</span>
-</span><span class='line'><span class="k">LEFT</span> <span class="k">JOIN</span>
-</span><span class='line'>  <span class="n">pg_namespace</span> <span class="n">pgNamespace</span> <span class="k">ON</span> <span class="p">(</span><span class="n">pgNamespace</span><span class="p">.</span><span class="n">oid</span> <span class="o">=</span> <span class="n">pgClass</span><span class="p">.</span><span class="n">relnamespace</span><span class="p">)</span>
-</span><span class='line'><span class="k">WHERE</span>
-</span><span class='line'>  <span class="n">pgNamespace</span><span class="p">.</span><span class="n">nspname</span> <span class="k">NOT</span> <span class="k">IN</span> <span class="p">(</span><span class="s1">&#39;pg_catalog&#39;</span><span class="p">,</span> <span class="s1">&#39;information_schema&#39;</span><span class="p">)</span> <span class="k">AND</span>
-</span><span class='line'>  <span class="n">pgClass</span><span class="p">.</span><span class="n">relkind</span><span class="o">=</span><span class="s1">&#39;r&#39;</span>
-</span></code></pre></td></tr></table></div></figure>
+<div><script src='https://gist.github.com/3205631.js?file='></script>
+<noscript><pre><code>SELECT
+  SUM(pgClass.reltuples) AS totalRowCount
+FROM
+  pg_class pgClass
+LEFT JOIN
+  pg_namespace pgNamespace ON (pgNamespace.oid = pgClass.relnamespace)
+WHERE
+  pgNamespace.nspname NOT IN ('pg_catalog', 'information_schema') AND
+  pgClass.relkind='r'</code></pre></noscript></div>
+
+
 
 </div>
 
