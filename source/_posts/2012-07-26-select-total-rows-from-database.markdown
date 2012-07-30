@@ -61,14 +61,4 @@ WHERE
 
 With this query it was easy to transform it into a SUM for all rowCount's we retrieve. Here's the final query to retrieve the total number of rows from all tables of a Postgres database
 
-```sql
-SELECT
-  SUM(pgClass.reltuples) AS totalRowCount
-FROM
-  pg_class pgClass
-LEFT JOIN
-  pg_namespace pgNamespace ON (pgNamespace.oid = pgClass.relnamespace)
-WHERE
-  pgNamespace.nspname NOT IN ('pg_catalog', 'information_schema') AND
-  pgClass.relkind='r'
-```
+{% gist 3205631 %}
