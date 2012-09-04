@@ -32,7 +32,7 @@ Ok so at this point I want to add my project to Travis CI so that it tests my su
 
 ### TL;DR
 
-Here's the [travis ci integration commit](https://github.com/manuelvanrijn/jquery-numeric_input/commit/fd770092e569fbc407777de3f099d6d4d5d30bdf) from my plugin with all the steps described below.
+Here's the [travis ci integration commit](https://github.com/manuelvanrijn/jquery-numeric_input/commit/176e39cb5b6a4cd5e1bc22334dd12911c452925c) from my plugin with all the steps described below.
 
 ### Registering the travis task
 
@@ -75,17 +75,16 @@ I've added the `--verbose` option, so we'll see more output of what is going on.
 
 Every Travis CI project needs to have a `.travis.yml` file in the root of the project folder, so it know what platform and version it should use to build/test your project. Here's the one I used:
 
-```yaml .travis.yaml
+```yaml .travis.yml
 language: node_js
 node_js:
   - 0.6
-before_script:
-  - "export DISPLAY=:99.0"
-  - "sh -e /etc/init.d/xvfb start"
 ```
-
-The commands within `before_script` takes care of running the PhantomJS on the headless server on Travis CI.
 
 ## Ready to go!
 
 Alright after these changes your project is ready to be continuously builded with Travis CI. But don't forget to setup the Service Hook on Github!
+
+## Update
+
+Thanks to **Ryan Seddon** and **Ariya Hidayat** for noticing me that the `before_script` section for running PhantomJS on the headless server on Travis CI isn't needed. See [this link](http://about.travis-ci.org/docs/user/gui-and-headless-browsers/)
