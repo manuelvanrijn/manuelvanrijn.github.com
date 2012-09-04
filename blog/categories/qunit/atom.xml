@@ -4,7 +4,7 @@
   <title><![CDATA[Category: qunit | Manuel van Rijn]]></title>
   <link href="http://manuel.manuelles.nl/blog/categories/qunit/atom.xml" rel="self"/>
   <link href="http://manuel.manuelles.nl/"/>
-  <updated>2012-07-30T10:47:48+02:00</updated>
+  <updated>2012-09-04T08:32:01+02:00</updated>
   <id>http://manuel.manuelles.nl/</id>
   <author>
     <name><![CDATA[Manuel van Rijn]]></name>
@@ -47,7 +47,7 @@
 
 <h3>TL;DR</h3>
 
-<p>Here's the <a href="https://github.com/manuelvanrijn/jquery-numeric_input/commit/fd770092e569fbc407777de3f099d6d4d5d30bdf">travis ci integration commit</a> from my plugin with all the steps described below.</p>
+<p>Here's the <a href="https://github.com/manuelvanrijn/jquery-numeric_input/commit/176e39cb5b6a4cd5e1bc22334dd12911c452925c">travis ci integration commit</a> from my plugin with all the steps described below.</p>
 
 <h3>Registering the travis task</h3>
 
@@ -90,20 +90,19 @@ grunt.registerTask('travis', 'lint qunit');
 
 <p>Every Travis CI project needs to have a <code>.travis.yml</code> file in the root of the project folder, so it know what platform and version it should use to build/test your project. Here's the one I used:</p>
 
-<p><code>yaml .travis.yaml
+<p><code>yaml .travis.yml
 language: node_js
 node_js:
   - 0.6
-before_script:
-  - "export DISPLAY=:99.0"
-  - "sh -e /etc/init.d/xvfb start"
 </code></p>
-
-<p>The commands within <code>before_script</code> takes care of running the PhantomJS on the headless server on Travis CI.</p>
 
 <h2>Ready to go!</h2>
 
 <p>Alright after these changes your project is ready to be continuously builded with Travis CI. But don't forget to setup the Service Hook on Github!</p>
+
+<h2>Update</h2>
+
+<p>Thanks to <strong>Ryan Seddon</strong> and <strong>Ariya Hidayat</strong> for noticing me that the <code>before_script</code> section for running PhantomJS on the headless server on Travis CI isn't needed. See <a href="http://about.travis-ci.org/docs/user/gui-and-headless-browsers/">this link</a></p>
 ]]></content>
   </entry>
   

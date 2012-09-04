@@ -4,7 +4,7 @@
   <title><![CDATA[Manuel van Rijn]]></title>
   <link href="http://manuel.manuelles.nl/atom.xml" rel="self"/>
   <link href="http://manuel.manuelles.nl/"/>
-  <updated>2012-07-30T10:47:48+02:00</updated>
+  <updated>2012-09-04T08:32:01+02:00</updated>
   <id>http://manuel.manuelles.nl/</id>
   <author>
     <name><![CDATA[Manuel van Rijn]]></name>
@@ -150,7 +150,7 @@ WHERE
 
 <h3>TL;DR</h3>
 
-<p>Here&#8217;s the <a href="https://github.com/manuelvanrijn/jquery-numeric_input/commit/fd770092e569fbc407777de3f099d6d4d5d30bdf">travis ci integration commit</a> from my plugin with all the steps described below.</p>
+<p>Here&#8217;s the <a href="https://github.com/manuelvanrijn/jquery-numeric_input/commit/176e39cb5b6a4cd5e1bc22334dd12911c452925c">travis ci integration commit</a> from my plugin with all the steps described below.</p>
 
 <h3>Registering the travis task</h3>
 
@@ -205,26 +205,22 @@ WHERE
 
 <p>Every Travis CI project needs to have a <code>.travis.yml</code> file in the root of the project folder, so it know what platform and version it should use to build/test your project. Here&#8217;s the one I used:</p>
 
-<figure class='code'><figcaption><span>.travis.yaml</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span>.travis.yml</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
 </pre></td><td class='code'><pre><code class='yaml'><span class='line'><span class="l-Scalar-Plain">language</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">node_js</span>
 </span><span class='line'><span class="l-Scalar-Plain">node_js</span><span class="p-Indicator">:</span>
 </span><span class='line'>  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">0.6</span>
-</span><span class='line'><span class="l-Scalar-Plain">before_script</span><span class="p-Indicator">:</span>
-</span><span class='line'>  <span class="p-Indicator">-</span> <span class="s">&quot;export</span><span class="nv"> </span><span class="s">DISPLAY=:99.0&quot;</span>
-</span><span class='line'>  <span class="p-Indicator">-</span> <span class="s">&quot;sh</span><span class="nv"> </span><span class="s">-e</span><span class="nv"> </span><span class="s">/etc/init.d/xvfb</span><span class="nv"> </span><span class="s">start&quot;</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
-<p>The commands within <code>before_script</code> takes care of running the PhantomJS on the headless server on Travis CI.</p>
 
 <h2>Ready to go!</h2>
 
 <p>Alright after these changes your project is ready to be continuously builded with Travis CI. But don&#8217;t forget to setup the Service Hook on Github!</p>
+
+<h2>Update</h2>
+
+<p>Thanks to <strong>Ryan Seddon</strong> and <strong>Ariya Hidayat</strong> for noticing me that the <code>before_script</code> section for running PhantomJS on the headless server on Travis CI isn&#8217;t needed. See <a href="http://about.travis-ci.org/docs/user/gui-and-headless-browsers/">this link</a></p>
 ]]></content>
   </entry>
   
