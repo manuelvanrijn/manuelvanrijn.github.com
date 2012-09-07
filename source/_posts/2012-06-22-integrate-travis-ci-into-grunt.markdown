@@ -32,7 +32,7 @@ Ok so at this point I want to add my project to Travis CI so that it tests my su
 
 ### TL;DR
 
-Here's the [travis ci integration commit](https://github.com/manuelvanrijn/jquery-numeric_input/commit/176e39cb5b6a4cd5e1bc22334dd12911c452925c) from my plugin with all the steps described below.
+Here's the [travis ci integration commit](https://github.com/manuelvanrijn/jquery-numeric_input/commit/188e1fa53ca565b2901f0ac4b6de102b6349577b) from my plugin with all the steps described below.
 
 ### Registering the travis task
 
@@ -54,9 +54,11 @@ Now we have to add Grunt as a dependency to our `package.json` file so that npm 
 
 ```json package.json
 "dependencies": {
-  "grunt": "~0.3.9",
-  "jquery": "~1.5"
-}
+  "jQuery": "~1.7.3"
+},
+"devDependencies": {
+  "grunt": "~0.3.14"
+},
 ```
 
 ### Adding the npm task
@@ -79,6 +81,8 @@ Every Travis CI project needs to have a `.travis.yml` file in the root of the pr
 language: node_js
 node_js:
   - 0.6
+  - 0.8
+  - 0.9
 ```
 
 ## Ready to go!
