@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Yeoman meets Travis CI"
-date: 2012-09-14 15:21
+date: 2012-09-17 14:45
 comments: true
 categories: [code, yeoman, travis-ci, automation, javascript, testing, frontend]
 published: true
