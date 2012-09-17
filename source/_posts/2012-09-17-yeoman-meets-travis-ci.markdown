@@ -9,7 +9,7 @@ published: true
 
 [{% img right /images/posts/yeoman-logo.png 200 200 Yeoman %}](/blog/2012/06/22/integrate-travis-ci-into-grunt/) Today I'd like to show how you can integrate Travis CI within your Yeoman project.
 
-[Travis CI](http://travis-ci.org/) is a hosted continuous integration service for open source projects and [Yeoman](http://yeoman.io) is a robust and opinionated set of tools, libraries, and a workflow that can help developers quickly build beautiful, compelling web apps. The only thing I missed was
+[Travis CI](http://travis-ci.org/) is a hosted continuous integration service for open source projects and [Yeoman](http://yeoman.io) is a robust and opinionated set of tools, libraries, and a workflow that can help developers quickly build beautiful, compelling web apps.
 
 <!-- more -->
 
