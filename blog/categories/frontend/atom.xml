@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: frontend | Manuel van Rijn]]></title>
+  <link href="http://manuel.manuelles.nl/blog/categories/frontend/atom.xml" rel="self"/>
+  <link href="http://manuel.manuelles.nl/"/>
+  <updated>2012-09-17T14:39:36+02:00</updated>
+  <id>http://manuel.manuelles.nl/</id>
+  <author>
+    <name><![CDATA[Manuel van Rijn]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Yeoman meets Travis CI]]></title>
+    <link href="http://manuel.manuelles.nl/blog/2012/09/17/yeoman-meets-travis-ci/"/>
+    <updated>2012-09-17T14:45:00+02:00</updated>
+    <id>http://manuel.manuelles.nl/blog/2012/09/17/yeoman-meets-travis-ci</id>
+    <content type="html"><![CDATA[<p><a href="/blog/2012/06/22/integrate-travis-ci-into-grunt/"><img class="right" src="/images/posts/yeoman-logo.png" width="200" height="200" title="Yeoman" ></a> Today I'd like to show how you can integrate Travis CI within your Yeoman project.</p>
+
+<p><a href="http://travis-ci.org/">Travis CI</a> is a hosted continuous integration service for open source projects and <a href="http://yeoman.io">Yeoman</a> is a robust and opinionated set of tools, libraries, and a workflow that can help developers quickly build beautiful, compelling web apps. The only thing I missed was</p>
+
+<!-- more -->
+
+
+<h2>Adding Travis CI support</h2>
+
+<p>When Yeoman was released I've tried to add Travis CI support to a test project. After setting everything up there seemed to be a problem with the update check being fired when running tests. This was annoying because Travis CI was waiting for input from the user.</p>
+
+<p>So I've fixed the issue and created a <a href="https://github.com/yeoman/yeoman/pull/369">pull request</a> that was merged very quick thanks to <a href="http://www.addyosmani.com">Addy Osmani</a>.</p>
+
+<p>Anyway today I saw that there was a new version released which includes my fix and I like to share how you can make your Yeoman project be tested within Travis CI.</p>
+
+<h3>TL;DR;</h3>
+
+<p>See <a href="https://github.com/manuelvanrijn/yeoman-travis-ci/commit/32203d84ca2dbba2faa671e55afede8a1e6666df">this commit</a> with all the changes you have to make to your existing Yeoman project in order to get Travis CI integration.</p>
+
+<p>Or just browse my test project here: <a href="https://github.com/manuelvanrijn/yeoman-travis-ci">yeoman-travis-ci</a></p>
+
+<h3>package.json</h3>
+
+<h4>Adding the yeoman dependency</h4>
+
+<p>First we have to add the yeoman package as a dependency to our <code>package.json</code> file because we can't install yeoman globally on Travis CI.</p>
+
+<p><code>yml
+"devDependencies": {
+  "yeoman": "~0.9.1"
+}
+</code></p>
+
+<p>After adding the dependency and running <code>npm install</code> you'll see that yeoman is installed in the <code>node_modules</code> folder of your project.</p>
+
+<h4>Setup npm test script</h4>
+
+<p>Travis CI runs the <code>npm test</code> command after fetching the project and installing the dependencies. To make npm test run the Yeoman test task, we need to add the following line into our <code>package.json</code> file.</p>
+
+<p><code>yml
+"scripts": {
+  "test": "node_modules/.bin/yeoman test --verbose"
+}
+</code></p>
+
+<p>I've added the <code>--verbose</code> argument because I'd like to see detailed information when my tests fail, but this is an optional argument.</p>
+
+<p>At this point you should be able to run <code>npm test</code> and see Yeoman running your tests.</p>
+
+<h3>Add the .travis.yml file</h3>
+
+<p>Finally we have to add a <code>.travis.yml</code> file to let Travis CI know what language our project is and on which version(s) of NodeJS it should use to test our project against (note: Yeoman requires >= 0.8).</p>
+
+<p><code>yml
+language: node_js
+node_js:
+  - 0.8
+  - 0.9
+</code></p>
+
+<h2>Hook &amp; Push!</h2>
+
+<p>The final step is to add the Travis CI hook to you project in GitHub and push your project.</p>
+
+<p>Happy coding!</p>
+]]></content>
+  </entry>
+  
+</feed>
