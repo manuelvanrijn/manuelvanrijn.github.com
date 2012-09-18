@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: javascript | Manuel van Rijn]]></title>
-  <link href="http://manuel.manuelles.nl/blog/categories/javascript/atom.xml" rel="self"/>
+  <title><![CDATA[Category: continuous integration | Manuel van Rijn]]></title>
+  <link href="http://manuel.manuelles.nl/blog/categories/continuous-integration/atom.xml" rel="self"/>
   <link href="http://manuel.manuelles.nl/"/>
   <updated>2012-09-18T08:58:36+02:00</updated>
   <id>http://manuel.manuelles.nl/</id>
