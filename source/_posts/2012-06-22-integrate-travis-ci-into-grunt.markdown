@@ -3,7 +3,7 @@ layout: post
 title: "Integrate Travis CI into Grunt"
 date: 2012-06-22 15:04
 comments: true
-categories: [code, grunt, travis-ci, qunit, javascript, jquery, testing]
+categories: [code, grunt, travis-ci, qunit, javascript, jquery, testing, continuous integration]
 published: true
 ---
 
