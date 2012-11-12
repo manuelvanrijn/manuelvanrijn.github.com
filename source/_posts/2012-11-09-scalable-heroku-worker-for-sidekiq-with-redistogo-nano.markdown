@@ -17,7 +17,9 @@ Our goal is to create a worker on Heroku only when there's work to do and to des
 
 Today I've been struggeling a lot with getting the Sidekiq to work probably with Redis to Go Nano on Heroku. The main problem was I was having difficulties with the amount of connection's being created to the Redis server. Because the Nano variant is free but large enough for handling small queue's of work, we have to face the limitation of 10 connection's.
 
-## The final code
+## Initial code
+
+Let's first take a look at the code I had before I got redis threw me `Error fetching message: ERR max number of clients reached` errors.
 
 ### Sidekiq worker
 
@@ -35,9 +37,9 @@ class MyWorker
 end
 ```
 
-### Sidekiq initializer
+### Sidekiq initializer with autoscaler
 
-The initializer is a bit different than the samples on the Sidekiq wiki. This is mainly because I'm using the autoscaler gem which is a Sidekiq middleware that will create and destory a Heroku worker based on the amount of tasks in a Sidekiq queue.
+The initializer is a bit different than the samples on the Sidekiq wiki. This is mainly because I'm using the [autoscaler gem](https://github.com/JustinLove/autoscaler) which is a Sidekiq middleware that will create and destory a Heroku worker based on the amount of tasks in a Sidekiq queue.
 
 The only thing this gem require's is having these two enviroment variables defined on your heroku instance to create and destory a worker:
 
@@ -47,7 +49,7 @@ heroku config:add HEROKU_API_KEY=123-your-key-456
 heroku config:add HEROKU_APP=your_heroku_app_name
 ```
 
-Here's my final code for the Sidekiq initializer:
+Here's my Sidekiq initializer with autoscaler implemented:
 
 ``` ruby app/config/initializers/sidekiq.rb
 require 'sidekiq'
@@ -61,7 +63,7 @@ end
 
 Sidekiq.configure_client do |config|
   if heroku
-    config.redis = { :size => 1 }
+    #config.redis = { :size => 1 }
     config.client_middleware do |chain|
       chain.add Autoscaler::Sidekiq::Client, 'default' => heroku
     end
@@ -69,7 +71,7 @@ Sidekiq.configure_client do |config|
 end
 
 Sidekiq.configure_server do |config|
-  config.redis = { :size => 2 } if heroku
+  #config.redis = { :size => 2 } if heroku
   config.server_middleware do |chain|
     if heroku
       p "[Sidekiq] Running on Heroku, autoscaler is used"
@@ -81,18 +83,33 @@ Sidekiq.configure_server do |config|
 end
 ```
 
+## The fix
+
+The main problem is you have to calculate the number of connection's used by your **Unicorn processes**, **Sidekiq internals** and your **Sidekiq workers**.
+
+By default Sidekiq set's the `concurrency` to `25` and each concurrency take's one connection from the pool. Sidekiq also set's the default connection pool size to `5` for every client. At this point we already have way to much connection's for the 10 connections limit by RedisToGo Nano.
+
+### Unicorns
+
+{% pullquote %}
+One mistake I made was forgetting about the Heroku Dynos. In my `app/config/unicorn.rb` I had `worker_processes 3` defined which actually means {" 3 workers * 2 dynos = client redis connections "} required for Unicorn.
+{% endpullquote %}
+
+Because Sidekiq set's the connections to 5 this actually means 3 * 2 * 5 = 30 connections. To reduce this we should specify the `:size` in the `Sidekiq.configure_client` block. I've choosen to set this to 1 because the only request from the web is adding a item to the Sidekiq queue.
+
+{% gist 4059862 %}
+
+### Sidekiq concurrency
+
+The second part we need to tweak are the number of connections and concurrencies created by the Sidekiq server. By default Sidekiq creates 25 concurrencies and each concurrency takes 5 redis connections from the pool.
+
+default 25 concurrency
+
+- each Unicorn process take's
+
+
 ``` yaml app/config/sidekiq.yml
 :concurrency: 2
-```
-
-``` ruby Gemfile
-# genereren van permit request middels sidekiq
-gem 'sidekiq'
-gem 'sinatra', require: false
-gem 'slim'
-
-# sidekiq middleware for auto-scaling workers
-gem 'autoscaler'
 ```
 
 ``` bash Procfile
@@ -101,7 +118,7 @@ worker: bundle exec sidekiq -e production -C config/sidekiq.yml
 ```
 
 ``` ruby app/config/unicorn.rb
-worker_processes 3 # amaount of unicorn workers to spin up
+worker_processes 3 # amount of unicorn workers to spin up
 ```
 
 ## The Sum!
