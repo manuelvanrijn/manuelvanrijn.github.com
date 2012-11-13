@@ -4,7 +4,7 @@ title: "Scalable Heroku worker for Sidekiq with RedisToGo Nano"
 date: 2012-11-09 16:34
 comments: true
 categories: []
-published: true
+published: false
 ---
 
 [{% img right /images/posts/yeoman-logo.png 200 200 Yeoman %}](/blog/2012/06/22/integrate-travis-ci-into-grunt/) In this post I'd like to show you guys how to deploy your Rails application to Heroku with a Sidekiq worker process.
