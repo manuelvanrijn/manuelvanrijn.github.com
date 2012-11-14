@@ -7,7 +7,7 @@ categories: [sidekiq, heroku, redis, redis to go, connections, rails, ruby, thre
 published: true
 ---
 
-[{% img right /images/posts/redis.png 200 200 Yeoman %}](/blog/2012/06/22/integrate-travis-ci-into-grunt/) As a followup of my previous post I want to explain how to get Sidekiq to work on Heroku with a RedisToGo Nano instance.
+[{% img right /images/posts/redis.png 200 200 Yeoman %}](/blog/2012/06/22/integrate-travis-ci-into-grunt/) As a follow-up of [my previous post]() I want to explain how to get Sidekiq to work on Heroku with a Redis To Go Nano instance.
 
 Because the Nano instance has some connection limitation you have to make some config changes so you won't get `Error fetching message: ERR max number of clients reached` error messages.
 
@@ -15,11 +15,11 @@ Because the Nano instance has some connection limitation you have to make some c
 
 ## Why this post
 
-Today I've been struggeling a lot with getting the Sidekiq to work probably with Redis to Go Nano on Heroku. The main problem was I was having difficulties with the amount of connection's being created to the Redis server. Because the Nano variant is free but large enough for handling normal sized queue's of work, we have to face the limitation of 10 connection's.
+Today I've been struggling a lot with getting the Sidekiq to work probably with Redis to Go Nano on Heroku. The main problem was I was having difficulties with the amount of connection's being created to the Redis server. Because the Nano variant is free but large enough for handling normal sized queues of work, we have to face the limitation of 10 connections.
 
 ## Why ERR max number of clients reached?
 
-The error is quite clear isn't it? The actual question is how can we reduce the connections being opened to match the 10 connection limit given by the Nano instance.
+The error is quite clear isn't it? The actual question is how we can reduce the connections being opened to match the 10 connection limit given by the Nano instance.
 
 After some research I found the factors that you have to tweak in order to reach the magic number of 10.
 
@@ -57,19 +57,19 @@ One mistake I made was forgetting about the number of dynos and Unicorn worker_p
 
 #### Examples:
 
-In my case where I've set the connection size to 1 we could have the following examples
+In my case where I've set the connection size to one we could have the following examples
 
 1. **1** web dyno with **2** unicorn worker_processes takes **2 Redis connections**
 2. **2** web dyno with **2** unicorn worker_processes takes **4 Redis connections**
 3. **5** web dyno with **4** unicorn worker_processes takes **20 Redis connections**
 
-If you up the client size to, for example 3 you should also multiply the Redis connections by this number. (so for example 3 you'll have 20 * 3 = 60 connections)
+If you up the client size to, for example 3 you should also multiply the Redis connections by this number (so for example 3 you'll have 20 * 3 = 60 connections).
 
 ### Worker * (concurrency + 2)
 
-When calculating the number of connections the Sidekiq server needs, we need to modify the number of currencies it initializes on launch. This number represents the number of threads created by the Sidekiq server which will perform queued tasks. Each concurrency/thread takes up 1 redis connection.
+When calculating the number of connections the Sidekiq server needs, we need to modify the number of currencies it initializes on launch. This number represents the number of threads created by the Sidekiq server which will perform queued tasks. Each concurrency/thread takes up 1 Redis connection.
 
-When tweaking this number I found out the Sidekiq server took 2 additional connections upon the concurrency number. This seemed to be default behaviour becase Sidekiq server uses these two for the Fetcher and Retrier commands.
+When tweaking this number I found out the Sidekiq server took 2 additional connections upon the concurrency number. This seemed to be default behavior becase Sidekiq server uses these two for the Fetcher and Retrier commands.
 
 #### Examples:
 
@@ -77,7 +77,7 @@ When tweaking this number I found out the Sidekiq server took 2 additional conne
 2. **1** worker dyno running Sidekiq, with **2** concurrency takes **4 Redis connections**
 3. **2** worker dyno running Sidekiq, with **2** concurrency takes **8 Redis connections**
 
-The default concurrency size of Sidekiq is set to 25 which means that without modifications you need at least 27 Redis connections for the Sidekiq server.
+The default concurrency size of Sidekiq is set to 25 which mean that without modifications you need at least 27 Redis connections for the Sidekiq server.
 
 ## My final code
 

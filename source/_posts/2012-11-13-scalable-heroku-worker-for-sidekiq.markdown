@@ -7,9 +7,9 @@ categories: [scale, heroku, redis, sidekiq, automating, threading, rails, ruby]
 published: true
 ---
 
-[{% img right /images/posts/more-workers.jpg 200 200 Yeoman %}](/blog/2012/06/22/integrate-travis-ci-into-grunt/) In this post I'd like to show you guys how to deploy your Rails application to Heroku with a Sidekiq worker that only got's initiated when there are tasks in the queue to process.
+[{% img right /images/posts/more-workers.jpg 200 200 Yeoman %}](/blog/2012/06/22/integrate-travis-ci-into-grunt/) In this post I'd like to show you guys how to deploy your Rails application to Heroku with a Sidekiq worker that only gets initiated when there are tasks in the queue to process.
 
-Our goal is to start a worker when a task is added to the queue and to destroy the worker after it's done processing the queue tasks. This will result in a much lower bill at the end of the month because the worker doesn't have to be up the whole month.
+Our goal is to start a worker when a task is added to the queue and to destroy the worker after its done processing the queue tasks. This will result in a much lower bill at the end of the month because the worker doesn't have to be up the whole month.
 
 <!-- more -->
 
@@ -64,7 +64,7 @@ class DownloadController < ApplicationController
 end
 ```
 
-**NOTE:** It's recommended not to add the whole object into the worker because this is stored in the Redis database. Also the object might be changed before it's being processed by Sidekiq. Adding the `id` and fetching the object in the worker is a better approuch.
+**NOTE:** It's recommended not to add the whole object into the worker because this is stored in the Redis database. Also the object might be changed before it's being processed by Sidekiq. Adding the `id` and fetching the object in the worker is a better approach.
 
 ## So far...
 
@@ -74,7 +74,7 @@ At this point we have configured our Rails project to add tasks to Redis and hav
 
 To test this locally we need:
 
-- Redis installad locally and running
+- Redis installed locally and running
 - Run the Rails app (`bundle exec rails server`)
 - Run the Sidekiq server (`bundle exec sidekiq`)
 
@@ -99,7 +99,7 @@ gem 'autoscaler'
 
 ### Adding required ENV variables
 
-The gem requires two enviroment variables to be set on your Heroku application. The `HEROKU_API_KEY` is required to perform creating and removing a Heroku worker dyno and the `HEROKU_APP` to know on which application it has to create/destroy the worker dyno on.
+The gem requires two environment variables to be set on your Heroku application. The `HEROKU_API_KEY` is required to perform creating and removing a Heroku worker dyno and the `HEROKU_APP` to know on which application it has to create/destroy the worker dyno on.
 
 ``` bash
 # API KEY can be found on https://dashboard.heroku.com/account
@@ -109,7 +109,7 @@ heroku config:add HEROKU_APP=your_heroku_app_name
 
 ### Tweaking the Sidekiq initializer
 
-Because this gem acts as Middleware we need to create a `sidekiq.rb` in our initializers folder. This file will checks if we are running on Heroku and if so, activates the autoscaler as Middleware.
+Because this gem acts as Middleware we need to create a `sidekiq.rb` in our initializers folder. This file will check if we are running on Heroku and if so, activates the autoscaler as Middleware.
 
 ``` ruby app/config/initializers/sidekiq.rb
 require 'sidekiq'
@@ -143,4 +143,4 @@ end
 
 ## Ready to go!
 
-At this point we're ready to deploy our application to Heroku and let the autscaler automaticly create and destroy a worker dyno whenever it needs to process tasks from the Sidekiq queue.
+At this point we're ready to deploy our application to Heroku and let the autscaler automatically create and destroy a worker dyno whenever it needs to process tasks from the Sidekiq queue.
