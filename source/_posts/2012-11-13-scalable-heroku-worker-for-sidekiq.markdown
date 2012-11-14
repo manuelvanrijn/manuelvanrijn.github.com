@@ -7,7 +7,7 @@ categories: [scale, heroku, redis, sidekiq, automating, threading, rails, ruby]
 published: true
 ---
 
-[{% img right /images/posts/more-workers.jpg 200 200 Yeoman %}](/blog/2012/06/22/integrate-travis-ci-into-grunt/) In this post I'd like to show you guys how to deploy your Rails application to Heroku with a Sidekiq worker that only gets initiated when there are tasks in the queue to process.
+[{% img left /images/posts/more-workers.jpg 200 200 More workers %}](/blog/2012/11/13/scalable-heroku-worker-for-sidekiq/) In this post I'd like to show you guys how to deploy your Rails application to [Heroku](http://www.heroku.com/) with a [Sidekiq](http://sidekiq.org/) worker that only gets initiated when there are tasks in the queue to process.
 
 Our goal is to start a worker when a task is added to the queue and to destroy the worker after its done processing the queue tasks. This will result in a much lower bill at the end of the month because the worker doesn't have to be up the whole month.
 

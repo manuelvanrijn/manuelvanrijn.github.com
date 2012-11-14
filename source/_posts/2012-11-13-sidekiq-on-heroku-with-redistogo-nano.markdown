@@ -7,9 +7,9 @@ categories: [sidekiq, heroku, redis, redis to go, connections, rails, ruby, thre
 published: true
 ---
 
-[{% img right /images/posts/redis.png 200 200 Yeoman %}](/blog/2012/06/22/integrate-travis-ci-into-grunt/) As a follow-up of [my previous post]() I want to explain how to get Sidekiq to work on Heroku with a Redis To Go Nano instance.
+[{% img right /images/posts/redis.png 200 200 Yeoman %}](/blog/2012/06/22/integrate-travis-ci-into-grunt/) As a follow-up of [my previous post](/blog/2012/11/13/scalable-heroku-worker-for-sidekiq/) I want to explain how to get [Sidekiq](http://sidekiq.org/) to work on [Heroku](http://www.heroku.com) with a [Redis To Go](https://addons.heroku.com/redistogo) Nano instance.
 
-Because the Nano instance has some connection limitation you have to make some config changes so you won't get `Error fetching message: ERR max number of clients reached` error messages.
+Because the Nano instance has some connection limitation you have to make some config changes so you won't get `ERR max number of clients reached` error messages.
 
 <!-- more -->
 
@@ -19,7 +19,7 @@ Today I've been struggling a lot with getting the Sidekiq to work probably with 
 
 ## Why ERR max number of clients reached?
 
-The error is quite clear isn't it? The actual question is how we can reduce the connections being opened to match the 10 connection limit given by the Nano instance.
+The error `Error fetching message: ERR max number of clients reached`, is quite clear isn't it? The actual question is how we can reduce the connections being opened to match the 10 connection limit given by the Nano instance.
 
 After some research I found the factors that you have to tweak in order to reach the magic number of 10.
 
@@ -85,7 +85,7 @@ The default concurrency size of Sidekiq is set to 25 which mean that without mod
 connection limit:           10
 unicorn processes:           3
 web dynos:                   2
-worker dynos for sidekiq:    1
+worker dynos (sidekiq):      1
 client pool size:            1
 server pool size:            2
 concurrency:                 2
