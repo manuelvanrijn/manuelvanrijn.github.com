@@ -4,7 +4,7 @@
   <title><![CDATA[Category: rails | Manuel van Rijn]]></title>
   <link href="http://manuel.manuelles.nl/blog/categories/rails/atom.xml" rel="self"/>
   <link href="http://manuel.manuelles.nl/"/>
-  <updated>2012-09-18T08:58:36+02:00</updated>
+  <updated>2012-11-14T15:16:05+01:00</updated>
   <id>http://manuel.manuelles.nl/</id>
   <author>
     <name><![CDATA[Manuel van Rijn]]></name>
@@ -12,6 +12,298 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Sidekiq on Heroku with Redis To Go Nano]]></title>
+    <link href="http://manuel.manuelles.nl/blog/2012/11/13/sidekiq-on-heroku-with-redistogo-nano/"/>
+    <updated>2012-11-13T15:42:00+01:00</updated>
+    <id>http://manuel.manuelles.nl/blog/2012/11/13/sidekiq-on-heroku-with-redistogo-nano</id>
+    <content type="html"><![CDATA[<p><a href="/blog/2012/11/13/sidekiq-on-heroku-with-redistogo-nano/"><img class="right" src="/images/posts/redis.png" width="200" height="200" title="Redis" ></a> As a follow-up of <a href="/blog/2012/11/13/scalable-heroku-worker-for-sidekiq/">my previous post</a> I want to explain how to get <a href="http://sidekiq.org/">Sidekiq</a> to work on <a href="http://www.heroku.com">Heroku</a> with a <a href="https://addons.heroku.com/redistogo">Redis To Go</a> Nano instance.</p>
+
+<p>Because the Nano instance has some connection limitation you have to make some config changes so you won't get <code>ERR max number of clients reached</code> error messages.</p>
+
+<!-- more -->
+
+
+<h2>Why this post</h2>
+
+<p>Today I've been struggling a lot with getting the Sidekiq to work probably with Redis to Go Nano on Heroku. The main problem was I was having difficulties with the amount of connection's being created to the Redis server. Because the Nano variant is free but large enough for handling normal sized queues of work, we have to face the limitation of 10 connections.</p>
+
+<h2>Why ERR max number of clients reached?</h2>
+
+<p>The error <code>Error fetching message: ERR max number of clients reached</code>, is quite clear isn't it? The actual question is how we can reduce the connections being opened to match the 10 connection limit given by the Nano instance.</p>
+
+<p>After some research I found the factors that you have to tweak in order to reach the magic number of 10.</p>
+
+<ol>
+<li>Sidekiq Client connection size</li>
+<li>Sidekiq Server connection size</li>
+<li>Sidekiq Server reserved connections (reserved for the Fetcher and Retrier)</li>
+<li>Sidekiq concurrency size</li>
+<li>Unicorn worker_process size</li>
+<li>Heroku Web Dyno count</li>
+<li>Heroku Worker count</li>
+</ol>
+
+
+<p>The answer for all our problems could be described in the following sum:</p>
+
+<p>max connections = (Heroku worker count * (concurrency + 2 reserved connections)) + (web dyno count * (client connection size * unicorn worker_process size))</p>
+
+<h2>Don't care why tell me how!</h2>
+
+<p>If you just want to know what you need to change/setup you can go directly to a small tool I've built to calculate the number of connections/concurrencies need for a number of workers/web workers etc.</p>
+
+<p><a href="http://manuel.manuelles.nl/sidekiq-heroku-redis-calc">SidekiqHerokuRedis calculator</a></p>
+
+<h2>Connections and concurrencies</h2>
+
+<p>If you have a small amount of Redis connections we need to make some modifications in order to get all our processes happy and not throwing connection errors around.</p>
+
+<p>At the bottom of this post I'll put my final configuration files.</p>
+
+<h3>Dynos * (unicorns * client size)</h3>
+
+<p>The first thing I changed was the Redis connection size for the client. By default Sidekiq takes <strong>5</strong> connections per client. Because my applications only queries Redis for adding tasks to the Sidekiq queue, one connection should be more than enough.</p>
+
+<p><span class='pullquote-right' data-pullquote='3 workers * dyno count = redis_connections'>
+One mistake I made was forgetting about the number of dynos and Unicorn worker_process size. In my <code>app/config/unicorn.rb</code> I had <code>worker_processes 3</code> defined which actually means 3 workers * dyno count = redis_connections taken by the Client.
+</span></p>
+
+<h4>Examples:</h4>
+
+<p>In my case where I've set the connection size to one we could have the following examples</p>
+
+<ol>
+<li><strong>1</strong> web dyno with <strong>2</strong> unicorn worker_processes takes <strong>2 Redis connections</strong></li>
+<li><strong>2</strong> web dyno with <strong>2</strong> unicorn worker_processes takes <strong>4 Redis connections</strong></li>
+<li><strong>5</strong> web dyno with <strong>4</strong> unicorn worker_processes takes <strong>20 Redis connections</strong></li>
+</ol>
+
+
+<p>If you up the client size to, for example 3 you should also multiply the Redis connections by this number (so for example 3 you'll have 20 * 3 = 60 connections).</p>
+
+<h3>Worker * (concurrency + 2)</h3>
+
+<p>When calculating the number of connections the Sidekiq server needs, we need to modify the number of currencies it initializes on launch. This number represents the number of threads created by the Sidekiq server which will perform queued tasks. Each concurrency/thread takes up 1 Redis connection.</p>
+
+<p>When tweaking this number I found out the Sidekiq server took 2 additional connections upon the concurrency number. This seemed to be default behavior becase Sidekiq server uses these two for the Fetcher and Retrier commands.</p>
+
+<h4>Examples:</h4>
+
+<ol>
+<li><strong>1</strong> worker dyno running Sidekiq, with <strong>1</strong> concurrency takes <strong>3 Redis connections</strong></li>
+<li><strong>1</strong> worker dyno running Sidekiq, with <strong>2</strong> concurrency takes <strong>4 Redis connections</strong></li>
+<li><strong>2</strong> worker dyno running Sidekiq, with <strong>2</strong> concurrency takes <strong>8 Redis connections</strong></li>
+</ol>
+
+
+<p>The default concurrency size of Sidekiq is set to 25 which mean that without modifications you need at least 27 Redis connections for the Sidekiq server.</p>
+
+<h2>My final code</h2>
+
+<p><code>bash
+connection limit:           10
+unicorn processes:           3
+web dynos:                   2
+worker dynos (sidekiq):      1
+client pool size:            1
+server pool size:            2
+concurrency:                 2
+</code></p>
+
+<p>``` ruby app/config/initializers/sidekiq.rb
+require 'sidekiq'</p>
+
+<p>Sidekiq.configure_client do |config|
+  config.redis = { :size => 1 }
+end</p>
+
+<p>Sidekiq.configure_server do |config|
+  config.redis = { :size => 2 }
+end
+```</p>
+
+<p><code>yaml app/config/sidekiq.yml
+:concurrency: 2
+</code></p>
+
+<p><code>bash Procfile
+web: bundle exec unicorn -p $PORT -c ./config/unicorn.rb
+worker: bundle exec sidekiq -e production -C config/sidekiq.yml
+</code></p>
+
+<p><code>ruby app/config/unicorn.rb
+worker_processes 3
+</code></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Scalable Heroku worker for Sidekiq]]></title>
+    <link href="http://manuel.manuelles.nl/blog/2012/11/13/scalable-heroku-worker-for-sidekiq/"/>
+    <updated>2012-11-13T09:02:00+01:00</updated>
+    <id>http://manuel.manuelles.nl/blog/2012/11/13/scalable-heroku-worker-for-sidekiq</id>
+    <content type="html"><![CDATA[<p><a href="/blog/2012/11/13/scalable-heroku-worker-for-sidekiq/"><img class="left" src="/images/posts/more-workers.jpg" width="200" height="200" title="More workers" ></a> In this post I'd like to show you guys how to deploy your Rails application to <a href="http://www.heroku.com/">Heroku</a> with a <a href="http://sidekiq.org/">Sidekiq</a> worker that only gets initiated when there are tasks in the queue to process.</p>
+
+<p>Our goal is to start a worker when a task is added to the queue and to destroy the worker after its done processing the queue tasks. This will result in a much lower bill at the end of the month because the worker doesn't have to be up the whole month.</p>
+
+<!-- more -->
+
+
+<h2>Setting up Sidekiq</h2>
+
+<p>First let's take a look at a default configuration of Sidekiq within a Rails project.</p>
+
+<h3>Add the gem</h3>
+
+<p>First we need to add Sidekiq to our Gemfile and run <code>bundle install</code></p>
+
+<p><code>ruby Gemfile
+gem 'sidekiq'
+</code></p>
+
+<h3>Create a Sidekiq worker</h3>
+
+<p>The worker is very basic. It just performs some heavy task and sends an email after it finished.</p>
+
+<p>``` ruby app/workers/my_worker.rb
+class MyWorker
+  include Sidekiq::Worker</p>
+
+<p>  def perform(id)</p>
+
+<pre><code>object = Model.find(id)
+object.generate_download
+UserMailer.download_is_ready(object).deliver
+</code></pre>
+
+<p>  end
+end
+```</p>
+
+<h3>Procfile</h3>
+
+<p>In our Procfile we have to define the <code>worker</code> line to start the Sidekiq server on a Heroku worker dyno.</p>
+
+<p><code>bash Procfile
+web: bundle exec unicorn -p $PORT -c ./config/unicorn.rb
+worker: bundle exec sidekiq -e production
+</code></p>
+
+<h3>Move heavy task to the queue</h3>
+
+<p>On the controller we probably have a line calling <code>object.generate_download</code> which takes to much time. We'll change this line to execute the <code>MyWorker</code> instead:</p>
+
+<p>``` ruby app/controllers/download_controller.rb
+class DownloadController &lt; ApplicationController
+  def generate</p>
+
+<pre><code>object = Model.find(param[:id])
+# instead of calling object.generate_download we'll do:
+MyWorker.perform_async(object.id)
+</code></pre>
+
+<p>  end
+end
+```</p>
+
+<p><strong>NOTE:</strong> It's recommended not to add the whole object into the worker because this is stored in the Redis database. Also the object might be changed before it's being processed by Sidekiq. Adding the <code>id</code> and fetching the object in the worker is a better approach.</p>
+
+<h2>So far...</h2>
+
+<p>At this point we have configured our Rails project to add tasks to Redis and have Sidekiq perform executing the worker when a task is added. If we deploy our Rails app to Heroku we need to add the Redis To Go addon and add a Heroku worker dyno to our application.</p>
+
+<h3>Running locally</h3>
+
+<p>To test this locally we need:</p>
+
+<ul>
+<li>Redis installed locally and running</li>
+<li>Run the Rails app (<code>bundle exec rails server</code>)</li>
+<li>Run the Sidekiq server (<code>bundle exec sidekiq</code>)</li>
+</ul>
+
+
+<h2>Adding the autoscaler</h2>
+
+<p>At this point the Heroku worker dyno has to be started, to pickup tasks from the queue. It's likely you do not need this worker to run the whole day because the queue might be empty most of the time. Here's where the <a href="http://github.com/JustinLove/autoscaler/">autoscaler gem</a> come's in handy.</p>
+
+<p>This gem acts as Middleware for Sidekiq and performs the following tasks:</p>
+
+<ol>
+<li>When a task is added it checks if a Worker is present.</li>
+<li>When a worker is already running it does nothing and the worker will pickup the task.</li>
+<li>If there isn't a worker running it will create a Heroku worker dyno.</li>
+<li>If the worker finished processing the queue it will keep the worker alive for 60 seconds just in case we add a task to the queue within this time. If no tasks are added it will destroy the worker.</li>
+</ol>
+
+
+<h3>Add the gem</h3>
+
+<p>First we need to add the autoscaler gem to our Gemfile and run <code>bundle install</code></p>
+
+<p><code>ruby Gemfile
+gem 'autoscaler'
+</code></p>
+
+<h3>Adding required ENV variables</h3>
+
+<p>The gem requires two environment variables to be set on your Heroku application. The <code>HEROKU_API_KEY</code> is required to perform creating and removing a Heroku worker dyno and the <code>HEROKU_APP</code> to know on which application it has to create/destroy the worker dyno on.</p>
+
+<p>``` bash</p>
+
+<h1>API KEY can be found on https://dashboard.heroku.com/account</h1>
+
+<p>heroku config:add HEROKU_API_KEY=123-your-key-456
+heroku config:add HEROKU_APP=your_heroku_app_name
+```</p>
+
+<h3>Tweaking the Sidekiq initializer</h3>
+
+<p>Because this gem acts as Middleware we need to create a <code>sidekiq.rb</code> in our initializers folder. This file will check if we are running on Heroku and if so, activates the autoscaler as Middleware.</p>
+
+<p>``` ruby app/config/initializers/sidekiq.rb
+require 'sidekiq'
+require 'autoscaler/sidekiq'
+require 'autoscaler/heroku_scaler'</p>
+
+<p>heroku = nil
+if ENV['HEROKU_APP']
+  heroku = Autoscaler::HerokuScaler.new
+end</p>
+
+<p>Sidekiq.configure_client do |config|
+  if heroku</p>
+
+<pre><code>config.client_middleware do |chain|
+  chain.add Autoscaler::Sidekiq::Client, 'default' =&gt; heroku
+end
+</code></pre>
+
+<p>  end
+end</p>
+
+<p>Sidekiq.configure_server do |config|
+  config.server_middleware do |chain|</p>
+
+<pre><code>if heroku
+  p "[Sidekiq] Running on Heroku, autoscaler is used"
+  chain.add(Autoscaler::Sidekiq::Server, heroku, 60) # 60 seconds timeout
+else
+  p "[Sidekiq] Running locally, so autoscaler isn't used"
+end
+</code></pre>
+
+<p>  end
+end
+```</p>
+
+<h2>Ready to go!</h2>
+
+<p>At this point we're ready to deploy our application to Heroku and let the autscaler automatically create and destroy a worker dyno whenever it needs to process tasks from the Sidekiq queue.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Taking MemSQL for a spin]]></title>
@@ -530,100 +822,6 @@ sqlite&gt; .read dump.sql
 <h2>Result</h2>
 
 <p>And that's it! You now have a stuffed <code>development.sqlite3</code> database with all the production data out of the PostgreSQL database.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Disable Rails callback]]></title>
-    <link href="http://manuel.manuelles.nl/blog/2012/01/12/disable-rails-before-slash-after-callback/"/>
-    <updated>2012-01-12T21:30:00+01:00</updated>
-    <id>http://manuel.manuelles.nl/blog/2012/01/12/disable-rails-before-slash-after-callback</id>
-    <content type="html"><![CDATA[<p><img class="left" src="/images/posts/skip-step.png" width="240" height="240" title="Skip Step" ></p>
-
-<p>Today I've had some difficulties with a Rails migration, that took ages to complete. After some debugging I figured out that the issues was because of the <code>before_save</code> and <code>after_save</code> callbacks.</p>
-
-<p>Of course we could remove the before and after save callbacks to speed up the process, but I don't like the idea of releasing a model that misses these behavior. I mean they're not there for no reason right?</p>
-
-<!-- more -->
-
-
-<p>After some googling I found a quick and easy way to disable the callbacks without modifying the model. Here's an simple example of a model class and a migration the disable the callbacks only within the migration.</p>
-
-<h2>Code solution</h2>
-
-<p>``` ruby app/models/some_model.rb
-class SomeModel &lt; ActiveRecord::Base
-  before_save :before_action
-  after_save :after_action</p>
-
-<p>  private</p>
-
-<pre><code>def before_action
-  # heavy calculation/queries
-  puts "you shouldn't see this"
-end
-
-def after_action
-  # another heavy calculation/queries
-  puts "you shouldn't see this"
-end
-</code></pre>
-
-<p>end
-```</p>
-
-<p>``` ruby db/migrations/20120112092136_update_some_model.rb
-class UpdateSomeModel &lt; ActiveRecord::Migration
-  def up</p>
-
-<pre><code># disable the before_save
-SomeModel.skip_callback(:save, :before, :before_action)
-# disable the after_save
-SomeModel.skip_callback(:save, :after, :after_action)
-
-SomeModel.all.each do | obj |
-  # .. modify obj ...
-
-  obj.save
-  # you shouldn't see the puts defined in the SomeModel before and after actions
-end
-</code></pre>
-
-<p>  end</p>
-
-<p>  def down
-  end
-end
-```</p>
-
-<h2>Supported callbacks</h2>
-
-<p>In the above example I show only two rails callbacks. Here's a list of the supported callbacks you also can disable with it.</p>
-
-<ul>
-<li><code>:after_initialize</code></li>
-<li><code>:after_find</code></li>
-<li><code>:after_touch</code></li>
-<li><code>:before_validation</code></li>
-<li><code>:after_validation</code></li>
-<li><code>:before_save</code></li>
-<li><code>:around_save</code></li>
-<li><code>:after_save</code></li>
-<li><code>:before_create</code></li>
-<li><code>:around_create</code></li>
-<li><code>:after_create</code></li>
-<li><code>:before_update</code></li>
-<li><code>:around_update</code></li>
-<li><code>:after_update</code></li>
-<li><code>:before_destroy</code></li>
-<li><code>:around_destroy</code></li>
-<li><code>:after_destroy</code></li>
-<li><code>:after_commit</code></li>
-<li><code>:after_rollback</code></li>
-</ul>
-
-
-<p>Hope these could help you out some day =)</p>
 ]]></content>
   </entry>
   

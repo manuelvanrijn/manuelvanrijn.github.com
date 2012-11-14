@@ -4,7 +4,7 @@
   <title><![CDATA[Manuel van Rijn]]></title>
   <link href="http://manuel.manuelles.nl/atom.xml" rel="self"/>
   <link href="http://manuel.manuelles.nl/"/>
-  <updated>2012-09-18T08:58:36+02:00</updated>
+  <updated>2012-11-14T15:16:05+01:00</updated>
   <id>http://manuel.manuelles.nl/</id>
   <author>
     <name><![CDATA[Manuel van Rijn]]></name>
@@ -12,6 +12,362 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Sidekiq on Heroku with Redis To Go Nano]]></title>
+    <link href="http://manuel.manuelles.nl/blog/2012/11/13/sidekiq-on-heroku-with-redistogo-nano/"/>
+    <updated>2012-11-13T15:42:00+01:00</updated>
+    <id>http://manuel.manuelles.nl/blog/2012/11/13/sidekiq-on-heroku-with-redistogo-nano</id>
+    <content type="html"><![CDATA[<p><a href="http://manuel.manuelles.nl/blog/2012/11/13/sidekiq-on-heroku-with-redistogo-nano/"><img class="right" src="http://manuel.manuelles.nl/images/posts/redis.png" width="200" height="200" title="Redis" ></a> As a follow-up of <a href="http://manuel.manuelles.nl/blog/2012/11/13/scalable-heroku-worker-for-sidekiq/">my previous post</a> I want to explain how to get <a href="http://sidekiq.org/">Sidekiq</a> to work on <a href="http://www.heroku.com">Heroku</a> with a <a href="https://addons.heroku.com/redistogo">Redis To Go</a> Nano instance.</p>
+
+<p>Because the Nano instance has some connection limitation you have to make some config changes so you won&#8217;t get <code>ERR max number of clients reached</code> error messages.</p>
+
+<!-- more -->
+
+
+<h2>Why this post</h2>
+
+<p>Today I&#8217;ve been struggling a lot with getting the Sidekiq to work probably with Redis to Go Nano on Heroku. The main problem was I was having difficulties with the amount of connection&#8217;s being created to the Redis server. Because the Nano variant is free but large enough for handling normal sized queues of work, we have to face the limitation of 10 connections.</p>
+
+<h2>Why ERR max number of clients reached?</h2>
+
+<p>The error <code>Error fetching message: ERR max number of clients reached</code>, is quite clear isn&#8217;t it? The actual question is how we can reduce the connections being opened to match the 10 connection limit given by the Nano instance.</p>
+
+<p>After some research I found the factors that you have to tweak in order to reach the magic number of 10.</p>
+
+<ol>
+<li>Sidekiq Client connection size</li>
+<li>Sidekiq Server connection size</li>
+<li>Sidekiq Server reserved connections (reserved for the Fetcher and Retrier)</li>
+<li>Sidekiq concurrency size</li>
+<li>Unicorn worker_process size</li>
+<li>Heroku Web Dyno count</li>
+<li>Heroku Worker count</li>
+</ol>
+
+
+<p>The answer for all our problems could be described in the following sum:</p>
+
+<p>max connections = (Heroku worker count * (concurrency + 2 reserved connections)) + (web dyno count * (client connection size * unicorn worker_process size))</p>
+
+<h2>Don&#8217;t care why tell me how!</h2>
+
+<p>If you just want to know what you need to change/setup you can go directly to a small tool I&#8217;ve built to calculate the number of connections/concurrencies need for a number of workers/web workers etc.</p>
+
+<p><a href="http://manuel.manuelles.nl/sidekiq-heroku-redis-calc">SidekiqHerokuRedis calculator</a></p>
+
+<h2>Connections and concurrencies</h2>
+
+<p>If you have a small amount of Redis connections we need to make some modifications in order to get all our processes happy and not throwing connection errors around.</p>
+
+<p>At the bottom of this post I&#8217;ll put my final configuration files.</p>
+
+<h3>Dynos * (unicorns * client size)</h3>
+
+<p>The first thing I changed was the Redis connection size for the client. By default Sidekiq takes <strong>5</strong> connections per client. Because my applications only queries Redis for adding tasks to the Sidekiq queue, one connection should be more than enough.</p>
+
+<p><span class='pullquote-right' data-pullquote='3 workers * dyno count = redis_connections'>
+One mistake I made was forgetting about the number of dynos and Unicorn worker_process size. In my <code>app/config/unicorn.rb</code> I had <code>worker_processes 3</code> defined which actually means 3 workers * dyno count = redis_connections taken by the Client.
+</span></p>
+
+<h4>Examples:</h4>
+
+<p>In my case where I&#8217;ve set the connection size to one we could have the following examples</p>
+
+<ol>
+<li><strong>1</strong> web dyno with <strong>2</strong> unicorn worker_processes takes <strong>2 Redis connections</strong></li>
+<li><strong>2</strong> web dyno with <strong>2</strong> unicorn worker_processes takes <strong>4 Redis connections</strong></li>
+<li><strong>5</strong> web dyno with <strong>4</strong> unicorn worker_processes takes <strong>20 Redis connections</strong></li>
+</ol>
+
+
+<p>If you up the client size to, for example 3 you should also multiply the Redis connections by this number (so for example 3 you&#8217;ll have 20 * 3 = 60 connections).</p>
+
+<h3>Worker * (concurrency + 2)</h3>
+
+<p>When calculating the number of connections the Sidekiq server needs, we need to modify the number of currencies it initializes on launch. This number represents the number of threads created by the Sidekiq server which will perform queued tasks. Each concurrency/thread takes up 1 Redis connection.</p>
+
+<p>When tweaking this number I found out the Sidekiq server took 2 additional connections upon the concurrency number. This seemed to be default behavior becase Sidekiq server uses these two for the Fetcher and Retrier commands.</p>
+
+<h4>Examples:</h4>
+
+<ol>
+<li><strong>1</strong> worker dyno running Sidekiq, with <strong>1</strong> concurrency takes <strong>3 Redis connections</strong></li>
+<li><strong>1</strong> worker dyno running Sidekiq, with <strong>2</strong> concurrency takes <strong>4 Redis connections</strong></li>
+<li><strong>2</strong> worker dyno running Sidekiq, with <strong>2</strong> concurrency takes <strong>8 Redis connections</strong></li>
+</ol>
+
+
+<p>The default concurrency size of Sidekiq is set to 25 which mean that without modifications you need at least 27 Redis connections for the Sidekiq server.</p>
+
+<h2>My final code</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>connection limit:           10
+</span><span class='line'>unicorn processes:           3
+</span><span class='line'>web dynos:                   2
+</span><span class='line'>worker dynos <span class="o">(</span>sidekiq<span class="o">)</span>:      1
+</span><span class='line'>client pool size:            1
+</span><span class='line'>server pool size:            2
+</span><span class='line'>concurrency:                 2
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>app/config/initializers/sidekiq.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;sidekiq&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">Sidekiq</span><span class="o">.</span><span class="n">configure_client</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
+</span><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">redis</span> <span class="o">=</span> <span class="p">{</span> <span class="ss">:size</span> <span class="o">=&gt;</span> <span class="mi">1</span> <span class="p">}</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">Sidekiq</span><span class="o">.</span><span class="n">configure_server</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
+</span><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">redis</span> <span class="o">=</span> <span class="p">{</span> <span class="ss">:size</span> <span class="o">=&gt;</span> <span class="mi">2</span> <span class="p">}</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>app/config/sidekiq.yml</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='yaml'><span class='line'><span class="l-Scalar-Plain">:concurrency</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">2</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>Procfile</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>web: bundle <span class="nb">exec </span>unicorn -p <span class="nv">$PORT</span> -c ./config/unicorn.rb
+</span><span class='line'>worker: bundle <span class="nb">exec </span>sidekiq -e production -C config/sidekiq.yml
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>app/config/unicorn.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">worker_processes</span> <span class="mi">3</span>
+</span></code></pre></td></tr></table></div></figure>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Scalable Heroku worker for Sidekiq]]></title>
+    <link href="http://manuel.manuelles.nl/blog/2012/11/13/scalable-heroku-worker-for-sidekiq/"/>
+    <updated>2012-11-13T09:02:00+01:00</updated>
+    <id>http://manuel.manuelles.nl/blog/2012/11/13/scalable-heroku-worker-for-sidekiq</id>
+    <content type="html"><![CDATA[<p><a href="http://manuel.manuelles.nl/blog/2012/11/13/scalable-heroku-worker-for-sidekiq/"><img class="left" src="http://manuel.manuelles.nl/images/posts/more-workers.jpg" width="200" height="200" title="More workers" ></a> In this post I&#8217;d like to show you guys how to deploy your Rails application to <a href="http://www.heroku.com/">Heroku</a> with a <a href="http://sidekiq.org/">Sidekiq</a> worker that only gets initiated when there are tasks in the queue to process.</p>
+
+<p>Our goal is to start a worker when a task is added to the queue and to destroy the worker after its done processing the queue tasks. This will result in a much lower bill at the end of the month because the worker doesn&#8217;t have to be up the whole month.</p>
+
+<!-- more -->
+
+
+<h2>Setting up Sidekiq</h2>
+
+<p>First let&#8217;s take a look at a default configuration of Sidekiq within a Rails project.</p>
+
+<h3>Add the gem</h3>
+
+<p>First we need to add Sidekiq to our Gemfile and run <code>bundle install</code></p>
+
+<figure class='code'><figcaption><span>Gemfile</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">gem</span> <span class="s1">&#39;sidekiq&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Create a Sidekiq worker</h3>
+
+<p>The worker is very basic. It just performs some heavy task and sends an email after it finished.</p>
+
+<figure class='code'><figcaption><span>app/workers/my_worker.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">MyWorker</span>
+</span><span class='line'>  <span class="kp">include</span> <span class="no">Sidekiq</span><span class="o">::</span><span class="no">Worker</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">perform</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">object</span> <span class="o">=</span> <span class="no">Model</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">object</span><span class="o">.</span><span class="n">generate_download</span>
+</span><span class='line'>    <span class="no">UserMailer</span><span class="o">.</span><span class="n">download_is_ready</span><span class="p">(</span><span class="n">object</span><span class="p">)</span><span class="o">.</span><span class="n">deliver</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Procfile</h3>
+
+<p>In our Procfile we have to define the <code>worker</code> line to start the Sidekiq server on a Heroku worker dyno.</p>
+
+<figure class='code'><figcaption><span>Procfile</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>web: bundle <span class="nb">exec </span>unicorn -p <span class="nv">$PORT</span> -c ./config/unicorn.rb
+</span><span class='line'>worker: bundle <span class="nb">exec </span>sidekiq -e production
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Move heavy task to the queue</h3>
+
+<p>On the controller we probably have a line calling <code>object.generate_download</code> which takes to much time. We&#8217;ll change this line to execute the <code>MyWorker</code> instead:</p>
+
+<figure class='code'><figcaption><span>app/controllers/download_controller.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">DownloadController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">generate</span>
+</span><span class='line'>    <span class="n">object</span> <span class="o">=</span> <span class="no">Model</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">param</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span>
+</span><span class='line'>    <span class="c1"># instead of calling object.generate_download we&#39;ll do:</span>
+</span><span class='line'>    <span class="no">MyWorker</span><span class="o">.</span><span class="n">perform_async</span><span class="p">(</span><span class="n">object</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><strong>NOTE:</strong> It&#8217;s recommended not to add the whole object into the worker because this is stored in the Redis database. Also the object might be changed before it&#8217;s being processed by Sidekiq. Adding the <code>id</code> and fetching the object in the worker is a better approach.</p>
+
+<h2>So far&#8230;</h2>
+
+<p>At this point we have configured our Rails project to add tasks to Redis and have Sidekiq perform executing the worker when a task is added. If we deploy our Rails app to Heroku we need to add the Redis To Go addon and add a Heroku worker dyno to our application.</p>
+
+<h3>Running locally</h3>
+
+<p>To test this locally we need:</p>
+
+<ul>
+<li>Redis installed locally and running</li>
+<li>Run the Rails app (<code>bundle exec rails server</code>)</li>
+<li>Run the Sidekiq server (<code>bundle exec sidekiq</code>)</li>
+</ul>
+
+
+<h2>Adding the autoscaler</h2>
+
+<p>At this point the Heroku worker dyno has to be started, to pickup tasks from the queue. It&#8217;s likely you do not need this worker to run the whole day because the queue might be empty most of the time. Here&#8217;s where the <a href="http://github.com/JustinLove/autoscaler/">autoscaler gem</a> come&#8217;s in handy.</p>
+
+<p>This gem acts as Middleware for Sidekiq and performs the following tasks:</p>
+
+<ol>
+<li>When a task is added it checks if a Worker is present.</li>
+<li>When a worker is already running it does nothing and the worker will pickup the task.</li>
+<li>If there isn&#8217;t a worker running it will create a Heroku worker dyno.</li>
+<li>If the worker finished processing the queue it will keep the worker alive for 60 seconds just in case we add a task to the queue within this time. If no tasks are added it will destroy the worker.</li>
+</ol>
+
+
+<h3>Add the gem</h3>
+
+<p>First we need to add the autoscaler gem to our Gemfile and run <code>bundle install</code></p>
+
+<figure class='code'><figcaption><span>Gemfile</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">gem</span> <span class="s1">&#39;autoscaler&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Adding required ENV variables</h3>
+
+<p>The gem requires two environment variables to be set on your Heroku application. The <code>HEROKU_API_KEY</code> is required to perform creating and removing a Heroku worker dyno and the <code>HEROKU_APP</code> to know on which application it has to create/destroy the worker dyno on.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c"># API KEY can be found on https://dashboard.heroku.com/account</span>
+</span><span class='line'>heroku config:add <span class="nv">HEROKU_API_KEY</span><span class="o">=</span>123-your-key-456
+</span><span class='line'>heroku config:add <span class="nv">HEROKU_APP</span><span class="o">=</span>your_heroku_app_name
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Tweaking the Sidekiq initializer</h3>
+
+<p>Because this gem acts as Middleware we need to create a <code>sidekiq.rb</code> in our initializers folder. This file will check if we are running on Heroku and if so, activates the autoscaler as Middleware.</p>
+
+<figure class='code'><figcaption><span>app/config/initializers/sidekiq.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;sidekiq&#39;</span>
+</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;autoscaler/sidekiq&#39;</span>
+</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;autoscaler/heroku_scaler&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">heroku</span> <span class="o">=</span> <span class="kp">nil</span>
+</span><span class='line'><span class="k">if</span> <span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;HEROKU_APP&#39;</span><span class="o">]</span>
+</span><span class='line'>  <span class="n">heroku</span> <span class="o">=</span> <span class="no">Autoscaler</span><span class="o">::</span><span class="no">HerokuScaler</span><span class="o">.</span><span class="n">new</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">Sidekiq</span><span class="o">.</span><span class="n">configure_client</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
+</span><span class='line'>  <span class="k">if</span> <span class="n">heroku</span>
+</span><span class='line'>    <span class="n">config</span><span class="o">.</span><span class="n">client_middleware</span> <span class="k">do</span> <span class="o">|</span><span class="n">chain</span><span class="o">|</span>
+</span><span class='line'>      <span class="n">chain</span><span class="o">.</span><span class="n">add</span> <span class="no">Autoscaler</span><span class="o">::</span><span class="no">Sidekiq</span><span class="o">::</span><span class="no">Client</span><span class="p">,</span> <span class="s1">&#39;default&#39;</span> <span class="o">=&gt;</span> <span class="n">heroku</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">Sidekiq</span><span class="o">.</span><span class="n">configure_server</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
+</span><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">server_middleware</span> <span class="k">do</span> <span class="o">|</span><span class="n">chain</span><span class="o">|</span>
+</span><span class='line'>    <span class="k">if</span> <span class="n">heroku</span>
+</span><span class='line'>      <span class="nb">p</span> <span class="s2">&quot;[Sidekiq] Running on Heroku, autoscaler is used&quot;</span>
+</span><span class='line'>      <span class="n">chain</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="no">Autoscaler</span><span class="o">::</span><span class="no">Sidekiq</span><span class="o">::</span><span class="no">Server</span><span class="p">,</span> <span class="n">heroku</span><span class="p">,</span> <span class="mi">60</span><span class="p">)</span> <span class="c1"># 60 seconds timeout</span>
+</span><span class='line'>    <span class="k">else</span>
+</span><span class='line'>      <span class="nb">p</span> <span class="s2">&quot;[Sidekiq] Running locally, so autoscaler isn&#39;t used&quot;</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Ready to go!</h2>
+
+<p>At this point we&#8217;re ready to deploy our application to Heroku and let the autscaler automatically create and destroy a worker dyno whenever it needs to process tasks from the Sidekiq queue.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Yeoman meets Travis CI]]></title>

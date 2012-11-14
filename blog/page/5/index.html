@@ -1,0 +1,332 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Manuel van Rijn</title>
+  <meta name="author" content="Manuel van Rijn">
+
+  
+  <meta name="description" content="In the past weeks I&#8217;ve looked into a problem that kept us from releasing to Heroku, because the git repository was to large. In time the &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://manuel.manuelles.nl/blog/page/5/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/stylesheets/zocial/zocial.css" media="screen, projection" rel="stylesheet" type="text/css">
+
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Manuel van Rijn" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-17149124-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Manuel van Rijn</a></h1>
+  
+    <h2>Bit blog</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:manuel.manuelles.nl" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/work">Work</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div class="blog-index">
+  
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2011/12/22/shrinking-your-git-repository/">Shrinking your Git repository</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-12-22T15:01:00+01:00" pubdate data-updated="true">Dec 22<span>nd</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>In the past weeks I&#8217;ve looked into a problem that kept us from releasing to <a href="http://www.heroku.com/" title="Heroku">Heroku</a>, because the git repository was to large. In time the repository has grown to approximate <strong>180 Mb</strong>.</p>
+
+<p><img class="right" src="/images/posts/shrink-mario.jpg" width="140" height="140" title="Shrink!" ></p>
+
+<p>In the past we&#8217;ve made some decisions that we probably wouldn&#8217;t take again. We for example, we decided to store the gem files in the vendor folder and having the rails code included in our repository. Our goal then was, that releasing the project with <a href="http://www.capify.org" title="Capistrano">Capistrano</a> would be easier and faster, because it didn&#8217;t have to download all the gem&#8217;s.</p>
+
+<p>Anyway at this point we don&#8217;t have the gem&#8217;s stored anymore in the vendor folder. Since tools like <a href="http://beginrescueend.com/" title="Ruby version Manager">RVM</a> and <a href="https://github.com/sstephenson/rbenv/" title="rbenv">rbenv</a> we store these within the ruby/rails version of that specific project.</p>
+
+<p>Still we have the problem that the repository contains files etc. we want to remove to shrink the size of it.</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2011/12/22/shrinking-your-git-repository/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2011/12/08/intro-start-blogging-like-a-hacker/">Intro: Start blogging like a hacker(?)</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-12-08T15:28:00+01:00" pubdate data-updated="true">Dec 8<span>th</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>I&#8217;ve just decided to switch from <a href="http://www.wordpress.com/" title="Wordpress">Wordpress</a> to <a href="http://octopress.org/" title="Octopress">Octopress</a> because I wanted something new and not something over-featured</p>
+
+<p>All the plugins and choice&#8217;s I had to made, and the maintenance of all these, just kept me from doing what I supposed to do with it, blogging.</p>
+
+<p><span class='pullquote-right' data-pullquote='A blogging framework for hackers.'>
+So after some googling what a good alternative would be for Wordpress I found <em>Octopress</em> A blogging framework for hackers. Alright +1 for the title
+</span></p>
+
+<p>So basically Octopress generates (bakes) HTML content from the <a href="http://daringfireball.net/projects/markdown/" title="Markdown">Markdown</a> content you write. I like this simplicity and I love the syntax.</p>
+
+<p><a href="http://octopress.org/" title="Octopress">Octopress</a> give&#8217;s you the functionality to host it on your own server, but also to host it on <a href="http://www.heroku.com/" title="Heroku">Heroku</a> or <a href="https://github.com/" title="Github">Github</a>. Beside the Git approach (push your source and deploy the generated code to the master branch) you can use RSync to sync files to your server. I use <a href="https://github.com" title="Github">Github</a> to store my source and generated html.</p>
+
+<p>Enough talking about <a href="http://octopress.org/" title="Octopress">Octopress</a> for now. I&#8217;ll hope to post my next post soon.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  <div class="pagination">
+    
+    <a href="/blog/archives">Blog Archives</a>
+    
+    <a class="next" href="/blog/page/4/">Newer &rarr;</a>
+    
+  </div>
+</div>
+<aside class="sidebar">
+  
+    <section>
+  <h1>About Me</h1>
+  <p>
+    <img class="left" src="http://www.gravatar.com/avatar/5c42621691011e9f8fcabf1b4e23d4ad?s=80" title="Manuel van Rijn" />
+    <small>
+      Manuel van Rijn<br />
+      27 years old<br />
+      Front- Backend Developer
+      Work: <a href="http://www.auxilium.nl/">www.auxilium.nl</a><br /><br />
+      <a rel="author" href="https://github.com/manuelvanrijn" class="zocial icon github">Manuel van Rijn on Github</a>
+      <a rel="author" href="http://nl.linkedin.com/in/manuelvanrijn" class="zocial icon linkedin">Manuel van Rijn on LinkedIn</a>
+      <a rel="author" href="http://facebook.com/manuelvanrijn" class="zocial icon facebook">Manuel van Rijn on Facebook</a>
+      <a rel="author" href="http://twitter.com/manuelvanrijn" class="zocial icon twitter">Manuel van Rijn on Twitter</a>
+      <a rel="me" href="https://plus.google.com/u/0/117895812778172164201?rel=author" title="Manuel van Rijn" class="zocial icon googleplus">Manuel van Rijn on Google+</a>
+    </small>
+  </p>
+</section>
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/11/13/sidekiq-on-heroku-with-redistogo-nano/">Sidekiq on Heroku with Redis To Go Nano</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/11/13/scalable-heroku-worker-for-sidekiq/">Scalable Heroku worker for Sidekiq</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/09/17/yeoman-meets-travis-ci/">Yeoman meets Travis CI</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/07/26/select-total-rows-from-database/">SELECT total_rows FROM database</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/06/22/integrate-travis-ci-into-grunt/">Integrate Travis CI into Grunt</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/06/20/taking-memsql-for-a-spin/">Taking MemSQL for a spin</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/04/04/installing-android-skd-for-eclipse/">Installing Android SKD for Eclipse</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/03/20/failed-to-build-gem-native-extension/">Failed to build gem native extension</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/02/29/mollie-bank/">Mollie Bank</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/01/19/rake-pull-me-that-db/">“Rake, pull me that DB!”</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+<section class="googleplus googleplus-hidden">
+  <h1>
+    <a href="https://plus.google.com/manuelvanrijn?rel=author">
+      <img src="http://www.google.com/images/icons/ui/gprofile_button-32.png" width="32" height="32">
+      Google+
+    </a>
+  </h1>
+</section>
+
+
+
+<section id="stackoverflow">
+  <h1>Stack Overflow</h1>
+  <a href="http://stackoverflow.com/users/959041/manuel-van-rijn">
+  <img src="http://stackoverflow.com/users/flair/959041.png?theme=default" width="208" height="58" alt="profile for Manuel van Rijn at Stack Overflow, Q&amp;A for professional and enthusiast programmers" title="profile for Manuel van Rijn at Stack Overflow, Q&amp;A for professional and enthusiast programmers">
+  </a>
+</section>
+
+
+  
+</aside>
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2012 - Manuel van Rijn -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'manuelvanrijn';
+      
+        
+        var disqus_script = 'count.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

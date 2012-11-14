@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: scale | Manuel van Rijn]]></title>
+  <link href="http://manuel.manuelles.nl/blog/categories/scale/atom.xml" rel="self"/>
+  <link href="http://manuel.manuelles.nl/"/>
+  <updated>2012-11-14T15:16:05+01:00</updated>
+  <id>http://manuel.manuelles.nl/</id>
+  <author>
+    <name><![CDATA[Manuel van Rijn]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Scalable Heroku worker for Sidekiq]]></title>
+    <link href="http://manuel.manuelles.nl/blog/2012/11/13/scalable-heroku-worker-for-sidekiq/"/>
+    <updated>2012-11-13T09:02:00+01:00</updated>
+    <id>http://manuel.manuelles.nl/blog/2012/11/13/scalable-heroku-worker-for-sidekiq</id>
+    <content type="html"><![CDATA[<p><a href="/blog/2012/11/13/scalable-heroku-worker-for-sidekiq/"><img class="left" src="/images/posts/more-workers.jpg" width="200" height="200" title="More workers" ></a> In this post I'd like to show you guys how to deploy your Rails application to <a href="http://www.heroku.com/">Heroku</a> with a <a href="http://sidekiq.org/">Sidekiq</a> worker that only gets initiated when there are tasks in the queue to process.</p>
+
+<p>Our goal is to start a worker when a task is added to the queue and to destroy the worker after its done processing the queue tasks. This will result in a much lower bill at the end of the month because the worker doesn't have to be up the whole month.</p>
+
+<!-- more -->
+
+
+<h2>Setting up Sidekiq</h2>
+
+<p>First let's take a look at a default configuration of Sidekiq within a Rails project.</p>
+
+<h3>Add the gem</h3>
+
+<p>First we need to add Sidekiq to our Gemfile and run <code>bundle install</code></p>
+
+<p><code>ruby Gemfile
+gem 'sidekiq'
+</code></p>
+
+<h3>Create a Sidekiq worker</h3>
+
+<p>The worker is very basic. It just performs some heavy task and sends an email after it finished.</p>
+
+<p>``` ruby app/workers/my_worker.rb
+class MyWorker
+  include Sidekiq::Worker</p>
+
+<p>  def perform(id)</p>
+
+<pre><code>object = Model.find(id)
+object.generate_download
+UserMailer.download_is_ready(object).deliver
+</code></pre>
+
+<p>  end
+end
+```</p>
+
+<h3>Procfile</h3>
+
+<p>In our Procfile we have to define the <code>worker</code> line to start the Sidekiq server on a Heroku worker dyno.</p>
+
+<p><code>bash Procfile
+web: bundle exec unicorn -p $PORT -c ./config/unicorn.rb
+worker: bundle exec sidekiq -e production
+</code></p>
+
+<h3>Move heavy task to the queue</h3>
+
+<p>On the controller we probably have a line calling <code>object.generate_download</code> which takes to much time. We'll change this line to execute the <code>MyWorker</code> instead:</p>
+
+<p>``` ruby app/controllers/download_controller.rb
+class DownloadController &lt; ApplicationController
+  def generate</p>
+
+<pre><code>object = Model.find(param[:id])
+# instead of calling object.generate_download we'll do:
+MyWorker.perform_async(object.id)
+</code></pre>
+
+<p>  end
+end
+```</p>
+
+<p><strong>NOTE:</strong> It's recommended not to add the whole object into the worker because this is stored in the Redis database. Also the object might be changed before it's being processed by Sidekiq. Adding the <code>id</code> and fetching the object in the worker is a better approach.</p>
+
+<h2>So far...</h2>
+
+<p>At this point we have configured our Rails project to add tasks to Redis and have Sidekiq perform executing the worker when a task is added. If we deploy our Rails app to Heroku we need to add the Redis To Go addon and add a Heroku worker dyno to our application.</p>
+
+<h3>Running locally</h3>
+
+<p>To test this locally we need:</p>
+
+<ul>
+<li>Redis installed locally and running</li>
+<li>Run the Rails app (<code>bundle exec rails server</code>)</li>
+<li>Run the Sidekiq server (<code>bundle exec sidekiq</code>)</li>
+</ul>
+
+
+<h2>Adding the autoscaler</h2>
+
+<p>At this point the Heroku worker dyno has to be started, to pickup tasks from the queue. It's likely you do not need this worker to run the whole day because the queue might be empty most of the time. Here's where the <a href="http://github.com/JustinLove/autoscaler/">autoscaler gem</a> come's in handy.</p>
+
+<p>This gem acts as Middleware for Sidekiq and performs the following tasks:</p>
+
+<ol>
+<li>When a task is added it checks if a Worker is present.</li>
+<li>When a worker is already running it does nothing and the worker will pickup the task.</li>
+<li>If there isn't a worker running it will create a Heroku worker dyno.</li>
+<li>If the worker finished processing the queue it will keep the worker alive for 60 seconds just in case we add a task to the queue within this time. If no tasks are added it will destroy the worker.</li>
+</ol>
+
+
+<h3>Add the gem</h3>
+
+<p>First we need to add the autoscaler gem to our Gemfile and run <code>bundle install</code></p>
+
+<p><code>ruby Gemfile
+gem 'autoscaler'
+</code></p>
+
+<h3>Adding required ENV variables</h3>
+
+<p>The gem requires two environment variables to be set on your Heroku application. The <code>HEROKU_API_KEY</code> is required to perform creating and removing a Heroku worker dyno and the <code>HEROKU_APP</code> to know on which application it has to create/destroy the worker dyno on.</p>
+
+<p>``` bash</p>
+
+<h1>API KEY can be found on https://dashboard.heroku.com/account</h1>
+
+<p>heroku config:add HEROKU_API_KEY=123-your-key-456
+heroku config:add HEROKU_APP=your_heroku_app_name
+```</p>
+
+<h3>Tweaking the Sidekiq initializer</h3>
+
+<p>Because this gem acts as Middleware we need to create a <code>sidekiq.rb</code> in our initializers folder. This file will check if we are running on Heroku and if so, activates the autoscaler as Middleware.</p>
+
+<p>``` ruby app/config/initializers/sidekiq.rb
+require 'sidekiq'
+require 'autoscaler/sidekiq'
+require 'autoscaler/heroku_scaler'</p>
+
+<p>heroku = nil
+if ENV['HEROKU_APP']
+  heroku = Autoscaler::HerokuScaler.new
+end</p>
+
+<p>Sidekiq.configure_client do |config|
+  if heroku</p>
+
+<pre><code>config.client_middleware do |chain|
+  chain.add Autoscaler::Sidekiq::Client, 'default' =&gt; heroku
+end
+</code></pre>
+
+<p>  end
+end</p>
+
+<p>Sidekiq.configure_server do |config|
+  config.server_middleware do |chain|</p>
+
+<pre><code>if heroku
+  p "[Sidekiq] Running on Heroku, autoscaler is used"
+  chain.add(Autoscaler::Sidekiq::Server, heroku, 60) # 60 seconds timeout
+else
+  p "[Sidekiq] Running locally, so autoscaler isn't used"
+end
+</code></pre>
+
+<p>  end
+end
+```</p>
+
+<h2>Ready to go!</h2>
+
+<p>At this point we're ready to deploy our application to Heroku and let the autscaler automatically create and destroy a worker dyno whenever it needs to process tasks from the Sidekiq queue.</p>
+]]></content>
+  </entry>
+  
+</feed>

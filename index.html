@@ -9,7 +9,7 @@
   <meta name="author" content="Manuel van Rijn">
 
   
-  <meta name="description" content="Today I&#8217;d like to show how you can integrate Travis CI within your Yeoman project. Travis CI is a hosted continuous integration service for &hellip;">
+  <meta name="description" content="As a follow-up of my previous post I want to explain how to get Sidekiq to work on Heroku with a Redis To Go Nano instance. Because the Nano &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -85,6 +85,92 @@
       
   <header>
     
+      <h1 class="entry-title"><a href="/blog/2012/11/13/sidekiq-on-heroku-with-redistogo-nano/">Sidekiq on Heroku with Redis To Go Nano</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-11-13T15:42:00+01:00" pubdate data-updated="true">Nov 13<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><a href="/blog/2012/11/13/sidekiq-on-heroku-with-redistogo-nano/"><img class="right" src="/images/posts/redis.png" width="200" height="200" title="Redis" ></a> As a follow-up of <a href="/blog/2012/11/13/scalable-heroku-worker-for-sidekiq/">my previous post</a> I want to explain how to get <a href="http://sidekiq.org/">Sidekiq</a> to work on <a href="http://www.heroku.com">Heroku</a> with a <a href="https://addons.heroku.com/redistogo">Redis To Go</a> Nano instance.</p>
+
+<p>Because the Nano instance has some connection limitation you have to make some config changes so you won&#8217;t get <code>ERR max number of clients reached</code> error messages.</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2012/11/13/sidekiq-on-heroku-with-redistogo-nano/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/11/13/scalable-heroku-worker-for-sidekiq/">Scalable Heroku worker for Sidekiq</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-11-13T09:02:00+01:00" pubdate data-updated="true">Nov 13<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><a href="/blog/2012/11/13/scalable-heroku-worker-for-sidekiq/"><img class="left" src="/images/posts/more-workers.jpg" width="200" height="200" title="More workers" ></a> In this post I&#8217;d like to show you guys how to deploy your Rails application to <a href="http://www.heroku.com/">Heroku</a> with a <a href="http://sidekiq.org/">Sidekiq</a> worker that only gets initiated when there are tasks in the queue to process.</p>
+
+<p>Our goal is to start a worker when a task is added to the queue and to destroy the worker after its done processing the queue tasks. This will result in a much lower bill at the end of the month because the worker doesn&#8217;t have to be up the whole month.</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2012/11/13/scalable-heroku-worker-for-sidekiq/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
       <h1 class="entry-title"><a href="/blog/2012/09/17/yeoman-meets-travis-ci/">Yeoman meets Travis CI</a></h1>
     
     
@@ -123,90 +209,6 @@
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/07/26/select-total-rows-from-database/">SELECT total_rows FROM database</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-07-26T14:34:00+02:00" pubdate data-updated="true">Jul 26<span>th</span>, 2012</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p><a href="/blog/2012/07/26/select-total-rows-from-database/"><img class="left" src="/images/posts/heroku-postgres.png" width="200" height="200" title="Heroku Postgres" ></a> On the first of August this year, <a href="http://www.heroku.com">Heroku</a> will add 2 new plans to their database add-on known as <strong>Dev</strong> and <strong>Basic</strong>. Both plans have a row limit restriction and that made me thinking how I could fetch that number with one simple query.</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2012/07/26/select-total-rows-from-database/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/06/22/integrate-travis-ci-into-grunt/">Integrate Travis CI into Grunt</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-06-22T15:04:00+02:00" pubdate data-updated="true">Jun 22<span>nd</span>, 2012</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p><a href="/blog/2012/06/22/integrate-travis-ci-into-grunt/"><img class="right" src="/images/posts/travis-grunt.jpg" width="200" height="200" title="Code Fail" ></a> Today I&#8217;ve done some research how to get my latest jQuery plugin (<a href="http://manuel.manuelles.nl/jquery-numeric_input/">jquery-numeric_input</a>) to be tested automatically with the help of <a href="http://travis-ci.org/">Travis CI</a>. Travis CI is a hosted continuous integration service for open source projects.</p>
-
-<p>Because I&#8217;ve just finished the latest functionality of the plugin I wanted to add the project to Travis CI, just like I do with all my other projects (the ones with unit tests).</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2012/06/22/integrate-travis-ci-into-grunt/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -239,6 +241,14 @@
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2012/11/13/sidekiq-on-heroku-with-redistogo-nano/">Sidekiq on Heroku with Redis To Go Nano</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/11/13/scalable-heroku-worker-for-sidekiq/">Scalable Heroku worker for Sidekiq</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2012/09/17/yeoman-meets-travis-ci/">Yeoman meets Travis CI</a>
       </li>
     
@@ -268,14 +278,6 @@
     
       <li class="post">
         <a href="/blog/2012/01/19/rake-pull-me-that-db/">“Rake, pull me that DB!”</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/01/18/convert-postgresql-to-sqlite/">Convert PostgreSQL to SQLite</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/01/12/disable-rails-before-slash-after-callback/">Disable Rails callback</a>
       </li>
     
   </ul>

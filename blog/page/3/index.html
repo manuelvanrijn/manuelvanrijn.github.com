@@ -9,7 +9,7 @@
   <meta name="author" content="Manuel van Rijn">
 
   
-  <meta name="description" content="The past week I&#8217;ve been working with the iDeal API from Mollie. Mollie is a company that give&#8217;s us developers an easy way to make iDeal &hellip;">
+  <meta name="description" content="Today I was trying to install the Android SDK for Eclipse for a new project I&#8217;ll work on. After downloading the necessary packages I got some &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -85,6 +85,103 @@
       
   <header>
     
+      <h1 class="entry-title"><a href="/blog/2012/04/04/installing-android-skd-for-eclipse/">Installing Android SKD for Eclipse</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-04-04T09:53:00+02:00" pubdate data-updated="true">Apr 4<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><img class="right" src="/images/posts/android.jpg" width="140" height="140" title="Android!" > Today I was trying to install the Android SDK for Eclipse for a new project I&#8217;ll work on. After downloading the necessary packages I got some strange error I couldn&#8217;t resolve quickly, so I like to share the solution with you guys.</p>
+
+<p>The error Eclipse returned was</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Cannot complete the install because one or more required items could not be found.
+</span><span class='line'>Software being installed: Android Development Tools **** (com.android.ide.eclipse.adt.feature.group ****)
+</span><span class='line'>Missing requirement: Android Development Tools **** (com.android.ide.eclipse.adt.feature.group ****)
+</span><span class='line'>requires 'org.eclipse.wst.sse.core 0.0.0' but it could not be found</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2012/04/04/installing-android-skd-for-eclipse/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/03/20/failed-to-build-gem-native-extension/">Failed to build gem native extension</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-03-20T13:14:00+01:00" pubdate data-updated="true">Mar 20<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><img class="left" src="/images/posts/failed-gem.jpg" width="140" height="140" title="Go fix!" >
+Today I had to reinstall my Linux installation because my harddisk died a quick dead. While configuring all the software I use to develop I got some weird error after I&#8217;d installed <a href="https://github.com/sstephenson/rbenv">rbenv</a> and tried to execute <code>bundle install</code> on one of our projects.<br /><br /></p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2012/03/20/failed-to-build-gem-native-extension/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
       <h1 class="entry-title"><a href="/blog/2012/02/29/mollie-bank/">Mollie Bank</a></h1>
     
     
@@ -125,94 +222,6 @@
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/01/19/rake-pull-me-that-db/">“Rake, pull me that DB!”</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-01-19T15:15:00+01:00" pubdate data-updated="true">Jan 19<span>th</span>, 2012</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>After writing my last article how to <a href="http://manuel.manuelles.nl/blog/2012/01/18/convert-postgresql-to-sqlite/" title="How to: Convert a PostgreSQL database to a SQLite database">Convert PostgreSQL to SQLite</a>, I was asked why this couldn&#8217;t be automated?</p>
-
-<p>So I started coding and managed to create a <a href="http://rake.rubyforge.org/" title="Rake -- Ruby Make">Rake</a> task that will do all of the steps I described in the article in just a few seconds!</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2012/01/19/rake-pull-me-that-db/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/01/18/convert-postgresql-to-sqlite/">Convert PostgreSQL to SQLite</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-01-18T00:30:00+01:00" pubdate data-updated="true">Jan 18<span>th</span>, 2012</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p><img class="right" src="/images/posts/postgres-to-sqlite.png" width="220" height="220" title="Postgres to SQLite" ></p>
-
-<p>Today I&#8217;d like to share the steps I take when I need to convert a <a href="http://www.postgresql.org/" title="PostgreSQL">PostgreSQL</a> database into a <a href="http://www.sqlite.org/" title="SQLite">SQLite</a> database.</p>
-
-<p>Commonly I have to do this when a <a href="http://rubyonrails.org/" title="Ruby on Rails">Ruby on Rails</a> application is in production and I have to check some issues with the production data. In the production environment we usually use a PostgreSQL database and for developing I use a SQLite database, so we need some conversion.</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2012/01/18/convert-postgresql-to-sqlite/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/4/">&larr; Older</a>
@@ -247,6 +256,14 @@
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2012/11/13/sidekiq-on-heroku-with-redistogo-nano/">Sidekiq on Heroku with Redis To Go Nano</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/11/13/scalable-heroku-worker-for-sidekiq/">Scalable Heroku worker for Sidekiq</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2012/09/17/yeoman-meets-travis-ci/">Yeoman meets Travis CI</a>
       </li>
     
@@ -276,14 +293,6 @@
     
       <li class="post">
         <a href="/blog/2012/01/19/rake-pull-me-that-db/">“Rake, pull me that DB!”</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/01/18/convert-postgresql-to-sqlite/">Convert PostgreSQL to SQLite</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/01/12/disable-rails-before-slash-after-callback/">Disable Rails callback</a>
       </li>
     
   </ul>
