@@ -7,7 +7,7 @@ categories: [sidekiq, heroku, redis, redis to go, connections, rails, ruby, thre
 published: true
 ---
 
-[{% img right /images/posts/redis.png 200 200 Yeoman %}](/blog/2012/06/22/integrate-travis-ci-into-grunt/) As a follow-up of [my previous post](/blog/2012/11/13/scalable-heroku-worker-for-sidekiq/) I want to explain how to get [Sidekiq](http://sidekiq.org/) to work on [Heroku](http://www.heroku.com) with a [Redis To Go](https://addons.heroku.com/redistogo) Nano instance.
+[{% img right /images/posts/redis.png 200 200 Redis %}](/blog/2012/11/13/sidekiq-on-heroku-with-redistogo-nano/) As a follow-up of [my previous post](/blog/2012/11/13/scalable-heroku-worker-for-sidekiq/) I want to explain how to get [Sidekiq](http://sidekiq.org/) to work on [Heroku](http://www.heroku.com) with a [Redis To Go](https://addons.heroku.com/redistogo) Nano instance.
 
 Because the Nano instance has some connection limitation you have to make some config changes so you won't get `ERR max number of clients reached` error messages.
 

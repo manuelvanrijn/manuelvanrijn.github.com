@@ -6,7 +6,11 @@ sharing: true
 footer: true
 ---
 
-[Ruby](#ruby) - [jQuery/Javascript](#jquery) - [Node](#node) - [.NET](#net)
+[Web Tools](#web-tools) - [Ruby](#ruby) - [jQuery/Javascript](#jquery) - [Node](#node) - [.NET](#net)
+
+## <a id="ruby"></a>Web Tools
+
+1. **[sidekiq-heroku-redis-calc](http://manuel.manuelles.nl/sidekiq-heroku-redis-calc)** - Connection and concurrency calculator for hosting Sidekiq on Heroku with Redis to Go.
 
 ## <a id="ruby"></a>Ruby
 
