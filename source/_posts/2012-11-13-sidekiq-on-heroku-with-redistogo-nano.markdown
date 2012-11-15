@@ -17,6 +17,12 @@ Because the Nano instance has some connection limitation you have to make some c
 
 Today I've been struggling a lot with getting the Sidekiq to work probably with Redis to Go Nano on Heroku. The main problem was I was having difficulties with the amount of connection's being created to the Redis server. Because the Nano variant is free but large enough for handling normal sized queues of work, we have to face the limitation of 10 connections.
 
+## A calculation Tool!
+
+If you just want to know what you need to change/setup you can go directly to a small tool I've built to calculate the number of connections/concurrencies need for a number of workers/web workers etc.
+
+<a href="http://manuel.manuelles.nl/sidekiq-heroku-redis-calc" class="special_button">SidekiqHerokuRedis calculator</a>
+
 ## Why ERR max number of clients reached?
 
 The error `Error fetching message: ERR max number of clients reached`, is quite clear isn't it? The actual question is how we can reduce the connections being opened to match the 10 connection limit given by the Nano instance.
@@ -34,12 +40,6 @@ After some research I found the factors that you have to tweak in order to reach
 The answer for all our problems could be described in the following sum:
 
 max connections = (Heroku worker count * (concurrency + 2 reserved connections)) + (web dyno count * (client connection size * unicorn worker_process size))
-
-## Don't care why tell me how!
-
-If you just want to know what you need to change/setup you can go directly to a small tool I've built to calculate the number of connections/concurrencies need for a number of workers/web workers etc.
-
-[SidekiqHerokuRedis calculator](http://manuel.manuelles.nl/sidekiq-heroku-redis-calc)
 
 ## Connections and concurrencies
 
