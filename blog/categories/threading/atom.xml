@@ -4,7 +4,7 @@
   <title><![CDATA[Category: threading | Manuel van Rijn]]></title>
   <link href="http://manuel.manuelles.nl/blog/categories/threading/atom.xml" rel="self"/>
   <link href="http://manuel.manuelles.nl/"/>
-  <updated>2012-11-14T15:16:05+01:00</updated>
+  <updated>2012-11-15T10:39:14+01:00</updated>
   <id>http://manuel.manuelles.nl/</id>
   <author>
     <name><![CDATA[Manuel van Rijn]]></name>
@@ -29,6 +29,12 @@
 
 <p>Today I've been struggling a lot with getting the Sidekiq to work probably with Redis to Go Nano on Heroku. The main problem was I was having difficulties with the amount of connection's being created to the Redis server. Because the Nano variant is free but large enough for handling normal sized queues of work, we have to face the limitation of 10 connections.</p>
 
+<h2>A calculation Tool!</h2>
+
+<p>If you just want to know what you need to change/setup you can go directly to a small tool I've built to calculate the number of connections/concurrencies need for a number of workers/web workers etc.</p>
+
+<p><a href="http://manuel.manuelles.nl/sidekiq-heroku-redis-calc" class="special_button">SidekiqHerokuRedis calculator</a></p>
+
 <h2>Why ERR max number of clients reached?</h2>
 
 <p>The error <code>Error fetching message: ERR max number of clients reached</code>, is quite clear isn't it? The actual question is how we can reduce the connections being opened to match the 10 connection limit given by the Nano instance.</p>
@@ -49,12 +55,6 @@
 <p>The answer for all our problems could be described in the following sum:</p>
 
 <p>max connections = (Heroku worker count * (concurrency + 2 reserved connections)) + (web dyno count * (client connection size * unicorn worker_process size))</p>
-
-<h2>Don't care why tell me how!</h2>
-
-<p>If you just want to know what you need to change/setup you can go directly to a small tool I've built to calculate the number of connections/concurrencies need for a number of workers/web workers etc.</p>
-
-<p><a href="http://manuel.manuelles.nl/sidekiq-heroku-redis-calc">SidekiqHerokuRedis calculator</a></p>
 
 <h2>Connections and concurrencies</h2>
 
