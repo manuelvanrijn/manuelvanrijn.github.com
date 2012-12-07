@@ -2,76 +2,76 @@
 <urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
     <url>
         <loc>http://manuel.manuelles.nl/blog/2011/12/08/intro-start-blogging-like-a-hacker/</loc>
-        <lastmod>2012-07-19T11:27:06+02:00</lastmod>
+        <lastmod>2012-12-07T14:09:41+01:00</lastmod>
     </url>
     <url>
         <loc>http://manuel.manuelles.nl/blog/2011/12/22/shrinking-your-git-repository/</loc>
-        <lastmod>2012-07-19T11:27:06+02:00</lastmod>
+        <lastmod>2012-12-07T14:09:41+01:00</lastmod>
     </url>
     <url>
         <loc>
             http://manuel.manuelles.nl/blog/2012/01/12/disable-rails-before-slash-after-callback/
         </loc>
-        <lastmod>2012-07-19T11:27:06+02:00</lastmod>
+        <lastmod>2012-12-07T14:09:41+01:00</lastmod>
     </url>
     <url>
         <loc>http://manuel.manuelles.nl/blog/2012/01/18/convert-postgresql-to-sqlite/</loc>
-        <lastmod>2012-07-19T11:27:06+02:00</lastmod>
+        <lastmod>2012-12-07T14:09:41+01:00</lastmod>
     </url>
     <url>
         <loc>http://manuel.manuelles.nl/blog/2012/01/19/rake-pull-me-that-db/</loc>
-        <lastmod>2012-07-19T11:27:06+02:00</lastmod>
+        <lastmod>2012-12-07T14:09:41+01:00</lastmod>
     </url>
     <url>
         <loc>http://manuel.manuelles.nl/blog/2012/02/29/mollie-bank/</loc>
-        <lastmod>2012-07-19T11:27:06+02:00</lastmod>
+        <lastmod>2012-12-07T14:09:41+01:00</lastmod>
     </url>
     <url>
         <loc>
             http://manuel.manuelles.nl/blog/2012/03/20/failed-to-build-gem-native-extension/
         </loc>
-        <lastmod>2012-07-19T11:27:06+02:00</lastmod>
+        <lastmod>2012-12-07T14:09:41+01:00</lastmod>
     </url>
     <url>
         <loc>http://manuel.manuelles.nl/blog/2012/04/04/installing-android-skd-for-eclipse/</loc>
-        <lastmod>2012-07-19T11:27:06+02:00</lastmod>
+        <lastmod>2012-12-07T14:09:41+01:00</lastmod>
     </url>
     <url>
         <loc>http://manuel.manuelles.nl/blog/2012/06/20/taking-memsql-for-a-spin/</loc>
-        <lastmod>2012-07-19T11:27:06+02:00</lastmod>
+        <lastmod>2012-12-07T14:09:41+01:00</lastmod>
     </url>
     <url>
         <loc>http://manuel.manuelles.nl/blog/2012/06/22/integrate-travis-ci-into-grunt/</loc>
-        <lastmod>2012-09-18T08:58:00+02:00</lastmod>
+        <lastmod>2012-12-07T14:09:41+01:00</lastmod>
     </url>
     <url>
         <loc>http://manuel.manuelles.nl/blog/2012/07/26/select-total-rows-from-database/</loc>
-        <lastmod>2012-07-30T10:13:11+02:00</lastmod>
+        <lastmod>2012-12-07T14:09:41+01:00</lastmod>
     </url>
     <url>
         <loc>http://manuel.manuelles.nl/blog/2012/09/17/yeoman-meets-travis-ci/</loc>
-        <lastmod>2012-09-18T08:57:05+02:00</lastmod>
+        <lastmod>2012-12-07T14:09:41+01:00</lastmod>
     </url>
     <url>
         <loc>http://manuel.manuelles.nl/blog/2012/11/13/scalable-heroku-worker-for-sidekiq/</loc>
-        <lastmod>2012-11-14T15:02:03+01:00</lastmod>
+        <lastmod>2012-12-07T14:09:41+01:00</lastmod>
     </url>
     <url>
         <loc>
             http://manuel.manuelles.nl/blog/2012/11/13/sidekiq-on-heroku-with-redistogo-nano/
         </loc>
-        <lastmod>2012-11-15T10:34:01+01:00</lastmod>
+        <lastmod>2012-12-07T14:09:41+01:00</lastmod>
     </url>
     <url>
         <loc>http://manuel.manuelles.nl/blog/archives/</loc>
-        <lastmod>2012-11-15T10:34:01+01:00</lastmod>
+        <lastmod>2012-12-07T14:09:41+01:00</lastmod>
     </url>
     <url>
         <loc>http://manuel.manuelles.nl/</loc>
-        <lastmod>2012-11-15T10:34:01+01:00</lastmod>
+        <lastmod>2012-12-07T14:09:41+01:00</lastmod>
     </url>
     <url>
         <loc>http://manuel.manuelles.nl/work/</loc>
-        <lastmod>2012-11-14T15:15:27+01:00</lastmod>
+        <lastmod>2012-12-07T14:09:41+01:00</lastmod>
     </url>
 </urlset>
