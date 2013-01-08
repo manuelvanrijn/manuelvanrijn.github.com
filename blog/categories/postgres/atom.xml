@@ -4,7 +4,7 @@
   <title><![CDATA[Category: postgres | Manuel van Rijn]]></title>
   <link href="http://manuel.manuelles.nl/blog/categories/postgres/atom.xml" rel="self"/>
   <link href="http://manuel.manuelles.nl/"/>
-  <updated>2012-12-07T14:14:36+01:00</updated>
+  <updated>2013-01-08T11:22:34+01:00</updated>
   <id>http://manuel.manuelles.nl/</id>
   <author>
     <name><![CDATA[Manuel van Rijn]]></name>
@@ -81,7 +81,7 @@ WHERE
 
 <p>With this query it was easy to transform it into a SUM for all rowCount's we retrieve. Here's the final query to retrieve the total number of rows from all tables of a Postgres database</p>
 
-<p><div><script src='https://gist.github.com/3205631.js?file='></script>
+<p><div><script src='https://gist.github.com/3205631.js'></script>
 <noscript><pre><code>SELECT
   SUM(pgClass.reltuples) AS totalRowCount
 FROM

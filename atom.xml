@@ -4,7 +4,7 @@
   <title><![CDATA[Manuel van Rijn]]></title>
   <link href="http://manuel.manuelles.nl/atom.xml" rel="self"/>
   <link href="http://manuel.manuelles.nl/"/>
-  <updated>2012-12-07T14:14:36+01:00</updated>
+  <updated>2013-01-08T11:22:34+01:00</updated>
   <id>http://manuel.manuelles.nl/</id>
   <author>
     <name><![CDATA[Manuel van Rijn]]></name>
@@ -539,7 +539,7 @@ One mistake I made was forgetting about the number of dynos and Unicorn worker_p
 
 <p>With this query it was easy to transform it into a SUM for all rowCount&#8217;s we retrieve. Here&#8217;s the final query to retrieve the total number of rows from all tables of a Postgres database</p>
 
-<div><script src='https://gist.github.com/3205631.js?file='></script>
+<div><script src='https://gist.github.com/3205631.js'></script>
 <noscript><pre><code>SELECT
   SUM(pgClass.reltuples) AS totalRowCount
 FROM
@@ -1501,7 +1501,7 @@ end</code></pre></noscript></div>
 
 <p>First we have to track down what files are making our repository so large. I&#8217;ve found a perl script that scans your repository for files of a specific size. Here&#8217;s the code:</p>
 
-<div><script src='https://gist.github.com/1354502.js?file='></script>
+<div><script src='https://gist.github.com/1354502.js'></script>
 <noscript><pre><code>#!/usr/bin/perl
 use 5.008;
 use strict;
