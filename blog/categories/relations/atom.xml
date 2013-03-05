@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: relations | Manuel van Rijn]]></title>
+  <link href="http://manuel.manuelles.nl/blog/categories/relations/atom.xml" rel="self"/>
+  <link href="http://manuel.manuelles.nl/"/>
+  <updated>2013-03-05T09:50:40+01:00</updated>
+  <id>http://manuel.manuelles.nl/</id>
+  <author>
+    <name><![CDATA[Manuel van Rijn]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Rails belongs_to to has_many]]></title>
+    <link href="http://manuel.manuelles.nl/blog/2013/03/04/rails-belongs-to-to-has-many/"/>
+    <updated>2013-03-04T17:19:00+01:00</updated>
+    <id>http://manuel.manuelles.nl/blog/2013/03/04/rails-belongs-to-to-has-many</id>
+    <content type="html"><![CDATA[<p><a href="/blog/2013/03/04/rails-belongs-to-to-has-many/"><img class="left" src="/images/posts/habtm-migration.jpg" width="250" height="250" title="Migration what?!" ></a> Today I had to change a <code>belongs_to</code> associate to an <code>has_and_belongs_to_many</code> in a Rails project I'm currently working on. Not that hard you would say, but there were some catches for deploying/migrating these changes to the production environment.</p>
+
+<br />
+
+
+<p>In this post I'd like to explain how to achieve this without having to do multiple deployments of your model to maintain a consistent database schema and model.</p>
+
+<!-- more -->
+
+
+<h2>TL;DR;</h2>
+
+<p>Here you can find <a href="#final-migration">the final migration</a>. Note that this example could also be solved with plain sql instead of using ActiveRecord, but there might be cases were you depend on the ActiveRecord associates. In these cases this is a great workaround</p>
+
+<h2>The problem</h2>
+
+<p>Let's say we have a Article that belongs to a Category. Our model would look like something like this:</p>
+
+<p><code>ruby
+class Article &lt; ActiveRecord::Base
+  attr_accessible :title, :content
+  belongs_to :category
+end
+</code></p>
+
+<p>And the executed migration would look like this:</p>
+
+<p>```ruby
+class CreateArticle &lt; ActiveRecord::Migration
+  def change</p>
+
+<pre><code>create_table :articles do |t|
+  t.string :title
+  t.text :content
+  t.references :category
+end
+</code></pre>
+
+<p>  end
+end
+```</p>
+
+<h2>The initial migration</h2>
+
+<p>First let's create a new table that can hold the associate between multiple Articles and Categories. The migration would look like this:</p>
+
+<p>```ruby
+class MultipleCategoriesForArticles &lt; ActiveRecord::Migration
+  def up</p>
+
+<pre><code>create_table :articles_categories, :id =&gt; false do |t|
+  t.references :article, :category
+end
+</code></pre>
+
+<p>  end</p>
+
+<p>  def down</p>
+
+<pre><code>drop_table :articles_categories
+</code></pre>
+
+<p>  end
+end
+```</p>
+
+<p>At this point all is fine and we can migrate the database without any problems. Only this doesn't add the current category to the new collection of categories.</p>
+
+<h3>Moving the belongs_to associate</h3>
+
+<p>Here's were the problem actually starts, because to move the category to the categories collection for the articles, we have to define the <code>belongs_to</code> but also the <code>has_and_belongs_to_many</code> associate on the <code>Article</code> model.</p>
+
+<p>I don't like this approach because we'll have to define both these associates and the <code>belongs_to</code> should be removed in the next release. So how to deal with this?</p>
+
+<p><a id="final-migration"></a></p>
+
+<h2>The fix</h2>
+
+<p>The fix is quite simple. We remove the <code>belongs_to</code> associate from the model and only define the new <code>has_and_belongs_to_many</code> associate and within the migration we extend the model with the "old" <code>belongs_to</code> associate so we can use this within the migration.</p>
+
+<p>So our files will look like this</p>
+
+<p><code>ruby app/models/article.rb
+class Article &lt; ActiveRecord::Base
+  attr_accessible :title, :content
+  has_and_belongs_to_many :categories
+end
+</code></p>
+
+<p>```ruby db/migrate/20130305120000_multiple_categories_for_articles.rb
+class MultipleCategoriesForArticles &lt; ActiveRecord::Migration
+  def up</p>
+
+<pre><code>create_table :articles_categories, :id =&gt; false do |t|
+  t.references :article, :category
+end
+
+# define the old belongs_to category associate
+Article.class_eval do
+  belongs_to :old_category,
+             :class_name =&gt; "Category",
+             :foreign_key =&gt; "category_id"
+end
+
+# add the belongs_to category to the has_and_belongs_to_many categories
+Article.all.each do | article |
+  article.categories &lt;&lt; article.old_category
+  article.save
+end
+
+# remove the old category_id column for the belongs_to associate
+remove_column :articles, :category_id
+</code></pre>
+
+<p>  end</p>
+
+<p>  def down</p>
+
+<pre><code>add_column :articles, :category_id, :integer
+
+Article.class_eval do
+  belongs_to :new_category,
+             :class_name =&gt; "Category",
+             :foreign_key =&gt; "category_id"
+end
+
+Article.all.each do | article |
+  # NOTE: we'll grabe the first category, so if there are more, these will be lost!
+  article.new_category &lt;&lt; article.categories.first
+  article.save
+end
+
+drop_table :articles_categories
+</code></pre>
+
+<p>  end
+end
+```</p>
+]]></content>
+  </entry>
+  
+</feed>

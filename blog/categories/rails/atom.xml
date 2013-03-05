@@ -4,7 +4,7 @@
   <title><![CDATA[Category: rails | Manuel van Rijn]]></title>
   <link href="http://manuel.manuelles.nl/blog/categories/rails/atom.xml" rel="self"/>
   <link href="http://manuel.manuelles.nl/"/>
-  <updated>2013-01-08T11:22:34+01:00</updated>
+  <updated>2013-03-05T09:50:40+01:00</updated>
   <id>http://manuel.manuelles.nl/</id>
   <author>
     <name><![CDATA[Manuel van Rijn]]></name>
@@ -12,6 +12,152 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Rails belongs_to to has_many]]></title>
+    <link href="http://manuel.manuelles.nl/blog/2013/03/04/rails-belongs-to-to-has-many/"/>
+    <updated>2013-03-04T17:19:00+01:00</updated>
+    <id>http://manuel.manuelles.nl/blog/2013/03/04/rails-belongs-to-to-has-many</id>
+    <content type="html"><![CDATA[<p><a href="/blog/2013/03/04/rails-belongs-to-to-has-many/"><img class="left" src="/images/posts/habtm-migration.jpg" width="250" height="250" title="Migration what?!" ></a> Today I had to change a <code>belongs_to</code> associate to an <code>has_and_belongs_to_many</code> in a Rails project I'm currently working on. Not that hard you would say, but there were some catches for deploying/migrating these changes to the production environment.</p>
+
+<br />
+
+
+<p>In this post I'd like to explain how to achieve this without having to do multiple deployments of your model to maintain a consistent database schema and model.</p>
+
+<!-- more -->
+
+
+<h2>TL;DR;</h2>
+
+<p>Here you can find <a href="#final-migration">the final migration</a>. Note that this example could also be solved with plain sql instead of using ActiveRecord, but there might be cases were you depend on the ActiveRecord associates. In these cases this is a great workaround</p>
+
+<h2>The problem</h2>
+
+<p>Let's say we have a Article that belongs to a Category. Our model would look like something like this:</p>
+
+<p><code>ruby
+class Article &lt; ActiveRecord::Base
+  attr_accessible :title, :content
+  belongs_to :category
+end
+</code></p>
+
+<p>And the executed migration would look like this:</p>
+
+<p>```ruby
+class CreateArticle &lt; ActiveRecord::Migration
+  def change</p>
+
+<pre><code>create_table :articles do |t|
+  t.string :title
+  t.text :content
+  t.references :category
+end
+</code></pre>
+
+<p>  end
+end
+```</p>
+
+<h2>The initial migration</h2>
+
+<p>First let's create a new table that can hold the associate between multiple Articles and Categories. The migration would look like this:</p>
+
+<p>```ruby
+class MultipleCategoriesForArticles &lt; ActiveRecord::Migration
+  def up</p>
+
+<pre><code>create_table :articles_categories, :id =&gt; false do |t|
+  t.references :article, :category
+end
+</code></pre>
+
+<p>  end</p>
+
+<p>  def down</p>
+
+<pre><code>drop_table :articles_categories
+</code></pre>
+
+<p>  end
+end
+```</p>
+
+<p>At this point all is fine and we can migrate the database without any problems. Only this doesn't add the current category to the new collection of categories.</p>
+
+<h3>Moving the belongs_to associate</h3>
+
+<p>Here's were the problem actually starts, because to move the category to the categories collection for the articles, we have to define the <code>belongs_to</code> but also the <code>has_and_belongs_to_many</code> associate on the <code>Article</code> model.</p>
+
+<p>I don't like this approach because we'll have to define both these associates and the <code>belongs_to</code> should be removed in the next release. So how to deal with this?</p>
+
+<p><a id="final-migration"></a></p>
+
+<h2>The fix</h2>
+
+<p>The fix is quite simple. We remove the <code>belongs_to</code> associate from the model and only define the new <code>has_and_belongs_to_many</code> associate and within the migration we extend the model with the "old" <code>belongs_to</code> associate so we can use this within the migration.</p>
+
+<p>So our files will look like this</p>
+
+<p><code>ruby app/models/article.rb
+class Article &lt; ActiveRecord::Base
+  attr_accessible :title, :content
+  has_and_belongs_to_many :categories
+end
+</code></p>
+
+<p>```ruby db/migrate/20130305120000_multiple_categories_for_articles.rb
+class MultipleCategoriesForArticles &lt; ActiveRecord::Migration
+  def up</p>
+
+<pre><code>create_table :articles_categories, :id =&gt; false do |t|
+  t.references :article, :category
+end
+
+# define the old belongs_to category associate
+Article.class_eval do
+  belongs_to :old_category,
+             :class_name =&gt; "Category",
+             :foreign_key =&gt; "category_id"
+end
+
+# add the belongs_to category to the has_and_belongs_to_many categories
+Article.all.each do | article |
+  article.categories &lt;&lt; article.old_category
+  article.save
+end
+
+# remove the old category_id column for the belongs_to associate
+remove_column :articles, :category_id
+</code></pre>
+
+<p>  end</p>
+
+<p>  def down</p>
+
+<pre><code>add_column :articles, :category_id, :integer
+
+Article.class_eval do
+  belongs_to :new_category,
+             :class_name =&gt; "Category",
+             :foreign_key =&gt; "category_id"
+end
+
+Article.all.each do | article |
+  # NOTE: we'll grabe the first category, so if there are more, these will be lost!
+  article.new_category &lt;&lt; article.categories.first
+  article.save
+end
+
+drop_table :articles_categories
+</code></pre>
+
+<p>  end
+end
+```</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Sidekiq on Heroku with Redis To Go Nano]]></title>
@@ -526,29 +672,29 @@ production:
 <p>Put the following code into <code>libs/tasks/database.rake</code></p>
 
 <p><div><script src='https://gist.github.com/1640429.js?file=database.rake'></script>
-<noscript><pre><code>require 'fileutils'
+<noscript><pre><code>require &#39;fileutils&#39;
 
 namespace :db do
-  desc 'pull the production PostgreSQL database into the development SQLite'
+  desc &#39;pull the production PostgreSQL database into the development SQLite&#39;
   task :pull do
-    Rake::Task['db:download_pg_dump'].invoke
-    Rake::Task['db:optimze_pg_dump_for_sqlite'].invoke
-    Rake::Task['db:recreate_with_dump'].invoke
+    Rake::Task[&#39;db:download_pg_dump&#39;].invoke
+    Rake::Task[&#39;db:optimze_pg_dump_for_sqlite&#39;].invoke
+    Rake::Task[&#39;db:recreate_with_dump&#39;].invoke
   end
 
-  desc 'download the pg_dump content into tmp/dump.sql'
+  desc &#39;download the pg_dump content into tmp/dump.sql&#39;
   task :download_pg_dump do
     config = Rails.application.config.database_configuration
 
-    abort &quot;Missing production database config&quot; if config['production'].blank?
+    abort &quot;Missing production database config&quot; if config[&#39;production&#39;].blank?
 
-    dev  = config['development']
-    prod = config['production']
+    dev  = config[&#39;development&#39;]
+    prod = config[&#39;production&#39;]
 
-    abort &quot;Development db is not sqlite3&quot; unless dev['adapter'] =~ /sqlite3/
-    abort &quot;Production db is not postgresql&quot; unless prod['adapter'] =~ /postgresql/
-    abort &quot;Missing ssh host&quot; if prod['ssh_host'].blank?
-    abort &quot;Missing database name&quot; if prod['database'].blank?
+    abort &quot;Development db is not sqlite3&quot; unless dev[&#39;adapter&#39;] =~ /sqlite3/
+    abort &quot;Production db is not postgresql&quot; unless prod[&#39;adapter&#39;] =~ /postgresql/
+    abort &quot;Missing ssh host&quot; if prod[&#39;ssh_host&#39;].blank?
+    abort &quot;Missing database name&quot; if prod[&#39;database&#39;].blank?
 
     # remove the old one
     if File.exists?(pg_dump_file_path)
@@ -556,33 +702,33 @@ namespace :db do
     end
 
     cmd  = &quot;ssh -C &quot;
-    cmd &lt;&lt; &quot;#{prod['ssh_user']}@&quot; if prod['ssh_user'].present?
-    cmd &lt;&lt; &quot;#{prod['ssh_host']} &quot;
-    cmd &lt;&lt; &quot;PGPASSWORD=#{prod['password']} &quot;
+    cmd &lt;&lt; &quot;#{prod[&#39;ssh_user&#39;]}@&quot; if prod[&#39;ssh_user&#39;].present?
+    cmd &lt;&lt; &quot;#{prod[&#39;ssh_host&#39;]} &quot;
+    cmd &lt;&lt; &quot;PGPASSWORD=#{prod[&#39;password&#39;]} &quot;
     cmd &lt;&lt; &quot;pg_dump --data-only --inserts &quot;
-    cmd &lt;&lt; &quot;--username=#{prod['username']} #{prod['database']} &gt; &quot;
+    cmd &lt;&lt; &quot;--username=#{prod[&#39;username&#39;]} #{prod[&#39;database&#39;]} &gt; &quot;
     cmd &lt;&lt; pg_dump_file_path
 
     system `#{cmd}`
   end
 
-  desc 'remove unused statements and optimze sql for SQLite'
+  desc &#39;remove unused statements and optimze sql for SQLite&#39;
   task :optimze_pg_dump_for_sqlite do
     result = []
     lines = File.readlines(pg_dump_file_path)
     @version = 0
     lines.each do | line |
-      next if line =~ /SELECT pg_catalog.setval/  # sequence value's
+      next if line =~ /SELECT pg_catalog.setval/  # sequence value&#39;s
       next if line =~ /SET /                      # postgres specific config
       next if line =~ /--/                        # comment
 
       if line =~ /INSERT INTO schema_migrations/
-        @version = line.match(/INSERT INTO schema_migrations VALUES \('([\d]*)/)[1]
+        @version = line.match(/INSERT INTO schema_migrations VALUES \(&#39;([\d]*)/)[1]
       end
 
-      # replace true and false for 't' and 'f'
-      line.gsub!(&quot;true&quot;,&quot;'t'&quot;)
-      line.gsub!(&quot;false&quot;,&quot;'f'&quot;)
+      # replace true and false for &#39;t&#39; and &#39;f&#39;
+      line.gsub!(&quot;true&quot;,&quot;&#39;t&#39;&quot;)
+      line.gsub!(&quot;false&quot;,&quot;&#39;f&#39;&quot;)
       result &lt;&lt; line
     end
 
@@ -594,21 +740,21 @@ namespace :db do
     end
   end
 
-  desc 'backup development.sqlite3 and create a new one with the dumped data'
+  desc &#39;backup development.sqlite3 and create a new one with the dumped data&#39;
   task :recreate_with_dump do
     # sqlite so backup
-    database = Rails.configuration.database_configuration['development']['database']
+    database = Rails.configuration.database_configuration[&#39;development&#39;][&#39;database&#39;]
     database_path = File.expand_path(&quot;#{Rails.root}/#{database}&quot;)
     # remove old backup
-    if File.exists?(database_path + '.backup')
-      File.delete(database_path + '.backup')
+    if File.exists?(database_path + &#39;.backup&#39;)
+      File.delete(database_path + &#39;.backup&#39;)
     end
     # copy current for backup
-    FileUtils.cp database_path, database_path + '.backup' if File.exists?(database_path)
+    FileUtils.cp database_path, database_path + &#39;.backup&#39; if File.exists?(database_path)
 
     # dropping and re-creating db
-    ENV['VERSION'] = @version
-    Rake::Task['db:drop'].invoke
+    ENV[&#39;VERSION&#39;] = @version
+    Rake::Task[&#39;db:drop&#39;].invoke
     Rake::Task[&quot;db:migrate&quot;].invoke
 
     puts &quot;migrated to version: #{@version}&quot;
@@ -619,7 +765,7 @@ namespace :db do
     system `sqlite3 #{database_path} &quot;.read #{pg_dump_file_path}&quot;`
 
     puts &quot;DONE!&quot;
-    puts &quot;NOTE: you're now migrated to version #{@version}. Please run db:migrate to apply newer migrations&quot;
+    puts &quot;NOTE: you&#39;re now migrated to version #{@version}. Please run db:migrate to apply newer migrations&quot;
   end
 
   def pg_dump_file_path
@@ -676,152 +822,6 @@ ssh-copy-id -i root@productionserver.com
 <p><code>
 ssh root@productionserver.com
 </code></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Convert PostgreSQL to SQLite]]></title>
-    <link href="http://manuel.manuelles.nl/blog/2012/01/18/convert-postgresql-to-sqlite/"/>
-    <updated>2012-01-18T00:30:00+01:00</updated>
-    <id>http://manuel.manuelles.nl/blog/2012/01/18/convert-postgresql-to-sqlite</id>
-    <content type="html"><![CDATA[<p><img class="right" src="/images/posts/postgres-to-sqlite.png" width="220" height="220" title="Postgres to SQLite" ></p>
-
-<p>Today I'd like to share the steps I take when I need to convert a <a href="http://www.postgresql.org/" title="PostgreSQL">PostgreSQL</a> database into a <a href="http://www.sqlite.org/" title="SQLite">SQLite</a> database.</p>
-
-<p>Commonly I have to do this when a <a href="http://rubyonrails.org/" title="Ruby on Rails">Ruby on Rails</a> application is in production and I have to check some issues with the production data. In the production environment we usually use a PostgreSQL database and for developing I use a SQLite database, so we need some conversion.</p>
-
-<!-- more -->
-
-
-<h2>Short story a.k.a I know what I'm doing.</h2>
-
-<ol>
-<li>Create a dump of the PostgreSQL database.
-<code>ssh -C username@hostname.com pg_dump --data-only --inserts YOUR_DB_NAME &gt; dump.sql</code></li>
-<li>Remove/modify the dump.
-
-<ul>
-<li>Remove the lines starting with <code>SET</code></li>
-<li>Remove the lines starting with <code>SELECT pg_catalog.setval</code></li>
-<li>Replace true for 't'</li>
-<li>Replace false for 'f'</li>
-<li>Add <code>BEGIN;</code> as first line and <code>END;</code> as last line</li>
-</ul>
-</li>
-<li>Recreate an empty development database.
-<code>bundle exec rake db:migrate</code></li>
-<li>Import the dump.
-<code>bash
-sqlite3 db/development.sqlite3
-sqlite&gt; delete from schema_migrations;
-sqlite&gt; .read dump.sql
-</code>
-
-<h2>Longer story a.k.a please explain a little more.</h2></li>
-</ol>
-
-
-<p>So basically you can do the following 4 major steps to convert the PostgreSQL database into a SQLite database.</p>
-
-<h3>1. Generate a SQL dump</h3>
-
-<p>First we have to create a sql dump on the production server. I use the following command that results in a <code>dump.sql</code> file in the current folder:</p>
-
-<p><code>bash
-pg_dump --data-only --inserts YOUR_DB_NAME &gt; dump.sql
-</code></p>
-
-<p>I use the <code>--data-only</code> option, so it doesn't generate the schema. Converting the pg_dump generate schema to a valid SQLite schema gave me a lot of difficulties so I chose to generate the schema with the <code>rake db</code> task (we'll discuss this in the next step).</p>
-
-<p>After you created the dump, you have to download/transfer/mail/etc. that file so you have local access to it.</p>
-
-<h4>Trick: Got ssh access?</h4>
-
-<p>If you have ssh access, you can also run the following command, which will output the file directly on you local drive</p>
-
-<p><code>bash
-ssh -C username@hostname.com pg_dump --data-only --inserts YOUR_DB_NAME &gt; dump.sql
-</code></p>
-
-<h3>2. Modify the dump.sql</h3>
-
-<p>There are a few manual find/replace and delete action's you have to perform on the <code>dump.sql</code> file by hand.</p>
-
-<h4>2.1 Remove the <code>SET</code> statements at the top</h4>
-
-<p>You will see some statements at the top of the file like <code>SET statement_timeout = 0;</code> and <code>SET client_encoding = 'SQL_ASCII';</code> etc. Remove all of these lines that start with <code>SET</code>, because SQLite doesn't use these.</p>
-
-<h4>2.2 Remove the setval sequence queries</h4>
-
-<p>Under the <code>SET</code> queries you'll see some queries to set the correct sequence for auto incrementing the id's. SQLite doesn't keep these value's in a catalog and must be removed to prevent errors.</p>
-
-<p>Remove all the line's that look like <code>SELECT pg_catalog.setval('MY_OBJECT_id_seq', 10, true);</code></p>
-
-<h4>2.3 Replace true => 't' and false => 'f'</h4>
-
-<p>The <code>pg_dump</code> generate's <code>true</code> and <code>false</code> as value's for the <code>INSERT INTO</code> statements. If we want to import these to SQLite we have to replace these to 't' and 'f'.</p>
-
-<p><code>sql
--- These:
-INSERT INTO table_name VALUES (1, true, false);
--- Should be replace to:
-INSERT INTO table_name VALUES (1, 't', 'f');
-</code></p>
-
-<h4>2.4 Transactions. Make it fast!</h4>
-
-<p>The first time I imported the dump (that was 2 mb) it took like 12 minutes to complete! After some googling I found out that SQLite's default behavior is putting each statement into a transaction, which seems to be the time waster (after the fix it toke 12 seconds).</p>
-
-<p>To prevent this behavior you can run the script within 1 transaction by specifying <code>BEGIN;</code> at the top of the <code>dump.sql</code> and <code>END;</code> at the end of the file.</p>
-
-<p>So you would have:</p>
-
-<p><code>sql
-BEGIN;
--- a lot of INSERT INTO statments
-END;
-</code></p>
-
-<h3>3. Recreate the development database</h3>
-
-<p>So now we have fetched the production data from the PostgreSQL database, we need to recreate the <code>development.sqlite3</code> database.</p>
-
-<p>Make a backup and run the migration task</p>
-
-<p><code>bash
-mv db/development.sqlite3 db/development.backup.sqlite3
-bundle exec rake db:migrate
-</code></p>
-
-<h4>Side note when migrating</h4>
-
-<p>You must run the migration <strong>until</strong> the migrated version that is active on the production database. If not, you could have the situation where you have dropped a column and can't import the dump because the data depends on that column.</p>
-
-<p>Check the <code>dump.sql</code> for the latest version number in the <code>schema_migrations</code> table and migrate to that version.</p>
-
-<p>For example for the version <code>20121701120000</code> you would do:</p>
-
-<p><code>bash
-bundle exec rake db:migrate VERSION=20121701120000
-</code></p>
-
-<h3>4. Import the dump</h3>
-
-<p>The final step is importing the dump file. To do this we have to execute the following command within a terminal:</p>
-
-<p><code>bash
-sqlite3 db/development.sqlite3
-sqlite&gt; delete from schema_migrations;
-sqlite&gt; .read dump.sql
-</code></p>
-
-<p>As you can see we first remove the records from the <code>schema_migrations</code> table, because these are also included in the <code>dump.sql</code>. Of course you could also remove the lines from the file, but I prefer this way.</p>
-
-<p>The <code>.read</code> command just execute's all the lines within the specified file.</p>
-
-<h2>Result</h2>
-
-<p>And that's it! You now have a stuffed <code>development.sqlite3</code> database with all the production data out of the PostgreSQL database.</p>
 ]]></content>
   </entry>
   

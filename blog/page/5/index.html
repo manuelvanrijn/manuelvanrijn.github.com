@@ -9,7 +9,7 @@
   <meta name="author" content="Manuel van Rijn">
 
   
-  <meta name="description" content="In the past weeks I&#8217;ve looked into a problem that kept us from releasing to Heroku, because the git repository was to large. In time the &hellip;">
+  <meta name="description" content="Today I&#8217;ve had some difficulties with a Rails migration, that took ages to complete. After some debugging I figured out that the issues was &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -79,6 +79,51 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/01/12/disable-rails-before-slash-after-callback/">Disable Rails callback</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-01-12T21:30:00+01:00" pubdate data-updated="true">Jan 12<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><img class="left" src="/images/posts/skip-step.png" width="240" height="240" title="Skip Step" ></p>
+
+<p>Today I&#8217;ve had some difficulties with a Rails migration, that took ages to complete. After some debugging I figured out that the issues was because of the <code>before_save</code> and <code>after_save</code> callbacks.</p>
+
+<p>Of course we could remove the before and after save callbacks to speed up the process, but I don&#8217;t like the idea of releasing a model that misses these behavior. I mean they&#8217;re not there for no reason right?</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2012/01/12/disable-rails-before-slash-after-callback/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -209,6 +254,10 @@ So after some googling what a good alternative would be for Wordpress I found <e
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2013/03/04/rails-belongs-to-to-has-many/">Rails belongs_to to has_many</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2012/11/13/sidekiq-on-heroku-with-redistogo-nano/">Sidekiq on Heroku with Redis To Go Nano</a>
       </li>
     
@@ -242,10 +291,6 @@ So after some googling what a good alternative would be for Wordpress I found <e
     
       <li class="post">
         <a href="/blog/2012/02/29/mollie-bank/">Mollie Bank</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/01/19/rake-pull-me-that-db/">“Rake, pull me that DB!”</a>
       </li>
     
   </ul>

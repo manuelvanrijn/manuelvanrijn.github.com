@@ -4,7 +4,7 @@
   <title><![CDATA[Category: git | Manuel van Rijn]]></title>
   <link href="http://manuel.manuelles.nl/blog/categories/git/atom.xml" rel="self"/>
   <link href="http://manuel.manuelles.nl/"/>
-  <updated>2013-01-08T11:22:34+01:00</updated>
+  <updated>2013-03-05T09:50:40+01:00</updated>
   <id>http://manuel.manuelles.nl/</id>
   <author>
     <name><![CDATA[Manuel van Rijn]]></name>
@@ -51,7 +51,7 @@ sub usage { die &quot;usage: git-large-files &lt;size[b|k|m]&gt; [&lt;git-log ar
 @ARGV or usage();
 my ( $max_size, $unit ) = ( shift =~ /^(\d+)([bkm]?)\z/ ) ? ( $1, $2 ) : usage();
 
-my $exp = 10 * ( $unit eq 'b' ? 0 : $unit eq 'k' ? 1 : 2 );
+my $exp = 10 * ( $unit eq &#39;b&#39; ? 0 : $unit eq &#39;k&#39; ? 1 : 2 );
 my $cutoff = $max_size * 2**$exp;
 
 sub walk_tree {
@@ -60,15 +60,15 @@ sub walk_tree {
     my @r;
 
     {
-        open my $ls_tree, '-|', git =&gt; 'ls-tree' =&gt; -l =&gt; $tree
-            or die &quot;Couldn't open pipe to git-ls-tree: $!\n&quot;;
+        open my $ls_tree, &#39;-|&#39;, git =&gt; &#39;ls-tree&#39; =&gt; -l =&gt; $tree
+            or die &quot;Couldn&#39;t open pipe to git-ls-tree: $!\n&quot;;
 
         while ( &lt;$ls_tree&gt; ) {
             my ( $type, $sha1, $size, $name ) = /\A[0-7]{6} (\S+) (\S+) +(\S+)\t(.*)/;
-            if ( $type eq 'tree' ) {
+            if ( $type eq &#39;tree&#39; ) {
                 push @subtree, [ $sha1, $name ];
             }
-            elsif ( $type eq 'blob' and $size &gt;= $cutoff ) {
+            elsif ( $type eq &#39;blob&#39; and $size &gt;= $cutoff ) {
                 push @r, [ $size, @path, $name ];
             }
         }
@@ -80,10 +80,10 @@ sub walk_tree {
     return @r;
 }
 
-memoize 'walk_tree';
+memoize &#39;walk_tree&#39;;
 
-open my $log, '-|', git =&gt; log =&gt; @ARGV, '--pretty=format:%T %h %cr'
-    or die &quot;Couldn't open pipe to git-log: $!\n&quot;;
+open my $log, &#39;-|&#39;, git =&gt; log =&gt; @ARGV, &#39;--pretty=format:%T %h %cr&#39;
+    or die &quot;Couldn&#39;t open pipe to git-log: $!\n&quot;;
 
 my %seen;
 while ( &lt;$log&gt; ) {
@@ -92,7 +92,7 @@ while ( &lt;$log&gt; ) {
     my $is_header_printed;
     for ( walk_tree( $tree ) ) {
         my ( $size, @path ) = @$_;
-        my $path = join '/', @path;
+        my $path = join &#39;/&#39;, @path;
         next if $seen{ $path }++;
         print &quot;$commit $age\n&quot; if not $is_header_printed++;
         print &quot;\t$size\t$path\n&quot;;

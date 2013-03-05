@@ -4,7 +4,7 @@
   <title><![CDATA[Manuel van Rijn]]></title>
   <link href="http://manuel.manuelles.nl/atom.xml" rel="self"/>
   <link href="http://manuel.manuelles.nl/"/>
-  <updated>2013-01-08T11:22:34+01:00</updated>
+  <updated>2013-03-05T09:50:40+01:00</updated>
   <id>http://manuel.manuelles.nl/</id>
   <author>
     <name><![CDATA[Manuel van Rijn]]></name>
@@ -12,6 +12,210 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Rails belongs_to to has_many]]></title>
+    <link href="http://manuel.manuelles.nl/blog/2013/03/04/rails-belongs-to-to-has-many/"/>
+    <updated>2013-03-04T17:19:00+01:00</updated>
+    <id>http://manuel.manuelles.nl/blog/2013/03/04/rails-belongs-to-to-has-many</id>
+    <content type="html"><![CDATA[<p><a href="http://manuel.manuelles.nl/blog/2013/03/04/rails-belongs-to-to-has-many/"><img class="left" src="http://manuel.manuelles.nl/images/posts/habtm-migration.jpg" width="250" height="250" title="Migration what?!" ></a> Today I had to change a <code>belongs_to</code> associate to an <code>has_and_belongs_to_many</code> in a Rails project I&#8217;m currently working on. Not that hard you would say, but there were some catches for deploying/migrating these changes to the production environment.</p>
+
+<br />
+
+
+<p>In this post I&#8217;d like to explain how to achieve this without having to do multiple deployments of your model to maintain a consistent database schema and model.</p>
+
+<!-- more -->
+
+
+<h2>TL;DR;</h2>
+
+<p>Here you can find <a href="#final-migration">the final migration</a>. Note that this example could also be solved with plain sql instead of using ActiveRecord, but there might be cases were you depend on the ActiveRecord associates. In these cases this is a great workaround</p>
+
+<h2>The problem</h2>
+
+<p>Let&#8217;s say we have a Article that belongs to a Category. Our model would look like something like this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Article</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+</span><span class='line'>  <span class="n">attr_accessible</span> <span class="ss">:title</span><span class="p">,</span> <span class="ss">:content</span>
+</span><span class='line'>  <span class="n">belongs_to</span> <span class="ss">:category</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And the executed migration would look like this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">CreateArticle</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Migration</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">change</span>
+</span><span class='line'>    <span class="n">create_table</span> <span class="ss">:articles</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
+</span><span class='line'>      <span class="n">t</span><span class="o">.</span><span class="n">string</span> <span class="ss">:title</span>
+</span><span class='line'>      <span class="n">t</span><span class="o">.</span><span class="n">text</span> <span class="ss">:content</span>
+</span><span class='line'>      <span class="n">t</span><span class="o">.</span><span class="n">references</span> <span class="ss">:category</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>The initial migration</h2>
+
+<p>First let&#8217;s create a new table that can hold the associate between multiple Articles and Categories. The migration would look like this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">MultipleCategoriesForArticles</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Migration</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">up</span>
+</span><span class='line'>    <span class="n">create_table</span> <span class="ss">:articles_categories</span><span class="p">,</span> <span class="ss">:id</span> <span class="o">=&gt;</span> <span class="kp">false</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
+</span><span class='line'>      <span class="n">t</span><span class="o">.</span><span class="n">references</span> <span class="ss">:article</span><span class="p">,</span> <span class="ss">:category</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">down</span>
+</span><span class='line'>    <span class="n">drop_table</span> <span class="ss">:articles_categories</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>At this point all is fine and we can migrate the database without any problems. Only this doesn&#8217;t add the current category to the new collection of categories.</p>
+
+<h3>Moving the belongs_to associate</h3>
+
+<p>Here&#8217;s were the problem actually starts, because to move the category to the categories collection for the articles, we have to define the <code>belongs_to</code> but also the <code>has_and_belongs_to_many</code> associate on the <code>Article</code> model.</p>
+
+<p>I don&#8217;t like this approach because we&#8217;ll have to define both these associates and the <code>belongs_to</code> should be removed in the next release. So how to deal with this?</p>
+
+<p><a id="final-migration"></a></p>
+
+<h2>The fix</h2>
+
+<p>The fix is quite simple. We remove the <code>belongs_to</code> associate from the model and only define the new <code>has_and_belongs_to_many</code> associate and within the migration we extend the model with the &#8220;old&#8221; <code>belongs_to</code> associate so we can use this within the migration.</p>
+
+<p>So our files will look like this</p>
+
+<figure class='code'><figcaption><span>app/models/article.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Article</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+</span><span class='line'>  <span class="n">attr_accessible</span> <span class="ss">:title</span><span class="p">,</span> <span class="ss">:content</span>
+</span><span class='line'>  <span class="n">has_and_belongs_to_many</span> <span class="ss">:categories</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>db/migrate/20130305120000_multiple_categories_for_articles.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">MultipleCategoriesForArticles</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Migration</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">up</span>
+</span><span class='line'>    <span class="n">create_table</span> <span class="ss">:articles_categories</span><span class="p">,</span> <span class="ss">:id</span> <span class="o">=&gt;</span> <span class="kp">false</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
+</span><span class='line'>      <span class="n">t</span><span class="o">.</span><span class="n">references</span> <span class="ss">:article</span><span class="p">,</span> <span class="ss">:category</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1"># define the old belongs_to category associate</span>
+</span><span class='line'>    <span class="no">Article</span><span class="o">.</span><span class="n">class_eval</span> <span class="k">do</span>
+</span><span class='line'>      <span class="n">belongs_to</span> <span class="ss">:old_category</span><span class="p">,</span>
+</span><span class='line'>                 <span class="ss">:class_name</span> <span class="o">=&gt;</span> <span class="s2">&quot;Category&quot;</span><span class="p">,</span>
+</span><span class='line'>                 <span class="ss">:foreign_key</span> <span class="o">=&gt;</span> <span class="s2">&quot;category_id&quot;</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1"># add the belongs_to category to the has_and_belongs_to_many categories</span>
+</span><span class='line'>    <span class="no">Article</span><span class="o">.</span><span class="n">all</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span> <span class="n">article</span> <span class="o">|</span>
+</span><span class='line'>      <span class="n">article</span><span class="o">.</span><span class="n">categories</span> <span class="o">&lt;&lt;</span> <span class="n">article</span><span class="o">.</span><span class="n">old_category</span>
+</span><span class='line'>      <span class="n">article</span><span class="o">.</span><span class="n">save</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1"># remove the old category_id column for the belongs_to associate</span>
+</span><span class='line'>    <span class="n">remove_column</span> <span class="ss">:articles</span><span class="p">,</span> <span class="ss">:category_id</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">down</span>
+</span><span class='line'>    <span class="n">add_column</span> <span class="ss">:articles</span><span class="p">,</span> <span class="ss">:category_id</span><span class="p">,</span> <span class="ss">:integer</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="no">Article</span><span class="o">.</span><span class="n">class_eval</span> <span class="k">do</span>
+</span><span class='line'>      <span class="n">belongs_to</span> <span class="ss">:new_category</span><span class="p">,</span>
+</span><span class='line'>                 <span class="ss">:class_name</span> <span class="o">=&gt;</span> <span class="s2">&quot;Category&quot;</span><span class="p">,</span>
+</span><span class='line'>                 <span class="ss">:foreign_key</span> <span class="o">=&gt;</span> <span class="s2">&quot;category_id&quot;</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="no">Article</span><span class="o">.</span><span class="n">all</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span> <span class="n">article</span> <span class="o">|</span>
+</span><span class='line'>      <span class="c1"># NOTE: we&#39;ll grabe the first category, so if there are more, these will be lost!</span>
+</span><span class='line'>      <span class="n">article</span><span class="o">.</span><span class="n">new_category</span> <span class="o">&lt;&lt;</span> <span class="n">article</span><span class="o">.</span><span class="n">categories</span><span class="o">.</span><span class="n">first</span>
+</span><span class='line'>      <span class="n">article</span><span class="o">.</span><span class="n">save</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">drop_table</span> <span class="ss">:articles_categories</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Sidekiq on Heroku with Redis To Go Nano]]></title>
@@ -547,8 +751,8 @@ FROM
 LEFT JOIN
   pg_namespace pgNamespace ON (pgNamespace.oid = pgClass.relnamespace)
 WHERE
-  pgNamespace.nspname NOT IN ('pg_catalog', 'information_schema') AND
-  pgClass.relkind='r'</code></pre></noscript></div>
+  pgNamespace.nspname NOT IN (&#39;pg_catalog&#39;, &#39;information_schema&#39;) AND
+  pgClass.relkind=&#39;r&#39;</code></pre></noscript></div>
 
 
 
@@ -1037,29 +1241,29 @@ production:
 <p>Put the following code into <code>libs/tasks/database.rake</code></p>
 
 <div><script src='https://gist.github.com/1640429.js?file=database.rake'></script>
-<noscript><pre><code>require 'fileutils'
+<noscript><pre><code>require &#39;fileutils&#39;
 
 namespace :db do
-  desc 'pull the production PostgreSQL database into the development SQLite'
+  desc &#39;pull the production PostgreSQL database into the development SQLite&#39;
   task :pull do
-    Rake::Task['db:download_pg_dump'].invoke
-    Rake::Task['db:optimze_pg_dump_for_sqlite'].invoke
-    Rake::Task['db:recreate_with_dump'].invoke
+    Rake::Task[&#39;db:download_pg_dump&#39;].invoke
+    Rake::Task[&#39;db:optimze_pg_dump_for_sqlite&#39;].invoke
+    Rake::Task[&#39;db:recreate_with_dump&#39;].invoke
   end
 
-  desc 'download the pg_dump content into tmp/dump.sql'
+  desc &#39;download the pg_dump content into tmp/dump.sql&#39;
   task :download_pg_dump do
     config = Rails.application.config.database_configuration
 
-    abort &quot;Missing production database config&quot; if config['production'].blank?
+    abort &quot;Missing production database config&quot; if config[&#39;production&#39;].blank?
 
-    dev  = config['development']
-    prod = config['production']
+    dev  = config[&#39;development&#39;]
+    prod = config[&#39;production&#39;]
 
-    abort &quot;Development db is not sqlite3&quot; unless dev['adapter'] =~ /sqlite3/
-    abort &quot;Production db is not postgresql&quot; unless prod['adapter'] =~ /postgresql/
-    abort &quot;Missing ssh host&quot; if prod['ssh_host'].blank?
-    abort &quot;Missing database name&quot; if prod['database'].blank?
+    abort &quot;Development db is not sqlite3&quot; unless dev[&#39;adapter&#39;] =~ /sqlite3/
+    abort &quot;Production db is not postgresql&quot; unless prod[&#39;adapter&#39;] =~ /postgresql/
+    abort &quot;Missing ssh host&quot; if prod[&#39;ssh_host&#39;].blank?
+    abort &quot;Missing database name&quot; if prod[&#39;database&#39;].blank?
 
     # remove the old one
     if File.exists?(pg_dump_file_path)
@@ -1067,33 +1271,33 @@ namespace :db do
     end
 
     cmd  = &quot;ssh -C &quot;
-    cmd &lt;&lt; &quot;#{prod['ssh_user']}@&quot; if prod['ssh_user'].present?
-    cmd &lt;&lt; &quot;#{prod['ssh_host']} &quot;
-    cmd &lt;&lt; &quot;PGPASSWORD=#{prod['password']} &quot;
+    cmd &lt;&lt; &quot;#{prod[&#39;ssh_user&#39;]}@&quot; if prod[&#39;ssh_user&#39;].present?
+    cmd &lt;&lt; &quot;#{prod[&#39;ssh_host&#39;]} &quot;
+    cmd &lt;&lt; &quot;PGPASSWORD=#{prod[&#39;password&#39;]} &quot;
     cmd &lt;&lt; &quot;pg_dump --data-only --inserts &quot;
-    cmd &lt;&lt; &quot;--username=#{prod['username']} #{prod['database']} &gt; &quot;
+    cmd &lt;&lt; &quot;--username=#{prod[&#39;username&#39;]} #{prod[&#39;database&#39;]} &gt; &quot;
     cmd &lt;&lt; pg_dump_file_path
 
     system `#{cmd}`
   end
 
-  desc 'remove unused statements and optimze sql for SQLite'
+  desc &#39;remove unused statements and optimze sql for SQLite&#39;
   task :optimze_pg_dump_for_sqlite do
     result = []
     lines = File.readlines(pg_dump_file_path)
     @version = 0
     lines.each do | line |
-      next if line =~ /SELECT pg_catalog.setval/  # sequence value's
+      next if line =~ /SELECT pg_catalog.setval/  # sequence value&#39;s
       next if line =~ /SET /                      # postgres specific config
       next if line =~ /--/                        # comment
 
       if line =~ /INSERT INTO schema_migrations/
-        @version = line.match(/INSERT INTO schema_migrations VALUES \('([\d]*)/)[1]
+        @version = line.match(/INSERT INTO schema_migrations VALUES \(&#39;([\d]*)/)[1]
       end
 
-      # replace true and false for 't' and 'f'
-      line.gsub!(&quot;true&quot;,&quot;'t'&quot;)
-      line.gsub!(&quot;false&quot;,&quot;'f'&quot;)
+      # replace true and false for &#39;t&#39; and &#39;f&#39;
+      line.gsub!(&quot;true&quot;,&quot;&#39;t&#39;&quot;)
+      line.gsub!(&quot;false&quot;,&quot;&#39;f&#39;&quot;)
       result &lt;&lt; line
     end
 
@@ -1105,21 +1309,21 @@ namespace :db do
     end
   end
 
-  desc 'backup development.sqlite3 and create a new one with the dumped data'
+  desc &#39;backup development.sqlite3 and create a new one with the dumped data&#39;
   task :recreate_with_dump do
     # sqlite so backup
-    database = Rails.configuration.database_configuration['development']['database']
+    database = Rails.configuration.database_configuration[&#39;development&#39;][&#39;database&#39;]
     database_path = File.expand_path(&quot;#{Rails.root}/#{database}&quot;)
     # remove old backup
-    if File.exists?(database_path + '.backup')
-      File.delete(database_path + '.backup')
+    if File.exists?(database_path + &#39;.backup&#39;)
+      File.delete(database_path + &#39;.backup&#39;)
     end
     # copy current for backup
-    FileUtils.cp database_path, database_path + '.backup' if File.exists?(database_path)
+    FileUtils.cp database_path, database_path + &#39;.backup&#39; if File.exists?(database_path)
 
     # dropping and re-creating db
-    ENV['VERSION'] = @version
-    Rake::Task['db:drop'].invoke
+    ENV[&#39;VERSION&#39;] = @version
+    Rake::Task[&#39;db:drop&#39;].invoke
     Rake::Task[&quot;db:migrate&quot;].invoke
 
     puts &quot;migrated to version: #{@version}&quot;
@@ -1130,7 +1334,7 @@ namespace :db do
     system `sqlite3 #{database_path} &quot;.read #{pg_dump_file_path}&quot;`
 
     puts &quot;DONE!&quot;
-    puts &quot;NOTE: you're now migrated to version #{@version}. Please run db:migrate to apply newer migrations&quot;
+    puts &quot;NOTE: you&#39;re now migrated to version #{@version}. Please run db:migrate to apply newer migrations&quot;
   end
 
   def pg_dump_file_path
@@ -1517,7 +1721,7 @@ sub usage { die &quot;usage: git-large-files &lt;size[b|k|m]&gt; [&lt;git-log ar
 @ARGV or usage();
 my ( $max_size, $unit ) = ( shift =~ /^(\d+)([bkm]?)\z/ ) ? ( $1, $2 ) : usage();
 
-my $exp = 10 * ( $unit eq 'b' ? 0 : $unit eq 'k' ? 1 : 2 );
+my $exp = 10 * ( $unit eq &#39;b&#39; ? 0 : $unit eq &#39;k&#39; ? 1 : 2 );
 my $cutoff = $max_size * 2**$exp;
 
 sub walk_tree {
@@ -1526,15 +1730,15 @@ sub walk_tree {
     my @r;
 
     {
-        open my $ls_tree, '-|', git =&gt; 'ls-tree' =&gt; -l =&gt; $tree
-            or die &quot;Couldn't open pipe to git-ls-tree: $!\n&quot;;
+        open my $ls_tree, &#39;-|&#39;, git =&gt; &#39;ls-tree&#39; =&gt; -l =&gt; $tree
+            or die &quot;Couldn&#39;t open pipe to git-ls-tree: $!\n&quot;;
 
         while ( &lt;$ls_tree&gt; ) {
             my ( $type, $sha1, $size, $name ) = /\A[0-7]{6} (\S+) (\S+) +(\S+)\t(.*)/;
-            if ( $type eq 'tree' ) {
+            if ( $type eq &#39;tree&#39; ) {
                 push @subtree, [ $sha1, $name ];
             }
-            elsif ( $type eq 'blob' and $size &gt;= $cutoff ) {
+            elsif ( $type eq &#39;blob&#39; and $size &gt;= $cutoff ) {
                 push @r, [ $size, @path, $name ];
             }
         }
@@ -1546,10 +1750,10 @@ sub walk_tree {
     return @r;
 }
 
-memoize 'walk_tree';
+memoize &#39;walk_tree&#39;;
 
-open my $log, '-|', git =&gt; log =&gt; @ARGV, '--pretty=format:%T %h %cr'
-    or die &quot;Couldn't open pipe to git-log: $!\n&quot;;
+open my $log, &#39;-|&#39;, git =&gt; log =&gt; @ARGV, &#39;--pretty=format:%T %h %cr&#39;
+    or die &quot;Couldn&#39;t open pipe to git-log: $!\n&quot;;
 
 my %seen;
 while ( &lt;$log&gt; ) {
@@ -1558,7 +1762,7 @@ while ( &lt;$log&gt; ) {
     my $is_header_printed;
     for ( walk_tree( $tree ) ) {
         my ( $size, @path ) = @$_;
-        my $path = join '/', @path;
+        my $path = join &#39;/&#39;, @path;
         next if $seen{ $path }++;
         print &quot;$commit $age\n&quot; if not $is_header_printed++;
         print &quot;\t$size\t$path\n&quot;;

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: ruby | Manuel van Rijn]]></title>
   <link href="http://manuel.manuelles.nl/blog/categories/ruby/atom.xml" rel="self"/>
   <link href="http://manuel.manuelles.nl/"/>
-  <updated>2013-01-08T11:22:34+01:00</updated>
+  <updated>2013-03-05T09:50:40+01:00</updated>
   <id>http://manuel.manuelles.nl/</id>
   <author>
     <name><![CDATA[Manuel van Rijn]]></name>
@@ -12,6 +12,152 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Rails belongs_to to has_many]]></title>
+    <link href="http://manuel.manuelles.nl/blog/2013/03/04/rails-belongs-to-to-has-many/"/>
+    <updated>2013-03-04T17:19:00+01:00</updated>
+    <id>http://manuel.manuelles.nl/blog/2013/03/04/rails-belongs-to-to-has-many</id>
+    <content type="html"><![CDATA[<p><a href="/blog/2013/03/04/rails-belongs-to-to-has-many/"><img class="left" src="/images/posts/habtm-migration.jpg" width="250" height="250" title="Migration what?!" ></a> Today I had to change a <code>belongs_to</code> associate to an <code>has_and_belongs_to_many</code> in a Rails project I'm currently working on. Not that hard you would say, but there were some catches for deploying/migrating these changes to the production environment.</p>
+
+<br />
+
+
+<p>In this post I'd like to explain how to achieve this without having to do multiple deployments of your model to maintain a consistent database schema and model.</p>
+
+<!-- more -->
+
+
+<h2>TL;DR;</h2>
+
+<p>Here you can find <a href="#final-migration">the final migration</a>. Note that this example could also be solved with plain sql instead of using ActiveRecord, but there might be cases were you depend on the ActiveRecord associates. In these cases this is a great workaround</p>
+
+<h2>The problem</h2>
+
+<p>Let's say we have a Article that belongs to a Category. Our model would look like something like this:</p>
+
+<p><code>ruby
+class Article &lt; ActiveRecord::Base
+  attr_accessible :title, :content
+  belongs_to :category
+end
+</code></p>
+
+<p>And the executed migration would look like this:</p>
+
+<p>```ruby
+class CreateArticle &lt; ActiveRecord::Migration
+  def change</p>
+
+<pre><code>create_table :articles do |t|
+  t.string :title
+  t.text :content
+  t.references :category
+end
+</code></pre>
+
+<p>  end
+end
+```</p>
+
+<h2>The initial migration</h2>
+
+<p>First let's create a new table that can hold the associate between multiple Articles and Categories. The migration would look like this:</p>
+
+<p>```ruby
+class MultipleCategoriesForArticles &lt; ActiveRecord::Migration
+  def up</p>
+
+<pre><code>create_table :articles_categories, :id =&gt; false do |t|
+  t.references :article, :category
+end
+</code></pre>
+
+<p>  end</p>
+
+<p>  def down</p>
+
+<pre><code>drop_table :articles_categories
+</code></pre>
+
+<p>  end
+end
+```</p>
+
+<p>At this point all is fine and we can migrate the database without any problems. Only this doesn't add the current category to the new collection of categories.</p>
+
+<h3>Moving the belongs_to associate</h3>
+
+<p>Here's were the problem actually starts, because to move the category to the categories collection for the articles, we have to define the <code>belongs_to</code> but also the <code>has_and_belongs_to_many</code> associate on the <code>Article</code> model.</p>
+
+<p>I don't like this approach because we'll have to define both these associates and the <code>belongs_to</code> should be removed in the next release. So how to deal with this?</p>
+
+<p><a id="final-migration"></a></p>
+
+<h2>The fix</h2>
+
+<p>The fix is quite simple. We remove the <code>belongs_to</code> associate from the model and only define the new <code>has_and_belongs_to_many</code> associate and within the migration we extend the model with the "old" <code>belongs_to</code> associate so we can use this within the migration.</p>
+
+<p>So our files will look like this</p>
+
+<p><code>ruby app/models/article.rb
+class Article &lt; ActiveRecord::Base
+  attr_accessible :title, :content
+  has_and_belongs_to_many :categories
+end
+</code></p>
+
+<p>```ruby db/migrate/20130305120000_multiple_categories_for_articles.rb
+class MultipleCategoriesForArticles &lt; ActiveRecord::Migration
+  def up</p>
+
+<pre><code>create_table :articles_categories, :id =&gt; false do |t|
+  t.references :article, :category
+end
+
+# define the old belongs_to category associate
+Article.class_eval do
+  belongs_to :old_category,
+             :class_name =&gt; "Category",
+             :foreign_key =&gt; "category_id"
+end
+
+# add the belongs_to category to the has_and_belongs_to_many categories
+Article.all.each do | article |
+  article.categories &lt;&lt; article.old_category
+  article.save
+end
+
+# remove the old category_id column for the belongs_to associate
+remove_column :articles, :category_id
+</code></pre>
+
+<p>  end</p>
+
+<p>  def down</p>
+
+<pre><code>add_column :articles, :category_id, :integer
+
+Article.class_eval do
+  belongs_to :new_category,
+             :class_name =&gt; "Category",
+             :foreign_key =&gt; "category_id"
+end
+
+Article.all.each do | article |
+  # NOTE: we'll grabe the first category, so if there are more, these will be lost!
+  article.new_category &lt;&lt; article.categories.first
+  article.save
+end
+
+drop_table :articles_categories
+</code></pre>
+
+<p>  end
+end
+```</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Sidekiq on Heroku with Redis To Go Nano]]></title>
@@ -501,56 +647,6 @@ Make sure that <code>gem install capybara-webkit -v '0.10.1'</code> succeeds bef
 <p><code>
 sudo apt-get install libqtwebkit-dev
 </code></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Mollie Bank]]></title>
-    <link href="http://manuel.manuelles.nl/blog/2012/02/29/mollie-bank/"/>
-    <updated>2012-02-29T21:29:00+01:00</updated>
-    <id>http://manuel.manuelles.nl/blog/2012/02/29/mollie-bank</id>
-    <content type="html"><![CDATA[<p>The past week I've been working with the iDeal API from Mollie. <a href="http://www.mollie.nl/">Mollie</a> is a company that give's us developers an easy way to make iDeal payments through there API, for a small fee.</p>
-
-<p>After a long search I wasn't able to find a stable, well tested gem, I could use in our Rails project, so I developed the <a href="https://rubygems.org/gems/ideal-mollie">ideal-mollie gem</a>. After I finishing this gem, there was only one problem.</p>
-
-<p>When you want to test a iDeal transaction with the Mollie test bank, you <strong>MUST</strong> do some routing, so that Mollie can send you a request if the payment was paid or not, to your local machine from the internet. So I made a alternative Mollie test bank you can use for what ever programming language you use for making Mollie iDeal payments without the routing problems.</p>
-
-<!-- more -->
-
-
-<h2>There's a gem for that!</h2>
-
-<p>I've came op with a gem that runs a small <a href="http://www.sinatrarb.com/">Sinatra</a> application that does exactly the same as the Mollie test bank, only it runs on your local machine, which means you can redirect to <code>localhost</code> and more important, it can perform the payment check.</p>
-
-<p>Here you can find the <a href="https://rubygems.org/gems/mollie-bank">mollie-bank gem</a>, and the <a href="https://github.com/manuelvanrijn/mollie-bank">source code</a></p>
-
-<p><img src="/images/posts/mollie-bank.png"></p>
-
-<h2>Install en run!</h2>
-
-<p>To use mollie-bank just install the gem by running</p>
-
-<p><code>
-gem install mollie-bank
-</code></p>
-
-<p>and then run it</p>
-
-<p><code>
-mollie-bank
-</code></p>
-
-<p>At this point, you can go to <a href="http://localhost:4567/">http://localhost:4567/</a> and you'll see an intro page.</p>
-
-<h2>Setup your application</h2>
-
-<p>Alright so now you only have to make sure that when you're developing on your local machine, you don't make the requests to Mollie but to your locally running Mollie Bank.</p>
-
-<p>To do this you just have to change <code>https://secure.mollie.nl</code> into <code>http://localhost:4567</code> in you code.</p>
-
-<h2>Todo</h2>
-
-<p>At this point I've only wrote a sample implementation for <a href="http://rubyonrails.org/" title="Ruby on Rails">Ruby on Rails</a> on the <a href="https://github.com/manuelvanrijn/mollie-bank/wiki/Implement-into-existing-modules">Implement into existing modules Wiki</a> page, but soon there will be more examples.</p>
 ]]></content>
   </entry>
   

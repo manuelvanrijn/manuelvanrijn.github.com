@@ -9,7 +9,7 @@
   <meta name="author" content="Manuel van Rijn">
 
   
-  <meta name="description" content="As a follow-up of my previous post I want to explain how to get Sidekiq to work on Heroku with a Redis To Go Nano instance. Because the Nano &hellip;">
+  <meta name="description" content="Today I had to change a belongs_to associate to an has_and_belongs_to_many in a Rails project I&#8217;m currently working on. Not that hard you &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -79,6 +79,52 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/03/04/rails-belongs-to-to-has-many/">Rails belongs_to to has_many</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-04T17:19:00+01:00" pubdate data-updated="true">Mar 4<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><a href="/blog/2013/03/04/rails-belongs-to-to-has-many/"><img class="left" src="/images/posts/habtm-migration.jpg" width="250" height="250" title="Migration what?!" ></a> Today I had to change a <code>belongs_to</code> associate to an <code>has_and_belongs_to_many</code> in a Rails project I&#8217;m currently working on. Not that hard you would say, but there were some catches for deploying/migrating these changes to the production environment.</p>
+
+<br />
+
+
+<p>In this post I&#8217;d like to explain how to achieve this without having to do multiple deployments of your model to maintain a consistent database schema and model.</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2013/03/04/rails-belongs-to-to-has-many/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -166,49 +212,6 @@
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/09/17/yeoman-meets-travis-ci/">Yeoman meets Travis CI</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-09-17T14:45:00+02:00" pubdate data-updated="true">Sep 17<span>th</span>, 2012</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p><a href="/blog/2012/06/22/integrate-travis-ci-into-grunt/"><img class="right" src="/images/posts/yeoman-logo.png" width="200" height="200" title="Yeoman" ></a> Today I&#8217;d like to show how you can integrate Travis CI within your Yeoman project.</p>
-
-<p><a href="http://travis-ci.org/">Travis CI</a> is a hosted continuous integration service for open source projects and <a href="http://yeoman.io">Yeoman</a> is a robust and opinionated set of tools, libraries, and a workflow that can help developers quickly build beautiful, compelling web apps.</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2012/09/17/yeoman-meets-travis-ci/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -239,6 +242,10 @@
 <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/03/04/rails-belongs-to-to-has-many/">Rails belongs_to to has_many</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2012/11/13/sidekiq-on-heroku-with-redistogo-nano/">Sidekiq on Heroku with Redis To Go Nano</a>
@@ -274,10 +281,6 @@
     
       <li class="post">
         <a href="/blog/2012/02/29/mollie-bank/">Mollie Bank</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/01/19/rake-pull-me-that-db/">“Rake, pull me that DB!”</a>
       </li>
     
   </ul>

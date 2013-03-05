@@ -4,7 +4,7 @@
   <title><![CDATA[Category: postgres | Manuel van Rijn]]></title>
   <link href="http://manuel.manuelles.nl/blog/categories/postgres/atom.xml" rel="self"/>
   <link href="http://manuel.manuelles.nl/"/>
-  <updated>2013-01-08T11:22:34+01:00</updated>
+  <updated>2013-03-05T09:50:40+01:00</updated>
   <id>http://manuel.manuelles.nl/</id>
   <author>
     <name><![CDATA[Manuel van Rijn]]></name>
@@ -89,8 +89,8 @@ FROM
 LEFT JOIN
   pg_namespace pgNamespace ON (pgNamespace.oid = pgClass.relnamespace)
 WHERE
-  pgNamespace.nspname NOT IN ('pg_catalog', 'information_schema') AND
-  pgClass.relkind='r'</code></pre></noscript></div>
+  pgNamespace.nspname NOT IN (&#39;pg_catalog&#39;, &#39;information_schema&#39;) AND
+  pgClass.relkind=&#39;r&#39;</code></pre></noscript></div>
 </p>
 ]]></content>
   </entry>

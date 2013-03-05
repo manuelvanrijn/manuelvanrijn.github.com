@@ -195,8 +195,8 @@ FROM
 LEFT JOIN
   pg_namespace pgNamespace ON (pgNamespace.oid = pgClass.relnamespace)
 WHERE
-  pgNamespace.nspname NOT IN ('pg_catalog', 'information_schema') AND
-  pgClass.relkind='r'</code></pre></noscript></div>
+  pgNamespace.nspname NOT IN (&#39;pg_catalog&#39;, &#39;information_schema&#39;) AND
+  pgClass.relkind=&#39;r&#39;</code></pre></noscript></div>
 
 
 
@@ -288,6 +288,10 @@ WHERE
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2013/03/04/rails-belongs-to-to-has-many/">Rails belongs_to to has_many</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2012/11/13/sidekiq-on-heroku-with-redistogo-nano/">Sidekiq on Heroku with Redis To Go Nano</a>
       </li>
     
@@ -321,10 +325,6 @@ WHERE
     
       <li class="post">
         <a href="/blog/2012/02/29/mollie-bank/">Mollie Bank</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/01/19/rake-pull-me-that-db/">“Rake, pull me that DB!”</a>
       </li>
     
   </ul>
