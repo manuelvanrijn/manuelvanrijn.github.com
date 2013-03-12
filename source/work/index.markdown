@@ -14,8 +14,9 @@ footer: true
 
 ## <a id="ruby"></a>Ruby
 
-1. **[ideal-mollie](http://manuel.manuelles.nl/ideal-mollie)** - A Ruby implementation for handling Mollie iDeal transactions
-2. **[mollie-bank](http://manuel.manuelles.nl/mollie-bank)** - Implementation of the Mollie iDeal bank for testing on your local machine
+1. **[genericons-rails](https://github.com/manuelvanrijn/genericons-rails)** - A small gem for putting [genericons](http://genericons.com/) into the Rails asset pipeline
+2. **[ideal-mollie](http://manuel.manuelles.nl/ideal-mollie)** - A Ruby implementation for handling Mollie iDeal transactions
+3. **[mollie-bank](http://manuel.manuelles.nl/mollie-bank)** - Implementation of the Mollie iDeal bank for testing on your local machine
 
 ## <a id="jquery"></a>jQuery and Javascript
 
