@@ -13,7 +13,7 @@ In the past weeks I've looked into a problem that kept us from releasing to [Her
 
 In the past we've made some decisions that we probably wouldn't take again. We for example, we decided to store the gem files in the vendor folder and having the rails code included in our repository. Our goal then was, that releasing the project with [Capistrano](http://www.capify.org "Capistrano") would be easier and faster, because it didn't have to download all the gem's.
 
-Anyway at this point we don't have the gem's stored anymore in the vendor folder. Since tools like [RVM](http://beginrescueend.com/ "Ruby version Manager") and [rbenv](https://github.com/sstephenson/rbenv/ "rbenv") we store these within the ruby/rails version of that specific project.
+Anyway at this point we don't have the gem's stored anymore in the vendor folder. Since tools like [RVM](https://rvm.io/ "Ruby version Manager") and [rbenv](https://github.com/sstephenson/rbenv/ "rbenv") we store these within the ruby/rails version of that specific project.
 
 Still we have the problem that the repository contains files etc. we want to remove to shrink the size of it.
 
