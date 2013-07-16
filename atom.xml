@@ -4,7 +4,7 @@
   <title><![CDATA[Manuel van Rijn]]></title>
   <link href="http://manuel.manuelles.nl/atom.xml" rel="self"/>
   <link href="http://manuel.manuelles.nl/"/>
-  <updated>2013-07-04T09:30:01+02:00</updated>
+  <updated>2013-07-16T11:23:52+02:00</updated>
   <id>http://manuel.manuelles.nl/</id>
   <author>
     <name><![CDATA[Manuel van Rijn]]></name>
@@ -1694,7 +1694,7 @@ end</code></pre></noscript></div>
 
 <p>In the past we&#8217;ve made some decisions that we probably wouldn&#8217;t take again. We for example, we decided to store the gem files in the vendor folder and having the rails code included in our repository. Our goal then was, that releasing the project with <a href="http://www.capify.org" title="Capistrano">Capistrano</a> would be easier and faster, because it didn&#8217;t have to download all the gem&#8217;s.</p>
 
-<p>Anyway at this point we don&#8217;t have the gem&#8217;s stored anymore in the vendor folder. Since tools like <a href="http://beginrescueend.com/" title="Ruby version Manager">RVM</a> and <a href="https://github.com/sstephenson/rbenv/" title="rbenv">rbenv</a> we store these within the ruby/rails version of that specific project.</p>
+<p>Anyway at this point we don&#8217;t have the gem&#8217;s stored anymore in the vendor folder. Since tools like <a href="https://rvm.io/" title="Ruby version Manager">RVM</a> and <a href="https://github.com/sstephenson/rbenv/" title="rbenv">rbenv</a> we store these within the ruby/rails version of that specific project.</p>
 
 <p>Still we have the problem that the repository contains files etc. we want to remove to shrink the size of it.</p>
 
