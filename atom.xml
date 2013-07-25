@@ -4,7 +4,7 @@
   <title><![CDATA[Manuel van Rijn]]></title>
   <link href="http://manuel.manuelles.nl/atom.xml" rel="self"/>
   <link href="http://manuel.manuelles.nl/"/>
-  <updated>2013-07-16T11:26:59+02:00</updated>
+  <updated>2013-07-25T10:35:55+02:00</updated>
   <id>http://manuel.manuelles.nl/</id>
   <author>
     <name><![CDATA[Manuel van Rijn]]></name>
@@ -12,6 +12,467 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Developing Ruby on Rails on Windows]]></title>
+    <link href="http://manuel.manuelles.nl/blog/2013/07/23/developing-ruby-on-rails-on-windows/"/>
+    <updated>2013-07-23T23:06:00+02:00</updated>
+    <id>http://manuel.manuelles.nl/blog/2013/07/23/developing-ruby-on-rails-on-windows</id>
+    <content type="html"><![CDATA[<p><a href="http://manuel.manuelles.nl/blog/2013/03/04/rails-belongs-to-to-has-many/"><img class="right" src="http://manuel.manuelles.nl/images/posts/developing-ruby-on-rails-on-windows.png" width="250" height="250" title="Develop Ruby on Rails on Windows" ></a> I do a lot of C# web development which means I have to work with Visual Studio on Windows. I usually grab the Mac to do my Ruby on Rails development, but it would be easier not to switch every time I have to do C# and Ruby development.</p>
+
+<p>A while ago I tried several things getting a fast Rails experience on Windows, but it failed. It was just too slow &#8230; until now! In this post I&#8217;d like to share my current setup which I plan to use as long as it pleases me.</p>
+
+<!-- more -->
+
+
+<h2>What are we going to do?</h2>
+
+<p>We are going to install <a href="http://www.vagrantup.com/">Vagrant</a> which uses <a href="https://www.virtualbox.org/">VirtualBox</a> to build a complete development environment. Also we will create and use some <a href="http://community.opscode.com/">recipes for Chef</a> to automatically install and configure the development environment. Think of installing Ruby, PostgreSQL, and MySQL etc. automatically.</p>
+
+<h2>Installing Vagrant and VirtualBox</h2>
+
+<p>First let&#8217;s setup our Windows machine with the needed software.</p>
+
+<ol>
+<li>Install <a href="https://www.virtualbox.org/wiki/Downloads">VirtualBox</a></li>
+<li>Install <a href="http://downloads.vagrantup.com/">Vagrant</a></li>
+<li>After reboot add the VirtualBox folder to your PATH variable<br />(something like: <code>c:\Program Files\Oracle\VirtualBox</code>)</li>
+<li>Install <a href="http://www.vagrantbox.es/">a base box</a> (I used Ubuntu precise 64 VirtualBox) with the following command
+<code>vagrant add precise64 http://files.vagrantup.com/precise64.box</code></li>
+</ol>
+
+
+<h2>Prepare your Rails project</h2>
+
+<p>Next we have to configure our project to create a box from the base box and make it install all our goodies we need to run our Rails application.</p>
+
+<h3>Setup Chef (Librarian)</h3>
+
+<p>I&#8217;m using a gem called <a href="https://github.com/applicationsonline/librarian-chef">librarian-chef</a> which actually is a bundler for your Chef recipes.</p>
+
+<p>To install run the following from the root of you project:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c"># Install librarian-chef</span>
+</span><span class='line'>gem install librarian-chef
+</span><span class='line'>
+</span><span class='line'><span class="c"># Add its work directories to your gitignore</span>
+</span><span class='line'><span class="nb">echo </span>chef/cookbooks &gt;&gt; .gitignore
+</span><span class='line'><span class="nb">echo </span>chef/tmp &gt;&gt; .gitignore
+</span><span class='line'><span class="c"># OPTIONAL: you can add the Cheffile.lock which holds the currently installed versions</span>
+</span><span class='line'><span class="c">#           just like bundler does</span>
+</span><span class='line'><span class="nb">echo </span>chef/Cheffile.lock &gt;&gt; .gitignore
+</span><span class='line'>
+</span><span class='line'><span class="c"># Create the Librarian config file and needed folders</span>
+</span><span class='line'>mkdir -p chef
+</span><span class='line'><span class="nb">cd </span>chef
+</span><span class='line'>mkdir -p roles
+</span><span class='line'>mkdir -p site-cookbooks
+</span><span class='line'>librarian-chef init
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>WUT?! gem install librarian-chef?</h4>
+
+<p>I know we are trying to create a non-Ruby Windows solution but we do need this gem to work on Windows to complete our setup with Chef. If you really don&#8217;t want Ruby being installed on Windows, you should do the above steps on UNIX or OSX and also have to commit the cookbooks. This means we&#8217;re back at 1900 where everybody stuffed there vendor folder with code they found&#8230; If you do want to perform this on Windows and haven&#8217;t already installed Ruby, you should do this now (I suggest <a href="http://rubyinstaller.org/downloads/">RubyInstaller</a>).</p>
+
+<h3>Configure Chef</h3>
+
+<p>The command <code>librarian-chef init</code> created the file <code>chef/Cheffile</code> where we can add our cookbooks. Mine contains the following:</p>
+
+<figure class='code'><figcaption><span><strong>chef/Cheffile</strong></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1">#!/usr/bin/env ruby</span>
+</span><span class='line'><span class="c1">#^syntax detection</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">site</span> <span class="s1">&#39;http://community.opscode.com/api/v1&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">cookbook</span> <span class="s1">&#39;apt&#39;</span>
+</span><span class='line'><span class="n">cookbook</span> <span class="s1">&#39;git&#39;</span>
+</span><span class='line'><span class="n">cookbook</span> <span class="s1">&#39;sqlite&#39;</span>
+</span><span class='line'><span class="n">cookbook</span> <span class="s1">&#39;mysql&#39;</span>
+</span><span class='line'><span class="n">cookbook</span> <span class="s1">&#39;postgresql&#39;</span>
+</span><span class='line'><span class="n">cookbook</span> <span class="s1">&#39;database&#39;</span>
+</span><span class='line'><span class="n">cookbook</span> <span class="s1">&#39;nodejs&#39;</span>
+</span><span class='line'><span class="n">cookbook</span> <span class="s1">&#39;build-essential&#39;</span>
+</span><span class='line'><span class="n">cookbook</span> <span class="s1">&#39;ruby_build&#39;</span>
+</span><span class='line'><span class="n">cookbook</span> <span class="s1">&#39;rbenv&#39;</span><span class="p">,</span> <span class="ss">:git</span> <span class="o">=&gt;</span> <span class="s1">&#39;git://github.com/fnichol/chef-rbenv.git&#39;</span><span class="p">,</span> <span class="ss">:ref</span> <span class="o">=&gt;</span> <span class="s1">&#39;v0.7.2&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>As you can see I&#8217;ve setup Git, Ruby with rbenv, SQLite, MySQL, PostgreSQL and node.js for the asset pipeline. The <code>apt</code> cookbook is for running <code>apt-get dist-upgrade</code> and the cookbook <code>database</code> will be used later to create users to access the databases.</p>
+
+<p>You could skip one or two of the database servers if you like, but it can&#8217;t harm if you do install them all and don&#8217;t use them.</p>
+
+<h4>Downloading the cookbooks</h4>
+
+<p>Now that we have defined our cookbooks we need to run our final command so that Chef downloads them. Just as you would do with bundler we now run the following command from our <code>chef/</code> folder</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>librarian-chef install
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Adding our custom recipes</h3>
+
+<p>I had some difficulties with running <code>bundle install</code> because the Vagrant user didn&#8217;t have permissions on the rbenv gem folder, so I had to add a custom recipe for this. Also I&#8217;ve added a recipe to modify the <code>pg_hba.conf</code> file of PostgreSQL so that we can connect with the virtual machine. Finally I&#8217;ve created a file to add our database users with full permissions. Here are the 3 files I added:</p>
+
+<figure class='code'><figcaption><span><strong>chef/site-cookbooks/database/recipes/default.rb</strong></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># Setup database servers</span>
+</span><span class='line'><span class="c1">#</span>
+</span><span class='line'><span class="c1"># 1. Setup MySQL and PostgreSQL</span>
+</span><span class='line'><span class="c1"># 2. Create a rails user with a blank password with full control</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># MySQL</span>
+</span><span class='line'><span class="n">mysql_connection_info</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>  <span class="ss">:host</span>     <span class="o">=&gt;</span> <span class="s2">&quot;localhost&quot;</span><span class="p">,</span>
+</span><span class='line'>  <span class="ss">:username</span> <span class="o">=&gt;</span> <span class="s1">&#39;root&#39;</span><span class="p">,</span>
+</span><span class='line'>  <span class="ss">:password</span> <span class="o">=&gt;</span> <span class="n">node</span><span class="o">[</span><span class="s1">&#39;mysql&#39;</span><span class="o">][</span><span class="s1">&#39;server_root_password&#39;</span><span class="o">]</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="n">mysql_database_user</span> <span class="s1">&#39;rails&#39;</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">connection</span> <span class="n">mysql_connection_info</span>
+</span><span class='line'>  <span class="n">password</span> <span class="s1">&#39;&#39;</span>
+</span><span class='line'>  <span class="n">action</span> <span class="ss">:grant</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># PostgreSQL</span>
+</span><span class='line'><span class="n">template</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">node</span><span class="o">[</span><span class="ss">:postgresql</span><span class="o">][</span><span class="ss">:dir</span><span class="o">]</span><span class="si">}</span><span class="s2">/pg_hba.conf&quot;</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">source</span> <span class="s2">&quot;pg_hba.conf.erb&quot;</span>
+</span><span class='line'>  <span class="n">notifies</span> <span class="ss">:restart</span><span class="p">,</span> <span class="s2">&quot;service[postgresql]&quot;</span><span class="p">,</span> <span class="ss">:immediately</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">postgresql_connection_info</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>  <span class="ss">:host</span>     <span class="o">=&gt;</span> <span class="s2">&quot;localhost&quot;</span><span class="p">,</span>
+</span><span class='line'>  <span class="ss">:password</span> <span class="o">=&gt;</span> <span class="n">node</span><span class="o">[</span><span class="s1">&#39;postgresql&#39;</span><span class="o">][</span><span class="s1">&#39;password&#39;</span><span class="o">][</span><span class="s1">&#39;postgres&#39;</span><span class="o">]</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">postgresql_database_user</span> <span class="s1">&#39;rails&#39;</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">connection</span> <span class="n">postgresql_connection_info</span>
+</span><span class='line'>  <span class="n">privileges</span> <span class="o">[</span><span class="ss">:Superuser</span><span class="o">]</span>
+</span><span class='line'>  <span class="n">password</span> <span class="s2">&quot;&quot;</span>
+</span><span class='line'>  <span class="n">action</span> <span class="ss">:create</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span><strong>chef/site-cookbooks/database/templates/default/pg_hba.conf.erb</strong></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">local</span>   <span class="n">all</span>             <span class="n">all</span>                                     <span class="n">trust</span>
+</span><span class='line'><span class="n">host</span>    <span class="n">all</span>             <span class="n">all</span>             <span class="mi">127</span><span class="o">.</span><span class="mi">0</span><span class="o">.</span><span class="mi">0</span><span class="o">.</span><span class="mi">1</span><span class="o">/</span><span class="mi">32</span>            <span class="n">trust</span>
+</span><span class='line'><span class="n">host</span>    <span class="n">all</span>             <span class="n">all</span>             <span class="o">::</span><span class="mi">1</span><span class="o">/</span><span class="mi">128</span>                 <span class="n">trust</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span><strong>chef/site-cookbooks/postinstall/recipes/default.rb</strong></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">group</span> <span class="s2">&quot;rbenv&quot;</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">action</span> <span class="ss">:create</span>
+</span><span class='line'>  <span class="n">members</span> <span class="s2">&quot;vagrant&quot;</span>
+</span><span class='line'>  <span class="n">gid</span> <span class="mi">1100</span>
+</span><span class='line'>  <span class="n">append</span> <span class="kp">true</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">bash</span> <span class="s2">&quot;chgrp and chmod&quot;</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">user</span> <span class="s2">&quot;root&quot;</span>
+</span><span class='line'>  <span class="n">cwd</span> <span class="s2">&quot;/usr/local&quot;</span>
+</span><span class='line'>  <span class="n">code</span> <span class="o">&lt;&lt;-</span><span class="no">EOH</span>
+</span><span class='line'><span class="sh">    chgrp -R rbenv rbenv</span>
+</span><span class='line'><span class="sh">    chmod -R g+rwxX rbenv</span>
+</span><span class='line'><span class="no">  EOH</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Adding our role</h3>
+
+<p>Next we have to create a role that defines what recipes should be executed in what order. Create the file <code>chef/roles/rails-dev.rb</code> containing the following content:</p>
+
+<figure class='code'><figcaption><span><strong>chef/roles/rails-dev.rb</strong></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">name</span> <span class="s2">&quot;rails-dev&quot;</span>
+</span><span class='line'><span class="n">description</span> <span class="s2">&quot;setup for ruby on rails core development&quot;</span>
+</span><span class='line'><span class="n">run_list</span><span class="p">(</span>
+</span><span class='line'>  <span class="s2">&quot;recipe[apt]&quot;</span><span class="p">,</span>
+</span><span class='line'>  <span class="s2">&quot;recipe[git]&quot;</span><span class="p">,</span>
+</span><span class='line'>  <span class="s2">&quot;recipe[sqlite]&quot;</span><span class="p">,</span>
+</span><span class='line'>  <span class="s2">&quot;recipe[mysql::client]&quot;</span><span class="p">,</span>
+</span><span class='line'>  <span class="s2">&quot;recipe[mysql::ruby]&quot;</span><span class="p">,</span>
+</span><span class='line'>  <span class="s2">&quot;recipe[mysql::server]&quot;</span><span class="p">,</span>
+</span><span class='line'>  <span class="s2">&quot;recipe[postgresql::ruby]&quot;</span><span class="p">,</span>
+</span><span class='line'>  <span class="s2">&quot;recipe[postgresql::server]&quot;</span><span class="p">,</span>
+</span><span class='line'>  <span class="s2">&quot;recipe[nodejs::install_from_binary]&quot;</span><span class="p">,</span>
+</span><span class='line'>  <span class="s2">&quot;recipe[ruby_build]&quot;</span><span class="p">,</span>
+</span><span class='line'>  <span class="s2">&quot;recipe[rbenv::system]&quot;</span><span class="p">,</span>
+</span><span class='line'>  <span class="s2">&quot;recipe[rbenv::vagrant]&quot;</span><span class="p">,</span>
+</span><span class='line'>  <span class="s2">&quot;recipe[database]&quot;</span><span class="p">,</span>
+</span><span class='line'>  <span class="s2">&quot;recipe[postinstall]&quot;</span>
+</span><span class='line'><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>If you removed some cookbooks from the <code>chef/Cheffile</code> you should also remove them here.</p>
+
+<h3>Setup Vagrant</h3>
+
+<p>Next we need to create a <code>Vagrantfile</code> that contains the configurations for creating a box from the base box. Create the config file by running:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>vagrant init precise64
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Note: <code>precise64</code> is the name we used with the <code>vagrant add</code> command from step 4 above.</p>
+
+<h4>Modify the Vagrantfile</h4>
+
+<p>Here&#8217;s the stripped version of how my file looks like:</p>
+
+<figure class='code'><figcaption><span>Vagrantfile</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Vagrant</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="s2">&quot;2&quot;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
+</span><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">box</span> <span class="o">=</span> <span class="s2">&quot;precise64&quot;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">box_url</span> <span class="o">=</span> <span class="s2">&quot;http://files.vagrantup.com/precise64.box&quot;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">network</span> <span class="ss">:forwarded_port</span><span class="p">,</span> <span class="ss">guest</span><span class="p">:</span> <span class="mi">3000</span><span class="p">,</span> <span class="ss">host</span><span class="p">:</span> <span class="mi">3000</span>  <span class="c1"># forward the default rails port</span>
+</span><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">network</span> <span class="ss">:forwarded_port</span><span class="p">,</span> <span class="ss">guest</span><span class="p">:</span> <span class="mi">3306</span><span class="p">,</span> <span class="ss">host</span><span class="p">:</span> <span class="mi">3306</span>  <span class="c1"># forward the MySQL port</span>
+</span><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">network</span> <span class="ss">:forwarded_port</span><span class="p">,</span> <span class="ss">guest</span><span class="p">:</span> <span class="mi">5432</span><span class="p">,</span> <span class="ss">host</span><span class="p">:</span> <span class="mi">5432</span>  <span class="c1"># forward the PostgreSQL port</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">provision</span> <span class="ss">:shell</span><span class="p">,</span> <span class="ss">:inline</span> <span class="o">=&gt;</span> <span class="s2">&quot;gem install chef --version 11.4.2&quot;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">provision</span> <span class="ss">:chef_solo</span> <span class="k">do</span> <span class="o">|</span><span class="n">chef</span><span class="o">|</span>
+</span><span class='line'>    <span class="n">chef</span><span class="o">.</span><span class="n">cookbooks_path</span> <span class="o">=</span> <span class="o">[</span><span class="s2">&quot;chef/cookbooks&quot;</span><span class="p">,</span> <span class="s2">&quot;chef/site-cookbooks&quot;</span><span class="o">]</span>
+</span><span class='line'>    <span class="n">chef</span><span class="o">.</span><span class="n">roles_path</span>     <span class="o">=</span> <span class="o">[[</span><span class="ss">:host</span><span class="p">,</span> <span class="s2">&quot;chef/roles&quot;</span><span class="o">]]</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">chef</span><span class="o">.</span><span class="n">add_role</span> <span class="s2">&quot;rails-dev&quot;</span>
+</span><span class='line'>    <span class="n">chef</span><span class="o">.</span><span class="n">json</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>      <span class="s2">&quot;mysql&quot;</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class='line'>        <span class="s2">&quot;server_root_password&quot;</span>   <span class="o">=&gt;</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+</span><span class='line'>        <span class="s2">&quot;server_debian_password&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+</span><span class='line'>        <span class="s2">&quot;server_repl_password&quot;</span>   <span class="o">=&gt;</span> <span class="s2">&quot;&quot;</span>
+</span><span class='line'>      <span class="p">},</span>
+</span><span class='line'>      <span class="s2">&quot;postgresql&quot;</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class='line'>        <span class="s2">&quot;password&quot;</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class='line'>          <span class="s2">&quot;postgres&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;&quot;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>      <span class="p">},</span>
+</span><span class='line'>      <span class="s2">&quot;rbenv&quot;</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class='line'>        <span class="s2">&quot;global&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;2.0.0-p247&quot;</span><span class="p">,</span>
+</span><span class='line'>        <span class="s2">&quot;rubies&quot;</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="s2">&quot;2.0.0-p247&quot;</span><span class="o">]</span><span class="p">,</span>
+</span><span class='line'>        <span class="s2">&quot;gems&quot;</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class='line'>          <span class="s2">&quot;2.0.0-p247&quot;</span> <span class="o">=&gt;</span> <span class="o">[</span>
+</span><span class='line'>            <span class="p">{</span> <span class="s2">&quot;name&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;bundler&quot;</span> <span class="p">}</span>
+</span><span class='line'>          <span class="o">]</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>One catch</h4>
+
+<p>I had some troubles installing the (currently) latest version <code>11.4.4</code> of Chef because of a bug with Ruby v1.8.7, which is the default on a the base box. <a href="https://github.com/opscode/chef/pull/734">This problem</a> should be solved soon but until then I&#8217;ve added the <code>gem install chef --version 11.4.2</code> line to install a working (but a bit older) version.</p>
+
+<h2>Ready to rock!</h2>
+
+<p>Alright we&#8217;re ready. We now can boot up Vagrant which will take some time the first time because it will create a new box from the base box and install all the cookbooks. From then you&#8217;re able to connect with the box and use it just like you would do on UNIX or OSX.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c"># starts and setups the box</span>
+</span><span class='line'>vagrant up
+</span><span class='line'>
+</span><span class='line'><span class="c"># ... now we wait ...</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># connect to the box with ssh</span>
+</span><span class='line'>vagrant ssh
+</span><span class='line'>
+</span><span class='line'><span class="c"># install gems and run the server on the box</span>
+</span><span class='line'><span class="nb">cd</span> /vagrant
+</span><span class='line'>bundle install
+</span><span class='line'>bundle <span class="nb">exec </span>rails s
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>What we&#8217;ve created</h3>
+
+<p>A VirtualBox with Ubuntu precise 64 installed and containing the following software/configurations:</p>
+
+<ul>
+<li>Software:
+
+<ol>
+<li>rbenv with ruby-build</li>
+<li>ruby-2.0.0-p247</li>
+<li>Git</li>
+<li>SQLite</li>
+<li>MySQL with user: <code>rails</code> with a empty password</li>
+<li>PostgreSQL with user: <code>rails</code> with a empty password</li>
+<li>node.js</li>
+</ol>
+</li>
+<li>Ports:
+
+<ol>
+<li><code>localhost:3000</code> goes to <code>vagrant-box:3000</code></li>
+<li><code>localhost:3306</code> goes to <code>vagrant-box:3306</code></li>
+<li><code>localhost:5432</code> goes to <code>vagrant-box:5432</code></li>
+</ol>
+</li>
+</ul>
+
+
+<h2>Develop workflow</h2>
+
+<p>If you have to run specific Ruby (on Rails) tasks like <code>rspec</code> or <code>bundle exec rails g migration</code> you should do this within the ssh session of your box.</p>
+
+<p>Editing files can be done on your Windows machine, because the root of you project is directly binded to the <code>/vagrant/</code> folder on the box.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Rails belongs_to to has_many]]></title>
@@ -410,7 +871,7 @@ One mistake I made was forgetting about the number of dynos and Unicorn worker_p
 <span class='line-number'>8</span>
 <span class='line-number'>9</span>
 </pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">MyWorker</span>
-</span><span class='line'>  <span class="kp">include</span> <span class="no">Sidekiq</span><span class="o">::</span><span class="no">Worker</span>
+</span><span class='line'>  <span class="kp">include</span> <span class="ss">Sidekiq</span><span class="p">:</span><span class="ss">:Worker</span>
 </span><span class='line'>
 </span><span class='line'>  <span class="k">def</span> <span class="nf">perform</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
 </span><span class='line'>    <span class="n">object</span> <span class="o">=</span> <span class="no">Model</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
@@ -543,13 +1004,13 @@ One mistake I made was forgetting about the number of dynos and Unicorn worker_p
 </span><span class='line'>
 </span><span class='line'><span class="n">heroku</span> <span class="o">=</span> <span class="kp">nil</span>
 </span><span class='line'><span class="k">if</span> <span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;HEROKU_APP&#39;</span><span class="o">]</span>
-</span><span class='line'>  <span class="n">heroku</span> <span class="o">=</span> <span class="no">Autoscaler</span><span class="o">::</span><span class="no">HerokuScaler</span><span class="o">.</span><span class="n">new</span>
+</span><span class='line'>  <span class="n">heroku</span> <span class="o">=</span> <span class="ss">Autoscaler</span><span class="p">:</span><span class="ss">:HerokuScaler</span><span class="o">.</span><span class="n">new</span>
 </span><span class='line'><span class="k">end</span>
 </span><span class='line'>
 </span><span class='line'><span class="no">Sidekiq</span><span class="o">.</span><span class="n">configure_client</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
 </span><span class='line'>  <span class="k">if</span> <span class="n">heroku</span>
 </span><span class='line'>    <span class="n">config</span><span class="o">.</span><span class="n">client_middleware</span> <span class="k">do</span> <span class="o">|</span><span class="n">chain</span><span class="o">|</span>
-</span><span class='line'>      <span class="n">chain</span><span class="o">.</span><span class="n">add</span> <span class="no">Autoscaler</span><span class="o">::</span><span class="no">Sidekiq</span><span class="o">::</span><span class="no">Client</span><span class="p">,</span> <span class="s1">&#39;default&#39;</span> <span class="o">=&gt;</span> <span class="n">heroku</span>
+</span><span class='line'>      <span class="n">chain</span><span class="o">.</span><span class="n">add</span> <span class="ss">Autoscaler</span><span class="p">:</span><span class="ss">:Sidekiq</span><span class="o">::</span><span class="no">Client</span><span class="p">,</span> <span class="s1">&#39;default&#39;</span> <span class="o">=&gt;</span> <span class="n">heroku</span>
 </span><span class='line'>    <span class="k">end</span>
 </span><span class='line'>  <span class="k">end</span>
 </span><span class='line'><span class="k">end</span>
@@ -558,7 +1019,7 @@ One mistake I made was forgetting about the number of dynos and Unicorn worker_p
 </span><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">server_middleware</span> <span class="k">do</span> <span class="o">|</span><span class="n">chain</span><span class="o">|</span>
 </span><span class='line'>    <span class="k">if</span> <span class="n">heroku</span>
 </span><span class='line'>      <span class="nb">p</span> <span class="s2">&quot;[Sidekiq] Running on Heroku, autoscaler is used&quot;</span>
-</span><span class='line'>      <span class="n">chain</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="no">Autoscaler</span><span class="o">::</span><span class="no">Sidekiq</span><span class="o">::</span><span class="no">Server</span><span class="p">,</span> <span class="n">heroku</span><span class="p">,</span> <span class="mi">60</span><span class="p">)</span> <span class="c1"># 60 seconds timeout</span>
+</span><span class='line'>      <span class="n">chain</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="ss">Autoscaler</span><span class="p">:</span><span class="ss">:Sidekiq</span><span class="o">::</span><span class="no">Server</span><span class="p">,</span> <span class="n">heroku</span><span class="p">,</span> <span class="mi">60</span><span class="p">)</span> <span class="c1"># 60 seconds timeout</span>
 </span><span class='line'>    <span class="k">else</span>
 </span><span class='line'>      <span class="nb">p</span> <span class="s2">&quot;[Sidekiq] Running locally, so autoscaler isn&#39;t used&quot;</span>
 </span><span class='line'>    <span class="k">end</span>
@@ -744,15 +1205,7 @@ One mistake I made was forgetting about the number of dynos and Unicorn worker_p
 <p>With this query it was easy to transform it into a SUM for all rowCount&#8217;s we retrieve. Here&#8217;s the final query to retrieve the total number of rows from all tables of a Postgres database</p>
 
 <div><script src='https://gist.github.com/3205631.js'></script>
-<noscript><pre><code>SELECT
-  SUM(pgClass.reltuples) AS totalRowCount
-FROM
-  pg_class pgClass
-LEFT JOIN
-  pg_namespace pgNamespace ON (pgNamespace.oid = pgClass.relnamespace)
-WHERE
-  pgNamespace.nspname NOT IN (&#39;pg_catalog&#39;, &#39;information_schema&#39;) AND
-  pgClass.relkind=&#39;r&#39;</code></pre></noscript></div>
+<noscript><pre><code></code></pre></noscript></div>
 
 
 
@@ -1180,7 +1633,7 @@ Today I had to reinstall my Linux installation because my harddisk died a quick 
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[“Rake, pull me that DB!”]]></title>
+    <title type="html"><![CDATA[ΓÇ£Rake, pull me that DB!ΓÇ¥]]></title>
     <link href="http://manuel.manuelles.nl/blog/2012/01/19/rake-pull-me-that-db/"/>
     <updated>2012-01-19T15:15:00+01:00</updated>
     <id>http://manuel.manuelles.nl/blog/2012/01/19/rake-pull-me-that-db</id>
@@ -1241,29 +1694,29 @@ production:
 <p>Put the following code into <code>libs/tasks/database.rake</code></p>
 
 <div><script src='https://gist.github.com/1640429.js?file=database.rake'></script>
-<noscript><pre><code>require &#39;fileutils&#39;
+<noscript><pre><code>require 'fileutils'
 
 namespace :db do
-  desc &#39;pull the production PostgreSQL database into the development SQLite&#39;
+  desc 'pull the production PostgreSQL database into the development SQLite'
   task :pull do
-    Rake::Task[&#39;db:download_pg_dump&#39;].invoke
-    Rake::Task[&#39;db:optimze_pg_dump_for_sqlite&#39;].invoke
-    Rake::Task[&#39;db:recreate_with_dump&#39;].invoke
+    Rake::Task['db:download_pg_dump'].invoke
+    Rake::Task['db:optimze_pg_dump_for_sqlite'].invoke
+    Rake::Task['db:recreate_with_dump'].invoke
   end
 
-  desc &#39;download the pg_dump content into tmp/dump.sql&#39;
+  desc 'download the pg_dump content into tmp/dump.sql'
   task :download_pg_dump do
     config = Rails.application.config.database_configuration
 
-    abort &quot;Missing production database config&quot; if config[&#39;production&#39;].blank?
+    abort &quot;Missing production database config&quot; if config['production'].blank?
 
-    dev  = config[&#39;development&#39;]
-    prod = config[&#39;production&#39;]
+    dev  = config['development']
+    prod = config['production']
 
-    abort &quot;Development db is not sqlite3&quot; unless dev[&#39;adapter&#39;] =~ /sqlite3/
-    abort &quot;Production db is not postgresql&quot; unless prod[&#39;adapter&#39;] =~ /postgresql/
-    abort &quot;Missing ssh host&quot; if prod[&#39;ssh_host&#39;].blank?
-    abort &quot;Missing database name&quot; if prod[&#39;database&#39;].blank?
+    abort &quot;Development db is not sqlite3&quot; unless dev['adapter'] =~ /sqlite3/
+    abort &quot;Production db is not postgresql&quot; unless prod['adapter'] =~ /postgresql/
+    abort &quot;Missing ssh host&quot; if prod['ssh_host'].blank?
+    abort &quot;Missing database name&quot; if prod['database'].blank?
 
     # remove the old one
     if File.exists?(pg_dump_file_path)
@@ -1271,33 +1724,33 @@ namespace :db do
     end
 
     cmd  = &quot;ssh -C &quot;
-    cmd &lt;&lt; &quot;#{prod[&#39;ssh_user&#39;]}@&quot; if prod[&#39;ssh_user&#39;].present?
-    cmd &lt;&lt; &quot;#{prod[&#39;ssh_host&#39;]} &quot;
-    cmd &lt;&lt; &quot;PGPASSWORD=#{prod[&#39;password&#39;]} &quot;
+    cmd &lt;&lt; &quot;#{prod['ssh_user']}@&quot; if prod['ssh_user'].present?
+    cmd &lt;&lt; &quot;#{prod['ssh_host']} &quot;
+    cmd &lt;&lt; &quot;PGPASSWORD=#{prod['password']} &quot;
     cmd &lt;&lt; &quot;pg_dump --data-only --inserts &quot;
-    cmd &lt;&lt; &quot;--username=#{prod[&#39;username&#39;]} #{prod[&#39;database&#39;]} &gt; &quot;
+    cmd &lt;&lt; &quot;--username=#{prod['username']} #{prod['database']} &gt; &quot;
     cmd &lt;&lt; pg_dump_file_path
 
     system `#{cmd}`
   end
 
-  desc &#39;remove unused statements and optimze sql for SQLite&#39;
+  desc 'remove unused statements and optimze sql for SQLite'
   task :optimze_pg_dump_for_sqlite do
     result = []
     lines = File.readlines(pg_dump_file_path)
     @version = 0
     lines.each do | line |
-      next if line =~ /SELECT pg_catalog.setval/  # sequence value&#39;s
+      next if line =~ /SELECT pg_catalog.setval/  # sequence value's
       next if line =~ /SET /                      # postgres specific config
       next if line =~ /--/                        # comment
 
       if line =~ /INSERT INTO schema_migrations/
-        @version = line.match(/INSERT INTO schema_migrations VALUES \(&#39;([\d]*)/)[1]
+        @version = line.match(/INSERT INTO schema_migrations VALUES \('([\d]*)/)[1]
       end
 
-      # replace true and false for &#39;t&#39; and &#39;f&#39;
-      line.gsub!(&quot;true&quot;,&quot;&#39;t&#39;&quot;)
-      line.gsub!(&quot;false&quot;,&quot;&#39;f&#39;&quot;)
+      # replace true and false for 't' and 'f'
+      line.gsub!(&quot;true&quot;,&quot;'t'&quot;)
+      line.gsub!(&quot;false&quot;,&quot;'f'&quot;)
       result &lt;&lt; line
     end
 
@@ -1309,21 +1762,21 @@ namespace :db do
     end
   end
 
-  desc &#39;backup development.sqlite3 and create a new one with the dumped data&#39;
+  desc 'backup development.sqlite3 and create a new one with the dumped data'
   task :recreate_with_dump do
     # sqlite so backup
-    database = Rails.configuration.database_configuration[&#39;development&#39;][&#39;database&#39;]
+    database = Rails.configuration.database_configuration['development']['database']
     database_path = File.expand_path(&quot;#{Rails.root}/#{database}&quot;)
     # remove old backup
-    if File.exists?(database_path + &#39;.backup&#39;)
-      File.delete(database_path + &#39;.backup&#39;)
+    if File.exists?(database_path + '.backup')
+      File.delete(database_path + '.backup')
     end
     # copy current for backup
-    FileUtils.cp database_path, database_path + &#39;.backup&#39; if File.exists?(database_path)
+    FileUtils.cp database_path, database_path + '.backup' if File.exists?(database_path)
 
     # dropping and re-creating db
-    ENV[&#39;VERSION&#39;] = @version
-    Rake::Task[&#39;db:drop&#39;].invoke
+    ENV['VERSION'] = @version
+    Rake::Task['db:drop'].invoke
     Rake::Task[&quot;db:migrate&quot;].invoke
 
     puts &quot;migrated to version: #{@version}&quot;
@@ -1334,7 +1787,7 @@ namespace :db do
     system `sqlite3 #{database_path} &quot;.read #{pg_dump_file_path}&quot;`
 
     puts &quot;DONE!&quot;
-    puts &quot;NOTE: you&#39;re now migrated to version #{@version}. Please run db:migrate to apply newer migrations&quot;
+    puts &quot;NOTE: you're now migrated to version #{@version}. Please run db:migrate to apply newer migrations&quot;
   end
 
   def pg_dump_file_path
@@ -1593,7 +2046,7 @@ end</code></pre></noscript></div>
 <span class='line-number'>13</span>
 <span class='line-number'>14</span>
 <span class='line-number'>15</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">SomeModel</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">SomeModel</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
 </span><span class='line'>  <span class="n">before_save</span> <span class="ss">:before_action</span>
 </span><span class='line'>  <span class="n">after_save</span> <span class="ss">:after_action</span>
 </span><span class='line'>
@@ -1631,7 +2084,7 @@ end</code></pre></noscript></div>
 <span class='line-number'>16</span>
 <span class='line-number'>17</span>
 <span class='line-number'>18</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">UpdateSomeModel</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">UpdateSomeModel</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Migration</span>
 </span><span class='line'>  <span class="k">def</span> <span class="nf">up</span>
 </span><span class='line'>    <span class="c1"># disable the before_save</span>
 </span><span class='line'>    <span class="no">SomeModel</span><span class="o">.</span><span class="n">skip_callback</span><span class="p">(</span><span class="ss">:save</span><span class="p">,</span> <span class="ss">:before</span><span class="p">,</span> <span class="ss">:before_action</span><span class="p">)</span>
@@ -1706,68 +2159,7 @@ end</code></pre></noscript></div>
 <p>First we have to track down what files are making our repository so large. I&#8217;ve found a perl script that scans your repository for files of a specific size. Here&#8217;s the code:</p>
 
 <div><script src='https://gist.github.com/1354502.js'></script>
-<noscript><pre><code>#!/usr/bin/perl
-use 5.008;
-use strict;
-use Memoize;
-
-# usage:
-# git-large-files 500k
-# git-large-files 0.5m
-# git-large-files 5b
-
-sub usage { die &quot;usage: git-large-files &lt;size[b|k|m]&gt; [&lt;git-log arguments ...&gt;]\n&quot; }
-
-@ARGV or usage();
-my ( $max_size, $unit ) = ( shift =~ /^(\d+)([bkm]?)\z/ ) ? ( $1, $2 ) : usage();
-
-my $exp = 10 * ( $unit eq &#39;b&#39; ? 0 : $unit eq &#39;k&#39; ? 1 : 2 );
-my $cutoff = $max_size * 2**$exp;
-
-sub walk_tree {
-    my ( $tree, @path ) = @_;
-    my @subtree;
-    my @r;
-
-    {
-        open my $ls_tree, &#39;-|&#39;, git =&gt; &#39;ls-tree&#39; =&gt; -l =&gt; $tree
-            or die &quot;Couldn&#39;t open pipe to git-ls-tree: $!\n&quot;;
-
-        while ( &lt;$ls_tree&gt; ) {
-            my ( $type, $sha1, $size, $name ) = /\A[0-7]{6} (\S+) (\S+) +(\S+)\t(.*)/;
-            if ( $type eq &#39;tree&#39; ) {
-                push @subtree, [ $sha1, $name ];
-            }
-            elsif ( $type eq &#39;blob&#39; and $size &gt;= $cutoff ) {
-                push @r, [ $size, @path, $name ];
-            }
-        }
-    }
-
-    push @r, walk_tree( $_-&gt;[0], @path, $_-&gt;[1] )
-        for @subtree;
-
-    return @r;
-}
-
-memoize &#39;walk_tree&#39;;
-
-open my $log, &#39;-|&#39;, git =&gt; log =&gt; @ARGV, &#39;--pretty=format:%T %h %cr&#39;
-    or die &quot;Couldn&#39;t open pipe to git-log: $!\n&quot;;
-
-my %seen;
-while ( &lt;$log&gt; ) {
-    chomp;
-    my ( $tree, $commit, $age ) = split &quot; &quot;, $_, 3;
-    my $is_header_printed;
-    for ( walk_tree( $tree ) ) {
-        my ( $size, @path ) = @$_;
-        my $path = join &#39;/&#39;, @path;
-        next if $seen{ $path }++;
-        print &quot;$commit $age\n&quot; if not $is_header_printed++;
-        print &quot;\t$size\t$path\n&quot;;
-    }
-}</code></pre></noscript></div>
+<noscript><pre><code></code></pre></noscript></div>
 
 
 <p>So I&#8217;ve placed this file within my repository and executed the below command to see all files, from all commits, that are bigger then <strong>500 Kb</strong></p>

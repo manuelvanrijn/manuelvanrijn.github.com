@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: virtualbox | Manuel van Rijn]]></title>
+  <link href="http://manuel.manuelles.nl/blog/categories/virtualbox/atom.xml" rel="self"/>
+  <link href="http://manuel.manuelles.nl/"/>
+  <updated>2013-07-25T10:35:55+02:00</updated>
+  <id>http://manuel.manuelles.nl/</id>
+  <author>
+    <name><![CDATA[Manuel van Rijn]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Developing Ruby on Rails on Windows]]></title>
+    <link href="http://manuel.manuelles.nl/blog/2013/07/23/developing-ruby-on-rails-on-windows/"/>
+    <updated>2013-07-23T23:06:00+02:00</updated>
+    <id>http://manuel.manuelles.nl/blog/2013/07/23/developing-ruby-on-rails-on-windows</id>
+    <content type="html"><![CDATA[<p><a href="/blog/2013/03/04/rails-belongs-to-to-has-many/"><img class="right" src="/images/posts/developing-ruby-on-rails-on-windows.png" width="250" height="250" title="Develop Ruby on Rails on Windows" ></a> I do a lot of C# web development which means I have to work with Visual Studio on Windows. I usually grab the Mac to do my Ruby on Rails development, but it would be easier not to switch every time I have to do C# and Ruby development.</p>
+
+<p>A while ago I tried several things getting a fast Rails experience on Windows, but it failed. It was just too slow ... until now! In this post I'd like to share my current setup which I plan to use as long as it pleases me.</p>
+
+<!-- more -->
+
+
+<h2>What are we going to do?</h2>
+
+<p>We are going to install <a href="http://www.vagrantup.com/">Vagrant</a> which uses <a href="https://www.virtualbox.org/">VirtualBox</a> to build a complete development environment. Also we will create and use some <a href="http://community.opscode.com/">recipes for Chef</a> to automatically install and configure the development environment. Think of installing Ruby, PostgreSQL, and MySQL etc. automatically.</p>
+
+<h2>Installing Vagrant and VirtualBox</h2>
+
+<p>First let's setup our Windows machine with the needed software.</p>
+
+<ol>
+<li>Install <a href="https://www.virtualbox.org/wiki/Downloads">VirtualBox</a></li>
+<li>Install <a href="http://downloads.vagrantup.com/">Vagrant</a></li>
+<li>After reboot add the VirtualBox folder to your PATH variable<br />(something like: <code>c:\Program Files\Oracle\VirtualBox</code>)</li>
+<li>Install <a href="http://www.vagrantbox.es/">a base box</a> (I used Ubuntu precise 64 VirtualBox) with the following command
+<code>vagrant add precise64 http://files.vagrantup.com/precise64.box</code></li>
+</ol>
+
+
+<h2>Prepare your Rails project</h2>
+
+<p>Next we have to configure our project to create a box from the base box and make it install all our goodies we need to run our Rails application.</p>
+
+<h3>Setup Chef (Librarian)</h3>
+
+<p>I'm using a gem called <a href="https://github.com/applicationsonline/librarian-chef">librarian-chef</a> which actually is a bundler for your Chef recipes.</p>
+
+<p>To install run the following from the root of you project:</p>
+
+<p>``` bash</p>
+
+<h1>Install librarian-chef</h1>
+
+<p>gem install librarian-chef</p>
+
+<h1>Add its work directories to your gitignore</h1>
+
+<p>echo chef/cookbooks >> .gitignore
+echo chef/tmp >> .gitignore</p>
+
+<h1>OPTIONAL: you can add the Cheffile.lock which holds the currently installed versions</h1>
+
+<h1>just like bundler does</h1>
+
+<p>echo chef/Cheffile.lock >> .gitignore</p>
+
+<h1>Create the Librarian config file and needed folders</h1>
+
+<p>mkdir -p chef
+cd chef
+mkdir -p roles
+mkdir -p site-cookbooks
+librarian-chef init
+```</p>
+
+<h4>WUT?! gem install librarian-chef?</h4>
+
+<p>I know we are trying to create a non-Ruby Windows solution but we do need this gem to work on Windows to complete our setup with Chef. If you really don't want Ruby being installed on Windows, you should do the above steps on UNIX or OSX and also have to commit the cookbooks. This means we're back at 1900 where everybody stuffed there vendor folder with code they found... If you do want to perform this on Windows and haven't already installed Ruby, you should do this now (I suggest <a href="http://rubyinstaller.org/downloads/">RubyInstaller</a>).</p>
+
+<h3>Configure Chef</h3>
+
+<p>The command <code>librarian-chef init</code> created the file <code>chef/Cheffile</code> where we can add our cookbooks. Mine contains the following:</p>
+
+<p>``` ruby <strong>chef/Cheffile</strong></p>
+
+<h1>!/usr/bin/env ruby</h1>
+
+<h1>^syntax detection</h1>
+
+<p>site 'http://community.opscode.com/api/v1'</p>
+
+<p>cookbook 'apt'
+cookbook 'git'
+cookbook 'sqlite'
+cookbook 'mysql'
+cookbook 'postgresql'
+cookbook 'database'
+cookbook 'nodejs'
+cookbook 'build-essential'
+cookbook 'ruby_build'
+cookbook 'rbenv', :git => 'git://github.com/fnichol/chef-rbenv.git', :ref => 'v0.7.2'
+```</p>
+
+<p>As you can see I've setup Git, Ruby with rbenv, SQLite, MySQL, PostgreSQL and node.js for the asset pipeline. The <code>apt</code> cookbook is for running <code>apt-get dist-upgrade</code> and the cookbook <code>database</code> will be used later to create users to access the databases.</p>
+
+<p>You could skip one or two of the database servers if you like, but it can't harm if you do install them all and don't use them.</p>
+
+<h4>Downloading the cookbooks</h4>
+
+<p>Now that we have defined our cookbooks we need to run our final command so that Chef downloads them. Just as you would do with bundler we now run the following command from our <code>chef/</code> folder</p>
+
+<p><code>bash
+librarian-chef install
+</code></p>
+
+<h3>Adding our custom recipes</h3>
+
+<p>I had some difficulties with running <code>bundle install</code> because the Vagrant user didn't have permissions on the rbenv gem folder, so I had to add a custom recipe for this. Also I've added a recipe to modify the <code>pg_hba.conf</code> file of PostgreSQL so that we can connect with the virtual machine. Finally I've created a file to add our database users with full permissions. Here are the 3 files I added:</p>
+
+<p>``` ruby <strong>chef/site-cookbooks/database/recipes/default.rb</strong></p>
+
+<h1>Setup database servers</h1>
+
+<p>#</p>
+
+<h1>1. Setup MySQL and PostgreSQL</h1>
+
+<h1>2. Create a rails user with a blank password with full control</h1>
+
+<h1>MySQL</h1>
+
+<p>mysql_connection_info = {
+  :host     => "localhost",
+  :username => 'root',
+  :password => node['mysql']['server_root_password']
+}
+mysql_database_user 'rails' do
+  connection mysql_connection_info
+  password ''
+  action :grant
+end</p>
+
+<h1>PostgreSQL</h1>
+
+<p>template "#{node[:postgresql][:dir]}/pg_hba.conf" do
+  source "pg_hba.conf.erb"
+  notifies :restart, "service[postgresql]", :immediately
+end</p>
+
+<p>postgresql_connection_info = {
+  :host     => "localhost",
+  :password => node['postgresql']['password']['postgres']
+}</p>
+
+<p>postgresql_database_user 'rails' do
+  connection postgresql_connection_info
+  privileges [:Superuser]
+  password ""
+  action :create
+end
+```</p>
+
+<p><code>ruby &lt;strong&gt;chef/site-cookbooks/database/templates/default/pg_hba.conf.erb&lt;/strong&gt;
+local   all             all                                     trust
+host    all             all             127.0.0.1/32            trust
+host    all             all             ::1/128                 trust
+</code></p>
+
+<p>``` ruby <strong>chef/site-cookbooks/postinstall/recipes/default.rb</strong>
+group "rbenv" do
+  action :create
+  members "vagrant"
+  gid 1100
+  append true
+end</p>
+
+<p>bash "chgrp and chmod" do
+  user "root"
+  cwd "/usr/local"
+  code &lt;&lt;-EOH</p>
+
+<pre><code>chgrp -R rbenv rbenv
+chmod -R g+rwxX rbenv
+</code></pre>
+
+<p>  EOH
+end
+```</p>
+
+<h3>Adding our role</h3>
+
+<p>Next we have to create a role that defines what recipes should be executed in what order. Create the file <code>chef/roles/rails-dev.rb</code> containing the following content:</p>
+
+<p><code>ruby &lt;strong&gt;chef/roles/rails-dev.rb&lt;/strong&gt;
+name "rails-dev"
+description "setup for ruby on rails core development"
+run_list(
+  "recipe[apt]",
+  "recipe[git]",
+  "recipe[sqlite]",
+  "recipe[mysql::client]",
+  "recipe[mysql::ruby]",
+  "recipe[mysql::server]",
+  "recipe[postgresql::ruby]",
+  "recipe[postgresql::server]",
+  "recipe[nodejs::install_from_binary]",
+  "recipe[ruby_build]",
+  "recipe[rbenv::system]",
+  "recipe[rbenv::vagrant]",
+  "recipe[database]",
+  "recipe[postinstall]"
+)
+</code></p>
+
+<p>If you removed some cookbooks from the <code>chef/Cheffile</code> you should also remove them here.</p>
+
+<h3>Setup Vagrant</h3>
+
+<p>Next we need to create a <code>Vagrantfile</code> that contains the configurations for creating a box from the base box. Create the config file by running:</p>
+
+<p><code>bash
+vagrant init precise64
+</code></p>
+
+<p>Note: <code>precise64</code> is the name we used with the <code>vagrant add</code> command from step 4 above.</p>
+
+<h4>Modify the Vagrantfile</h4>
+
+<p>Here's the stripped version of how my file looks like:</p>
+
+<p>``` ruby Vagrantfile
+Vagrant.configure("2") do |config|
+  config.vm.box = "precise64"</p>
+
+<p>  config.vm.box_url = "http://files.vagrantup.com/precise64.box"</p>
+
+<p>  config.vm.network :forwarded_port, guest: 3000, host: 3000  # forward the default rails port
+  config.vm.network :forwarded_port, guest: 3306, host: 3306  # forward the MySQL port
+  config.vm.network :forwarded_port, guest: 5432, host: 5432  # forward the PostgreSQL port</p>
+
+<p>  config.vm.provision :shell, :inline => "gem install chef --version 11.4.2"</p>
+
+<p>  config.vm.provision :chef_solo do |chef|</p>
+
+<pre><code>chef.cookbooks_path = ["chef/cookbooks", "chef/site-cookbooks"]
+chef.roles_path     = [[:host, "chef/roles"]]
+
+chef.add_role "rails-dev"
+chef.json = {
+  "mysql" =&gt; {
+    "server_root_password"   =&gt; "",
+    "server_debian_password" =&gt; "",
+    "server_repl_password"   =&gt; ""
+  },
+  "postgresql" =&gt; {
+    "password" =&gt; {
+      "postgres" =&gt; ""
+    }
+  },
+  "rbenv" =&gt; {
+    "global" =&gt; "2.0.0-p247",
+    "rubies" =&gt; ["2.0.0-p247"],
+    "gems" =&gt; {
+      "2.0.0-p247" =&gt; [
+        { "name" =&gt; "bundler" }
+      ]
+    }
+  }
+}
+</code></pre>
+
+<p>  end
+end
+```</p>
+
+<h4>One catch</h4>
+
+<p>I had some troubles installing the (currently) latest version <code>11.4.4</code> of Chef because of a bug with Ruby v1.8.7, which is the default on a the base box. <a href="https://github.com/opscode/chef/pull/734">This problem</a> should be solved soon but until then I've added the <code>gem install chef --version 11.4.2</code> line to install a working (but a bit older) version.</p>
+
+<h2>Ready to rock!</h2>
+
+<p>Alright we're ready. We now can boot up Vagrant which will take some time the first time because it will create a new box from the base box and install all the cookbooks. From then you're able to connect with the box and use it just like you would do on UNIX or OSX.</p>
+
+<p>``` bash</p>
+
+<h1>starts and setups the box</h1>
+
+<p>vagrant up</p>
+
+<h1>... now we wait ...</h1>
+
+<h1>connect to the box with ssh</h1>
+
+<p>vagrant ssh</p>
+
+<h1>install gems and run the server on the box</h1>
+
+<p>cd /vagrant
+bundle install
+bundle exec rails s
+```</p>
+
+<h3>What we've created</h3>
+
+<p>A VirtualBox with Ubuntu precise 64 installed and containing the following software/configurations:</p>
+
+<ul>
+<li>Software:
+
+<ol>
+<li>rbenv with ruby-build</li>
+<li>ruby-2.0.0-p247</li>
+<li>Git</li>
+<li>SQLite</li>
+<li>MySQL with user: <code>rails</code> with a empty password</li>
+<li>PostgreSQL with user: <code>rails</code> with a empty password</li>
+<li>node.js</li>
+</ol>
+</li>
+<li>Ports:
+
+<ol>
+<li><code>localhost:3000</code> goes to <code>vagrant-box:3000</code></li>
+<li><code>localhost:3306</code> goes to <code>vagrant-box:3306</code></li>
+<li><code>localhost:5432</code> goes to <code>vagrant-box:5432</code></li>
+</ol>
+</li>
+</ul>
+
+
+<h2>Develop workflow</h2>
+
+<p>If you have to run specific Ruby (on Rails) tasks like <code>rspec</code> or <code>bundle exec rails g migration</code> you should do this within the ssh session of your box.</p>
+
+<p>Editing files can be done on your Windows machine, because the root of you project is directly binded to the <code>/vagrant/</code> folder on the box.</p>
+]]></content>
+  </entry>
+  
+</feed>

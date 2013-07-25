@@ -4,7 +4,7 @@
   <title><![CDATA[Category: heroku | Manuel van Rijn]]></title>
   <link href="http://manuel.manuelles.nl/blog/categories/heroku/atom.xml" rel="self"/>
   <link href="http://manuel.manuelles.nl/"/>
-  <updated>2013-07-16T11:26:59+02:00</updated>
+  <updated>2013-07-25T10:35:55+02:00</updated>
   <id>http://manuel.manuelles.nl/</id>
   <author>
     <name><![CDATA[Manuel van Rijn]]></name>
@@ -374,15 +374,7 @@ WHERE
 <p>With this query it was easy to transform it into a SUM for all rowCount's we retrieve. Here's the final query to retrieve the total number of rows from all tables of a Postgres database</p>
 
 <p><div><script src='https://gist.github.com/3205631.js'></script>
-<noscript><pre><code>SELECT
-  SUM(pgClass.reltuples) AS totalRowCount
-FROM
-  pg_class pgClass
-LEFT JOIN
-  pg_namespace pgNamespace ON (pgNamespace.oid = pgClass.relnamespace)
-WHERE
-  pgNamespace.nspname NOT IN (&#39;pg_catalog&#39;, &#39;information_schema&#39;) AND
-  pgClass.relkind=&#39;r&#39;</code></pre></noscript></div>
+<noscript><pre><code></code></pre></noscript></div>
 </p>
 ]]></content>
   </entry>

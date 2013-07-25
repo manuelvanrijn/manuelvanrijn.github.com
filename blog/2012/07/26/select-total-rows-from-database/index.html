@@ -188,15 +188,7 @@
 <p>With this query it was easy to transform it into a SUM for all rowCount&#8217;s we retrieve. Here&#8217;s the final query to retrieve the total number of rows from all tables of a Postgres database</p>
 
 <div><script src='https://gist.github.com/3205631.js'></script>
-<noscript><pre><code>SELECT
-  SUM(pgClass.reltuples) AS totalRowCount
-FROM
-  pg_class pgClass
-LEFT JOIN
-  pg_namespace pgNamespace ON (pgNamespace.oid = pgClass.relnamespace)
-WHERE
-  pgNamespace.nspname NOT IN (&#39;pg_catalog&#39;, &#39;information_schema&#39;) AND
-  pgClass.relkind=&#39;r&#39;</code></pre></noscript></div>
+<noscript><pre><code></code></pre></noscript></div>
 
 
 
@@ -286,6 +278,10 @@ WHERE
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2013/07/23/developing-ruby-on-rails-on-windows/">Developing Ruby on Rails on Windows</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2013/03/04/rails-belongs-to-to-has-many/">Rails belongs_to to has_many</a>
       </li>
     
@@ -319,10 +315,6 @@ WHERE
     
       <li class="post">
         <a href="/blog/2012/03/20/failed-to-build-gem-native-extension/">Failed to build gem native extension</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/02/29/mollie-bank/">Mollie Bank</a>
       </li>
     
   </ul>

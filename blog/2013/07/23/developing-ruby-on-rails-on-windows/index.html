@@ -1,0 +1,769 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Developing Ruby on Rails on Windows - Manuel van Rijn</title>
+  <meta name="author" content="Manuel van Rijn">
+
+  
+  <meta name="description" content="I do a lot of C# web development which means I have to work with Visual Studio on Windows. I usually grab the Mac to do my Ruby on Rails development &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://manuel.manuelles.nl/blog/2013/07/23/developing-ruby-on-rails-on-windows/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/stylesheets/zocial/zocial.css" media="screen, projection" rel="stylesheet" type="text/css">
+
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Manuel van Rijn" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-17149124-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Manuel van Rijn</a></h1>
+  
+    <h2>Bit blog</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:manuel.manuelles.nl" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/work">Work</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Developing Ruby on Rails on Windows</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-07-23T23:06:00+02:00" pubdate data-updated="true">Jul 23<span>rd</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p><a href="/blog/2013/03/04/rails-belongs-to-to-has-many/"><img class="right" src="/images/posts/developing-ruby-on-rails-on-windows.png" width="250" height="250" title="Develop Ruby on Rails on Windows" ></a> I do a lot of C# web development which means I have to work with Visual Studio on Windows. I usually grab the Mac to do my Ruby on Rails development, but it would be easier not to switch every time I have to do C# and Ruby development.</p>
+
+<p>A while ago I tried several things getting a fast Rails experience on Windows, but it failed. It was just too slow &#8230; until now! In this post I&#8217;d like to share my current setup which I plan to use as long as it pleases me.</p>
+
+<!-- more -->
+
+
+<h2>What are we going to do?</h2>
+
+<p>We are going to install <a href="http://www.vagrantup.com/">Vagrant</a> which uses <a href="https://www.virtualbox.org/">VirtualBox</a> to build a complete development environment. Also we will create and use some <a href="http://community.opscode.com/">recipes for Chef</a> to automatically install and configure the development environment. Think of installing Ruby, PostgreSQL, and MySQL etc. automatically.</p>
+
+<h2>Installing Vagrant and VirtualBox</h2>
+
+<p>First let&#8217;s setup our Windows machine with the needed software.</p>
+
+<ol>
+<li>Install <a href="https://www.virtualbox.org/wiki/Downloads">VirtualBox</a></li>
+<li>Install <a href="http://downloads.vagrantup.com/">Vagrant</a></li>
+<li>After reboot add the VirtualBox folder to your PATH variable<br />(something like: <code>c:\Program Files\Oracle\VirtualBox</code>)</li>
+<li>Install <a href="http://www.vagrantbox.es/">a base box</a> (I used Ubuntu precise 64 VirtualBox) with the following command
+<code>vagrant add precise64 http://files.vagrantup.com/precise64.box</code></li>
+</ol>
+
+
+<h2>Prepare your Rails project</h2>
+
+<p>Next we have to configure our project to create a box from the base box and make it install all our goodies we need to run our Rails application.</p>
+
+<h3>Setup Chef (Librarian)</h3>
+
+<p>I&#8217;m using a gem called <a href="https://github.com/applicationsonline/librarian-chef">librarian-chef</a> which actually is a bundler for your Chef recipes.</p>
+
+<p>To install run the following from the root of you project:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c"># Install librarian-chef</span>
+</span><span class='line'>gem install librarian-chef
+</span><span class='line'>
+</span><span class='line'><span class="c"># Add its work directories to your gitignore</span>
+</span><span class='line'><span class="nb">echo </span>chef/cookbooks &gt;&gt; .gitignore
+</span><span class='line'><span class="nb">echo </span>chef/tmp &gt;&gt; .gitignore
+</span><span class='line'><span class="c"># OPTIONAL: you can add the Cheffile.lock which holds the currently installed versions</span>
+</span><span class='line'><span class="c">#           just like bundler does</span>
+</span><span class='line'><span class="nb">echo </span>chef/Cheffile.lock &gt;&gt; .gitignore
+</span><span class='line'>
+</span><span class='line'><span class="c"># Create the Librarian config file and needed folders</span>
+</span><span class='line'>mkdir -p chef
+</span><span class='line'><span class="nb">cd </span>chef
+</span><span class='line'>mkdir -p roles
+</span><span class='line'>mkdir -p site-cookbooks
+</span><span class='line'>librarian-chef init
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>WUT?! gem install librarian-chef?</h4>
+
+<p>I know we are trying to create a non-Ruby Windows solution but we do need this gem to work on Windows to complete our setup with Chef. If you really don&#8217;t want Ruby being installed on Windows, you should do the above steps on UNIX or OSX and also have to commit the cookbooks. This means we&#8217;re back at 1900 where everybody stuffed there vendor folder with code they found&#8230; If you do want to perform this on Windows and haven&#8217;t already installed Ruby, you should do this now (I suggest <a href="http://rubyinstaller.org/downloads/">RubyInstaller</a>).</p>
+
+<h3>Configure Chef</h3>
+
+<p>The command <code>librarian-chef init</code> created the file <code>chef/Cheffile</code> where we can add our cookbooks. Mine contains the following:</p>
+
+<figure class='code'><figcaption><span><strong>chef/Cheffile</strong></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1">#!/usr/bin/env ruby</span>
+</span><span class='line'><span class="c1">#^syntax detection</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">site</span> <span class="s1">&#39;http://community.opscode.com/api/v1&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">cookbook</span> <span class="s1">&#39;apt&#39;</span>
+</span><span class='line'><span class="n">cookbook</span> <span class="s1">&#39;git&#39;</span>
+</span><span class='line'><span class="n">cookbook</span> <span class="s1">&#39;sqlite&#39;</span>
+</span><span class='line'><span class="n">cookbook</span> <span class="s1">&#39;mysql&#39;</span>
+</span><span class='line'><span class="n">cookbook</span> <span class="s1">&#39;postgresql&#39;</span>
+</span><span class='line'><span class="n">cookbook</span> <span class="s1">&#39;database&#39;</span>
+</span><span class='line'><span class="n">cookbook</span> <span class="s1">&#39;nodejs&#39;</span>
+</span><span class='line'><span class="n">cookbook</span> <span class="s1">&#39;build-essential&#39;</span>
+</span><span class='line'><span class="n">cookbook</span> <span class="s1">&#39;ruby_build&#39;</span>
+</span><span class='line'><span class="n">cookbook</span> <span class="s1">&#39;rbenv&#39;</span><span class="p">,</span> <span class="ss">:git</span> <span class="o">=&gt;</span> <span class="s1">&#39;git://github.com/fnichol/chef-rbenv.git&#39;</span><span class="p">,</span> <span class="ss">:ref</span> <span class="o">=&gt;</span> <span class="s1">&#39;v0.7.2&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>As you can see I&#8217;ve setup Git, Ruby with rbenv, SQLite, MySQL, PostgreSQL and node.js for the asset pipeline. The <code>apt</code> cookbook is for running <code>apt-get dist-upgrade</code> and the cookbook <code>database</code> will be used later to create users to access the databases.</p>
+
+<p>You could skip one or two of the database servers if you like, but it can&#8217;t harm if you do install them all and don&#8217;t use them.</p>
+
+<h4>Downloading the cookbooks</h4>
+
+<p>Now that we have defined our cookbooks we need to run our final command so that Chef downloads them. Just as you would do with bundler we now run the following command from our <code>chef/</code> folder</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>librarian-chef install
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Adding our custom recipes</h3>
+
+<p>I had some difficulties with running <code>bundle install</code> because the Vagrant user didn&#8217;t have permissions on the rbenv gem folder, so I had to add a custom recipe for this. Also I&#8217;ve added a recipe to modify the <code>pg_hba.conf</code> file of PostgreSQL so that we can connect with the virtual machine. Finally I&#8217;ve created a file to add our database users with full permissions. Here are the 3 files I added:</p>
+
+<figure class='code'><figcaption><span><strong>chef/site-cookbooks/database/recipes/default.rb</strong></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># Setup database servers</span>
+</span><span class='line'><span class="c1">#</span>
+</span><span class='line'><span class="c1"># 1. Setup MySQL and PostgreSQL</span>
+</span><span class='line'><span class="c1"># 2. Create a rails user with a blank password with full control</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># MySQL</span>
+</span><span class='line'><span class="n">mysql_connection_info</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>  <span class="ss">:host</span>     <span class="o">=&gt;</span> <span class="s2">&quot;localhost&quot;</span><span class="p">,</span>
+</span><span class='line'>  <span class="ss">:username</span> <span class="o">=&gt;</span> <span class="s1">&#39;root&#39;</span><span class="p">,</span>
+</span><span class='line'>  <span class="ss">:password</span> <span class="o">=&gt;</span> <span class="n">node</span><span class="o">[</span><span class="s1">&#39;mysql&#39;</span><span class="o">][</span><span class="s1">&#39;server_root_password&#39;</span><span class="o">]</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="n">mysql_database_user</span> <span class="s1">&#39;rails&#39;</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">connection</span> <span class="n">mysql_connection_info</span>
+</span><span class='line'>  <span class="n">password</span> <span class="s1">&#39;&#39;</span>
+</span><span class='line'>  <span class="n">action</span> <span class="ss">:grant</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># PostgreSQL</span>
+</span><span class='line'><span class="n">template</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">node</span><span class="o">[</span><span class="ss">:postgresql</span><span class="o">][</span><span class="ss">:dir</span><span class="o">]</span><span class="si">}</span><span class="s2">/pg_hba.conf&quot;</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">source</span> <span class="s2">&quot;pg_hba.conf.erb&quot;</span>
+</span><span class='line'>  <span class="n">notifies</span> <span class="ss">:restart</span><span class="p">,</span> <span class="s2">&quot;service[postgresql]&quot;</span><span class="p">,</span> <span class="ss">:immediately</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">postgresql_connection_info</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>  <span class="ss">:host</span>     <span class="o">=&gt;</span> <span class="s2">&quot;localhost&quot;</span><span class="p">,</span>
+</span><span class='line'>  <span class="ss">:password</span> <span class="o">=&gt;</span> <span class="n">node</span><span class="o">[</span><span class="s1">&#39;postgresql&#39;</span><span class="o">][</span><span class="s1">&#39;password&#39;</span><span class="o">][</span><span class="s1">&#39;postgres&#39;</span><span class="o">]</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">postgresql_database_user</span> <span class="s1">&#39;rails&#39;</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">connection</span> <span class="n">postgresql_connection_info</span>
+</span><span class='line'>  <span class="n">privileges</span> <span class="o">[</span><span class="ss">:Superuser</span><span class="o">]</span>
+</span><span class='line'>  <span class="n">password</span> <span class="s2">&quot;&quot;</span>
+</span><span class='line'>  <span class="n">action</span> <span class="ss">:create</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span><strong>chef/site-cookbooks/database/templates/default/pg_hba.conf.erb</strong></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">local</span>   <span class="n">all</span>             <span class="n">all</span>                                     <span class="n">trust</span>
+</span><span class='line'><span class="n">host</span>    <span class="n">all</span>             <span class="n">all</span>             <span class="mi">127</span><span class="o">.</span><span class="mi">0</span><span class="o">.</span><span class="mi">0</span><span class="o">.</span><span class="mi">1</span><span class="o">/</span><span class="mi">32</span>            <span class="n">trust</span>
+</span><span class='line'><span class="n">host</span>    <span class="n">all</span>             <span class="n">all</span>             <span class="o">::</span><span class="mi">1</span><span class="o">/</span><span class="mi">128</span>                 <span class="n">trust</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span><strong>chef/site-cookbooks/postinstall/recipes/default.rb</strong></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">group</span> <span class="s2">&quot;rbenv&quot;</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">action</span> <span class="ss">:create</span>
+</span><span class='line'>  <span class="n">members</span> <span class="s2">&quot;vagrant&quot;</span>
+</span><span class='line'>  <span class="n">gid</span> <span class="mi">1100</span>
+</span><span class='line'>  <span class="n">append</span> <span class="kp">true</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">bash</span> <span class="s2">&quot;chgrp and chmod&quot;</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">user</span> <span class="s2">&quot;root&quot;</span>
+</span><span class='line'>  <span class="n">cwd</span> <span class="s2">&quot;/usr/local&quot;</span>
+</span><span class='line'>  <span class="n">code</span> <span class="o">&lt;&lt;-</span><span class="no">EOH</span>
+</span><span class='line'><span class="sh">    chgrp -R rbenv rbenv</span>
+</span><span class='line'><span class="sh">    chmod -R g+rwxX rbenv</span>
+</span><span class='line'><span class="no">  EOH</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Adding our role</h3>
+
+<p>Next we have to create a role that defines what recipes should be executed in what order. Create the file <code>chef/roles/rails-dev.rb</code> containing the following content:</p>
+
+<figure class='code'><figcaption><span><strong>chef/roles/rails-dev.rb</strong></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">name</span> <span class="s2">&quot;rails-dev&quot;</span>
+</span><span class='line'><span class="n">description</span> <span class="s2">&quot;setup for ruby on rails core development&quot;</span>
+</span><span class='line'><span class="n">run_list</span><span class="p">(</span>
+</span><span class='line'>  <span class="s2">&quot;recipe[apt]&quot;</span><span class="p">,</span>
+</span><span class='line'>  <span class="s2">&quot;recipe[git]&quot;</span><span class="p">,</span>
+</span><span class='line'>  <span class="s2">&quot;recipe[sqlite]&quot;</span><span class="p">,</span>
+</span><span class='line'>  <span class="s2">&quot;recipe[mysql::client]&quot;</span><span class="p">,</span>
+</span><span class='line'>  <span class="s2">&quot;recipe[mysql::ruby]&quot;</span><span class="p">,</span>
+</span><span class='line'>  <span class="s2">&quot;recipe[mysql::server]&quot;</span><span class="p">,</span>
+</span><span class='line'>  <span class="s2">&quot;recipe[postgresql::ruby]&quot;</span><span class="p">,</span>
+</span><span class='line'>  <span class="s2">&quot;recipe[postgresql::server]&quot;</span><span class="p">,</span>
+</span><span class='line'>  <span class="s2">&quot;recipe[nodejs::install_from_binary]&quot;</span><span class="p">,</span>
+</span><span class='line'>  <span class="s2">&quot;recipe[ruby_build]&quot;</span><span class="p">,</span>
+</span><span class='line'>  <span class="s2">&quot;recipe[rbenv::system]&quot;</span><span class="p">,</span>
+</span><span class='line'>  <span class="s2">&quot;recipe[rbenv::vagrant]&quot;</span><span class="p">,</span>
+</span><span class='line'>  <span class="s2">&quot;recipe[database]&quot;</span><span class="p">,</span>
+</span><span class='line'>  <span class="s2">&quot;recipe[postinstall]&quot;</span>
+</span><span class='line'><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>If you removed some cookbooks from the <code>chef/Cheffile</code> you should also remove them here.</p>
+
+<h3>Setup Vagrant</h3>
+
+<p>Next we need to create a <code>Vagrantfile</code> that contains the configurations for creating a box from the base box. Create the config file by running:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>vagrant init precise64
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Note: <code>precise64</code> is the name we used with the <code>vagrant add</code> command from step 4 above.</p>
+
+<h4>Modify the Vagrantfile</h4>
+
+<p>Here&#8217;s the stripped version of how my file looks like:</p>
+
+<figure class='code'><figcaption><span>Vagrantfile</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Vagrant</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="s2">&quot;2&quot;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
+</span><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">box</span> <span class="o">=</span> <span class="s2">&quot;precise64&quot;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">box_url</span> <span class="o">=</span> <span class="s2">&quot;http://files.vagrantup.com/precise64.box&quot;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">network</span> <span class="ss">:forwarded_port</span><span class="p">,</span> <span class="ss">guest</span><span class="p">:</span> <span class="mi">3000</span><span class="p">,</span> <span class="ss">host</span><span class="p">:</span> <span class="mi">3000</span>  <span class="c1"># forward the default rails port</span>
+</span><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">network</span> <span class="ss">:forwarded_port</span><span class="p">,</span> <span class="ss">guest</span><span class="p">:</span> <span class="mi">3306</span><span class="p">,</span> <span class="ss">host</span><span class="p">:</span> <span class="mi">3306</span>  <span class="c1"># forward the MySQL port</span>
+</span><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">network</span> <span class="ss">:forwarded_port</span><span class="p">,</span> <span class="ss">guest</span><span class="p">:</span> <span class="mi">5432</span><span class="p">,</span> <span class="ss">host</span><span class="p">:</span> <span class="mi">5432</span>  <span class="c1"># forward the PostgreSQL port</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">provision</span> <span class="ss">:shell</span><span class="p">,</span> <span class="ss">:inline</span> <span class="o">=&gt;</span> <span class="s2">&quot;gem install chef --version 11.4.2&quot;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">provision</span> <span class="ss">:chef_solo</span> <span class="k">do</span> <span class="o">|</span><span class="n">chef</span><span class="o">|</span>
+</span><span class='line'>    <span class="n">chef</span><span class="o">.</span><span class="n">cookbooks_path</span> <span class="o">=</span> <span class="o">[</span><span class="s2">&quot;chef/cookbooks&quot;</span><span class="p">,</span> <span class="s2">&quot;chef/site-cookbooks&quot;</span><span class="o">]</span>
+</span><span class='line'>    <span class="n">chef</span><span class="o">.</span><span class="n">roles_path</span>     <span class="o">=</span> <span class="o">[[</span><span class="ss">:host</span><span class="p">,</span> <span class="s2">&quot;chef/roles&quot;</span><span class="o">]]</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">chef</span><span class="o">.</span><span class="n">add_role</span> <span class="s2">&quot;rails-dev&quot;</span>
+</span><span class='line'>    <span class="n">chef</span><span class="o">.</span><span class="n">json</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>      <span class="s2">&quot;mysql&quot;</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class='line'>        <span class="s2">&quot;server_root_password&quot;</span>   <span class="o">=&gt;</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+</span><span class='line'>        <span class="s2">&quot;server_debian_password&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+</span><span class='line'>        <span class="s2">&quot;server_repl_password&quot;</span>   <span class="o">=&gt;</span> <span class="s2">&quot;&quot;</span>
+</span><span class='line'>      <span class="p">},</span>
+</span><span class='line'>      <span class="s2">&quot;postgresql&quot;</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class='line'>        <span class="s2">&quot;password&quot;</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class='line'>          <span class="s2">&quot;postgres&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;&quot;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>      <span class="p">},</span>
+</span><span class='line'>      <span class="s2">&quot;rbenv&quot;</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class='line'>        <span class="s2">&quot;global&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;2.0.0-p247&quot;</span><span class="p">,</span>
+</span><span class='line'>        <span class="s2">&quot;rubies&quot;</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="s2">&quot;2.0.0-p247&quot;</span><span class="o">]</span><span class="p">,</span>
+</span><span class='line'>        <span class="s2">&quot;gems&quot;</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class='line'>          <span class="s2">&quot;2.0.0-p247&quot;</span> <span class="o">=&gt;</span> <span class="o">[</span>
+</span><span class='line'>            <span class="p">{</span> <span class="s2">&quot;name&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;bundler&quot;</span> <span class="p">}</span>
+</span><span class='line'>          <span class="o">]</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>One catch</h4>
+
+<p>I had some troubles installing the (currently) latest version <code>11.4.4</code> of Chef because of a bug with Ruby v1.8.7, which is the default on a the base box. <a href="https://github.com/opscode/chef/pull/734">This problem</a> should be solved soon but until then I&#8217;ve added the <code>gem install chef --version 11.4.2</code> line to install a working (but a bit older) version.</p>
+
+<h2>Ready to rock!</h2>
+
+<p>Alright we&#8217;re ready. We now can boot up Vagrant which will take some time the first time because it will create a new box from the base box and install all the cookbooks. From then you&#8217;re able to connect with the box and use it just like you would do on UNIX or OSX.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c"># starts and setups the box</span>
+</span><span class='line'>vagrant up
+</span><span class='line'>
+</span><span class='line'><span class="c"># ... now we wait ...</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># connect to the box with ssh</span>
+</span><span class='line'>vagrant ssh
+</span><span class='line'>
+</span><span class='line'><span class="c"># install gems and run the server on the box</span>
+</span><span class='line'><span class="nb">cd</span> /vagrant
+</span><span class='line'>bundle install
+</span><span class='line'>bundle <span class="nb">exec </span>rails s
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>What we&#8217;ve created</h3>
+
+<p>A VirtualBox with Ubuntu precise 64 installed and containing the following software/configurations:</p>
+
+<ul>
+<li>Software:
+
+<ol>
+<li>rbenv with ruby-build</li>
+<li>ruby-2.0.0-p247</li>
+<li>Git</li>
+<li>SQLite</li>
+<li>MySQL with user: <code>rails</code> with a empty password</li>
+<li>PostgreSQL with user: <code>rails</code> with a empty password</li>
+<li>node.js</li>
+</ol>
+</li>
+<li>Ports:
+
+<ol>
+<li><code>localhost:3000</code> goes to <code>vagrant-box:3000</code></li>
+<li><code>localhost:3306</code> goes to <code>vagrant-box:3306</code></li>
+<li><code>localhost:5432</code> goes to <code>vagrant-box:5432</code></li>
+</ol>
+</li>
+</ul>
+
+
+<h2>Develop workflow</h2>
+
+<p>If you have to run specific Ruby (on Rails) tasks like <code>rspec</code> or <code>bundle exec rails g migration</code> you should do this within the ssh session of your box.</p>
+
+<p>Editing files can be done on your Windows machine, because the root of you project is directly binded to the <code>/vagrant/</code> folder on the box.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">by <span class="fn">Manuel van Rijn</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-07-23T23:06:00+02:00" pubdate data-updated="true">Jul 23<span>rd</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/box/'>box</a>, <a class='category' href='/blog/categories/chef/'>chef</a>, <a class='category' href='/blog/categories/cookbooks/'>cookbooks</a>, <a class='category' href='/blog/categories/development/'>development</a>, <a class='category' href='/blog/categories/git/'>git</a>, <a class='category' href='/blog/categories/howto/'>howto</a>, <a class='category' href='/blog/categories/mysql/'>mysql</a>, <a class='category' href='/blog/categories/node-js/'>node.js</a>, <a class='category' href='/blog/categories/postgresql/'>postgresql</a>, <a class='category' href='/blog/categories/rails/'>rails</a>, <a class='category' href='/blog/categories/rbenv/'>rbenv</a>, <a class='category' href='/blog/categories/recipes/'>recipes</a>, <a class='category' href='/blog/categories/ruby/'>ruby</a>, <a class='category' href='/blog/categories/ruby-build/'>ruby-build</a>, <a class='category' href='/blog/categories/setup/'>setup</a>, <a class='category' href='/blog/categories/sqlite/'>sqlite</a>, <a class='category' href='/blog/categories/ubuntu/'>ubuntu</a>, <a class='category' href='/blog/categories/vagrant/'>vagrant</a>, <a class='category' href='/blog/categories/virtual-machine/'>virtual machine</a>, <a class='category' href='/blog/categories/virtualbox/'>virtualbox</a>, <a class='category' href='/blog/categories/windows/'>windows</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://manuel.manuelles.nl/blog/2013/07/23/developing-ruby-on-rails-on-windows/" data-via="" data-counturl="http://manuel.manuelles.nl/blog/2013/07/23/developing-ruby-on-rails-on-windows/" >Tweet</a>
+  
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/03/04/rails-belongs-to-to-has-many/" title="Previous Post: Rails belongs_to to has_many">&laquo; Rails belongs_to to has_many</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>About Me</h1>
+  <p>
+    <img class="left" src="http://www.gravatar.com/avatar/5c42621691011e9f8fcabf1b4e23d4ad?s=80" title="Manuel van Rijn" />
+    <small>
+      Manuel van Rijn<br />
+      Front- Backend Developer<br />
+      Work: <a href="http://www.auxilium.nl/">www.auxilium.nl</a><br /><br />
+      <a rel="author" href="https://github.com/manuelvanrijn" class="zocial icon github">Manuel van Rijn on Github</a>
+      <a rel="author" href="http://nl.linkedin.com/in/manuelvanrijn" class="zocial icon linkedin">Manuel van Rijn on LinkedIn</a>
+      <a rel="author" href="http://facebook.com/manuelvanrijn" class="zocial icon facebook">Manuel van Rijn on Facebook</a>
+      <a rel="author" href="http://twitter.com/manuelvanrijn" class="zocial icon twitter">Manuel van Rijn on Twitter</a>
+    </small>
+  </p>
+</section>
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/07/23/developing-ruby-on-rails-on-windows/">Developing Ruby on Rails on Windows</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/03/04/rails-belongs-to-to-has-many/">Rails belongs_to to has_many</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/11/13/sidekiq-on-heroku-with-redistogo-nano/">Sidekiq on Heroku with Redis To Go Nano</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/11/13/scalable-heroku-worker-for-sidekiq/">Scalable Heroku worker for Sidekiq</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/09/17/yeoman-meets-travis-ci/">Yeoman meets Travis CI</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/07/26/select-total-rows-from-database/">SELECT total_rows FROM database</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/06/22/integrate-travis-ci-into-grunt/">Integrate Travis CI into Grunt</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/06/20/taking-memsql-for-a-spin/">Taking MemSQL for a spin</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/04/04/installing-android-skd-for-eclipse/">Installing Android SKD for Eclipse</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/03/20/failed-to-build-gem-native-extension/">Failed to build gem native extension</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+<section class="googleplus googleplus-hidden">
+  <h1>
+    <a href="https://plus.google.com/117895812778172164201?rel=author">
+      <img src="http://www.google.com/images/icons/ui/gprofile_button-32.png" width="32" height="32">
+      Google+
+    </a>
+  </h1>
+</section>
+
+
+
+<section id="stackoverflow">
+  <h1>Stack Overflow</h1>
+  <a href="http://stackoverflow.com/users/959041/manuel-van-rijn">
+  <img src="http://stackoverflow.com/users/flair/959041.png?theme=default" width="208" height="58" alt="profile for Manuel van Rijn at Stack Overflow, Q&amp;A for professional and enthusiast programmers" title="profile for Manuel van Rijn at Stack Overflow, Q&amp;A for professional and enthusiast programmers">
+  </a>
+</section>
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - Manuel van Rijn -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'manuelvanrijn';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://manuel.manuelles.nl/blog/2013/07/23/developing-ruby-on-rails-on-windows/';
+        var disqus_url = 'http://manuel.manuelles.nl/blog/2013/07/23/developing-ruby-on-rails-on-windows/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

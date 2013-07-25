@@ -5,7 +5,7 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>“Rake, pull me that DB!” - Manuel van Rijn</title>
+  <title>ΓÇ£Rake, pull me that DB!ΓÇ¥ - Manuel van Rijn</title>
   <meta name="author" content="Manuel van Rijn">
 
   
@@ -82,7 +82,7 @@
   
   <header>
     
-      <h1 class="entry-title">“Rake, pull me that DB!”</h1>
+      <h1 class="entry-title">ΓÇ£Rake, pull me that DB!ΓÇ¥</h1>
     
     
       <p class="meta">
@@ -162,29 +162,29 @@ production:
 <p>Put the following code into <code>libs/tasks/database.rake</code></p>
 
 <div><script src='https://gist.github.com/1640429.js?file=database.rake'></script>
-<noscript><pre><code>require &#39;fileutils&#39;
+<noscript><pre><code>require 'fileutils'
 
 namespace :db do
-  desc &#39;pull the production PostgreSQL database into the development SQLite&#39;
+  desc 'pull the production PostgreSQL database into the development SQLite'
   task :pull do
-    Rake::Task[&#39;db:download_pg_dump&#39;].invoke
-    Rake::Task[&#39;db:optimze_pg_dump_for_sqlite&#39;].invoke
-    Rake::Task[&#39;db:recreate_with_dump&#39;].invoke
+    Rake::Task['db:download_pg_dump'].invoke
+    Rake::Task['db:optimze_pg_dump_for_sqlite'].invoke
+    Rake::Task['db:recreate_with_dump'].invoke
   end
 
-  desc &#39;download the pg_dump content into tmp/dump.sql&#39;
+  desc 'download the pg_dump content into tmp/dump.sql'
   task :download_pg_dump do
     config = Rails.application.config.database_configuration
 
-    abort &quot;Missing production database config&quot; if config[&#39;production&#39;].blank?
+    abort &quot;Missing production database config&quot; if config['production'].blank?
 
-    dev  = config[&#39;development&#39;]
-    prod = config[&#39;production&#39;]
+    dev  = config['development']
+    prod = config['production']
 
-    abort &quot;Development db is not sqlite3&quot; unless dev[&#39;adapter&#39;] =~ /sqlite3/
-    abort &quot;Production db is not postgresql&quot; unless prod[&#39;adapter&#39;] =~ /postgresql/
-    abort &quot;Missing ssh host&quot; if prod[&#39;ssh_host&#39;].blank?
-    abort &quot;Missing database name&quot; if prod[&#39;database&#39;].blank?
+    abort &quot;Development db is not sqlite3&quot; unless dev['adapter'] =~ /sqlite3/
+    abort &quot;Production db is not postgresql&quot; unless prod['adapter'] =~ /postgresql/
+    abort &quot;Missing ssh host&quot; if prod['ssh_host'].blank?
+    abort &quot;Missing database name&quot; if prod['database'].blank?
 
     # remove the old one
     if File.exists?(pg_dump_file_path)
@@ -192,33 +192,33 @@ namespace :db do
     end
 
     cmd  = &quot;ssh -C &quot;
-    cmd &lt;&lt; &quot;#{prod[&#39;ssh_user&#39;]}@&quot; if prod[&#39;ssh_user&#39;].present?
-    cmd &lt;&lt; &quot;#{prod[&#39;ssh_host&#39;]} &quot;
-    cmd &lt;&lt; &quot;PGPASSWORD=#{prod[&#39;password&#39;]} &quot;
+    cmd &lt;&lt; &quot;#{prod['ssh_user']}@&quot; if prod['ssh_user'].present?
+    cmd &lt;&lt; &quot;#{prod['ssh_host']} &quot;
+    cmd &lt;&lt; &quot;PGPASSWORD=#{prod['password']} &quot;
     cmd &lt;&lt; &quot;pg_dump --data-only --inserts &quot;
-    cmd &lt;&lt; &quot;--username=#{prod[&#39;username&#39;]} #{prod[&#39;database&#39;]} &gt; &quot;
+    cmd &lt;&lt; &quot;--username=#{prod['username']} #{prod['database']} &gt; &quot;
     cmd &lt;&lt; pg_dump_file_path
 
     system `#{cmd}`
   end
 
-  desc &#39;remove unused statements and optimze sql for SQLite&#39;
+  desc 'remove unused statements and optimze sql for SQLite'
   task :optimze_pg_dump_for_sqlite do
     result = []
     lines = File.readlines(pg_dump_file_path)
     @version = 0
     lines.each do | line |
-      next if line =~ /SELECT pg_catalog.setval/  # sequence value&#39;s
+      next if line =~ /SELECT pg_catalog.setval/  # sequence value's
       next if line =~ /SET /                      # postgres specific config
       next if line =~ /--/                        # comment
 
       if line =~ /INSERT INTO schema_migrations/
-        @version = line.match(/INSERT INTO schema_migrations VALUES \(&#39;([\d]*)/)[1]
+        @version = line.match(/INSERT INTO schema_migrations VALUES \('([\d]*)/)[1]
       end
 
-      # replace true and false for &#39;t&#39; and &#39;f&#39;
-      line.gsub!(&quot;true&quot;,&quot;&#39;t&#39;&quot;)
-      line.gsub!(&quot;false&quot;,&quot;&#39;f&#39;&quot;)
+      # replace true and false for 't' and 'f'
+      line.gsub!(&quot;true&quot;,&quot;'t'&quot;)
+      line.gsub!(&quot;false&quot;,&quot;'f'&quot;)
       result &lt;&lt; line
     end
 
@@ -230,21 +230,21 @@ namespace :db do
     end
   end
 
-  desc &#39;backup development.sqlite3 and create a new one with the dumped data&#39;
+  desc 'backup development.sqlite3 and create a new one with the dumped data'
   task :recreate_with_dump do
     # sqlite so backup
-    database = Rails.configuration.database_configuration[&#39;development&#39;][&#39;database&#39;]
+    database = Rails.configuration.database_configuration['development']['database']
     database_path = File.expand_path(&quot;#{Rails.root}/#{database}&quot;)
     # remove old backup
-    if File.exists?(database_path + &#39;.backup&#39;)
-      File.delete(database_path + &#39;.backup&#39;)
+    if File.exists?(database_path + '.backup')
+      File.delete(database_path + '.backup')
     end
     # copy current for backup
-    FileUtils.cp database_path, database_path + &#39;.backup&#39; if File.exists?(database_path)
+    FileUtils.cp database_path, database_path + '.backup' if File.exists?(database_path)
 
     # dropping and re-creating db
-    ENV[&#39;VERSION&#39;] = @version
-    Rake::Task[&#39;db:drop&#39;].invoke
+    ENV['VERSION'] = @version
+    Rake::Task['db:drop'].invoke
     Rake::Task[&quot;db:migrate&quot;].invoke
 
     puts &quot;migrated to version: #{@version}&quot;
@@ -255,7 +255,7 @@ namespace :db do
     system `sqlite3 #{database_path} &quot;.read #{pg_dump_file_path}&quot;`
 
     puts &quot;DONE!&quot;
-    puts &quot;NOTE: you&#39;re now migrated to version #{@version}. Please run db:migrate to apply newer migrations&quot;
+    puts &quot;NOTE: you're now migrated to version #{@version}. Please run db:migrate to apply newer migrations&quot;
   end
 
   def pg_dump_file_path
@@ -399,6 +399,10 @@ end</code></pre></noscript></div>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2013/07/23/developing-ruby-on-rails-on-windows/">Developing Ruby on Rails on Windows</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2013/03/04/rails-belongs-to-to-has-many/">Rails belongs_to to has_many</a>
       </li>
     
@@ -432,10 +436,6 @@ end</code></pre></noscript></div>
     
       <li class="post">
         <a href="/blog/2012/03/20/failed-to-build-gem-native-extension/">Failed to build gem native extension</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/02/29/mollie-bank/">Mollie Bank</a>
       </li>
     
   </ul>

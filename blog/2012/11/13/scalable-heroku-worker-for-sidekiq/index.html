@@ -139,7 +139,7 @@
 <span class='line-number'>8</span>
 <span class='line-number'>9</span>
 </pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">MyWorker</span>
-</span><span class='line'>  <span class="kp">include</span> <span class="no">Sidekiq</span><span class="o">::</span><span class="no">Worker</span>
+</span><span class='line'>  <span class="kp">include</span> <span class="ss">Sidekiq</span><span class="p">:</span><span class="ss">:Worker</span>
 </span><span class='line'>
 </span><span class='line'>  <span class="k">def</span> <span class="nf">perform</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
 </span><span class='line'>    <span class="n">object</span> <span class="o">=</span> <span class="no">Model</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
@@ -272,13 +272,13 @@
 </span><span class='line'>
 </span><span class='line'><span class="n">heroku</span> <span class="o">=</span> <span class="kp">nil</span>
 </span><span class='line'><span class="k">if</span> <span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;HEROKU_APP&#39;</span><span class="o">]</span>
-</span><span class='line'>  <span class="n">heroku</span> <span class="o">=</span> <span class="no">Autoscaler</span><span class="o">::</span><span class="no">HerokuScaler</span><span class="o">.</span><span class="n">new</span>
+</span><span class='line'>  <span class="n">heroku</span> <span class="o">=</span> <span class="ss">Autoscaler</span><span class="p">:</span><span class="ss">:HerokuScaler</span><span class="o">.</span><span class="n">new</span>
 </span><span class='line'><span class="k">end</span>
 </span><span class='line'>
 </span><span class='line'><span class="no">Sidekiq</span><span class="o">.</span><span class="n">configure_client</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
 </span><span class='line'>  <span class="k">if</span> <span class="n">heroku</span>
 </span><span class='line'>    <span class="n">config</span><span class="o">.</span><span class="n">client_middleware</span> <span class="k">do</span> <span class="o">|</span><span class="n">chain</span><span class="o">|</span>
-</span><span class='line'>      <span class="n">chain</span><span class="o">.</span><span class="n">add</span> <span class="no">Autoscaler</span><span class="o">::</span><span class="no">Sidekiq</span><span class="o">::</span><span class="no">Client</span><span class="p">,</span> <span class="s1">&#39;default&#39;</span> <span class="o">=&gt;</span> <span class="n">heroku</span>
+</span><span class='line'>      <span class="n">chain</span><span class="o">.</span><span class="n">add</span> <span class="ss">Autoscaler</span><span class="p">:</span><span class="ss">:Sidekiq</span><span class="o">::</span><span class="no">Client</span><span class="p">,</span> <span class="s1">&#39;default&#39;</span> <span class="o">=&gt;</span> <span class="n">heroku</span>
 </span><span class='line'>    <span class="k">end</span>
 </span><span class='line'>  <span class="k">end</span>
 </span><span class='line'><span class="k">end</span>
@@ -287,7 +287,7 @@
 </span><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">server_middleware</span> <span class="k">do</span> <span class="o">|</span><span class="n">chain</span><span class="o">|</span>
 </span><span class='line'>    <span class="k">if</span> <span class="n">heroku</span>
 </span><span class='line'>      <span class="nb">p</span> <span class="s2">&quot;[Sidekiq] Running on Heroku, autoscaler is used&quot;</span>
-</span><span class='line'>      <span class="n">chain</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="no">Autoscaler</span><span class="o">::</span><span class="no">Sidekiq</span><span class="o">::</span><span class="no">Server</span><span class="p">,</span> <span class="n">heroku</span><span class="p">,</span> <span class="mi">60</span><span class="p">)</span> <span class="c1"># 60 seconds timeout</span>
+</span><span class='line'>      <span class="n">chain</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="ss">Autoscaler</span><span class="p">:</span><span class="ss">:Sidekiq</span><span class="o">::</span><span class="no">Server</span><span class="p">,</span> <span class="n">heroku</span><span class="p">,</span> <span class="mi">60</span><span class="p">)</span> <span class="c1"># 60 seconds timeout</span>
 </span><span class='line'>    <span class="k">else</span>
 </span><span class='line'>      <span class="nb">p</span> <span class="s2">&quot;[Sidekiq] Running locally, so autoscaler isn&#39;t used&quot;</span>
 </span><span class='line'>    <span class="k">end</span>
@@ -385,6 +385,10 @@
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2013/07/23/developing-ruby-on-rails-on-windows/">Developing Ruby on Rails on Windows</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2013/03/04/rails-belongs-to-to-has-many/">Rails belongs_to to has_many</a>
       </li>
     
@@ -418,10 +422,6 @@
     
       <li class="post">
         <a href="/blog/2012/03/20/failed-to-build-gem-native-extension/">Failed to build gem native extension</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/02/29/mollie-bank/">Mollie Bank</a>
       </li>
     
   </ul>
