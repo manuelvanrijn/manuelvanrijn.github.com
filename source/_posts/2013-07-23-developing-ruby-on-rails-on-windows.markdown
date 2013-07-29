@@ -25,7 +25,7 @@ First let's setup our Windows machine with the needed software.
 2. Install [Vagrant](http://downloads.vagrantup.com/)
 3. After reboot add the VirtualBox folder to your PATH variable<br />(something like: `c:\Program Files\Oracle\VirtualBox`)
 4. Install [a base box](http://www.vagrantbox.es/) (I used Ubuntu precise 64 VirtualBox) with the following command
-`vagrant add precise64 http://files.vagrantup.com/precise64.box`
+`vagrant box add precise64 http://files.vagrantup.com/precise64.box`
 
 ## Prepare your Rails project
 
