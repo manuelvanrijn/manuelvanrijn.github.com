@@ -4,7 +4,7 @@
   <title><![CDATA[Category: rbenv | Manuel van Rijn]]></title>
   <link href="http://manuel.manuelles.nl/blog/categories/rbenv/atom.xml" rel="self"/>
   <link href="http://manuel.manuelles.nl/"/>
-  <updated>2013-07-25T10:35:55+02:00</updated>
+  <updated>2013-07-29T13:41:22+02:00</updated>
   <id>http://manuel.manuelles.nl/</id>
   <author>
     <name><![CDATA[Manuel van Rijn]]></name>
@@ -38,7 +38,7 @@
 <li>Install <a href="http://downloads.vagrantup.com/">Vagrant</a></li>
 <li>After reboot add the VirtualBox folder to your PATH variable<br />(something like: <code>c:\Program Files\Oracle\VirtualBox</code>)</li>
 <li>Install <a href="http://www.vagrantbox.es/">a base box</a> (I used Ubuntu precise 64 VirtualBox) with the following command
-<code>vagrant add precise64 http://files.vagrantup.com/precise64.box</code></li>
+<code>vagrant box add precise64 http://files.vagrantup.com/precise64.box</code></li>
 </ol>
 
 
