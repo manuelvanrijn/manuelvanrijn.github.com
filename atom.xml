@@ -4,7 +4,7 @@
   <title><![CDATA[Manuel van Rijn]]></title>
   <link href="http://manuel.manuelles.nl/atom.xml" rel="self"/>
   <link href="http://manuel.manuelles.nl/"/>
-  <updated>2013-07-29T13:41:22+02:00</updated>
+  <updated>2013-07-30T14:05:32+02:00</updated>
   <id>http://manuel.manuelles.nl/</id>
   <author>
     <name><![CDATA[Manuel van Rijn]]></name>
@@ -120,7 +120,7 @@
 </span><span class='line'><span class="n">cookbook</span> <span class="s1">&#39;sqlite&#39;</span>
 </span><span class='line'><span class="n">cookbook</span> <span class="s1">&#39;mysql&#39;</span>
 </span><span class='line'><span class="n">cookbook</span> <span class="s1">&#39;postgresql&#39;</span>
-</span><span class='line'><span class="n">cookbook</span> <span class="s1">&#39;database&#39;</span>
+</span><span class='line'><span class="n">cookbook</span> <span class="s1">&#39;database&#39;</span><span class="p">,</span> <span class="ss">:git</span> <span class="o">=&gt;</span> <span class="s1">&#39;git://github.com/manuelvanrijn/cookbook-database.git&#39;</span><span class="p">,</span> <span class="ss">:ref</span> <span class="o">=&gt;</span> <span class="s1">&#39;grant-roles&#39;</span>
 </span><span class='line'><span class="n">cookbook</span> <span class="s1">&#39;nodejs&#39;</span>
 </span><span class='line'><span class="n">cookbook</span> <span class="s1">&#39;build-essential&#39;</span>
 </span><span class='line'><span class="n">cookbook</span> <span class="s1">&#39;ruby_build&#39;</span>
@@ -131,6 +131,8 @@
 <p>As you can see I&#8217;ve setup Git, Ruby with rbenv, SQLite, MySQL, PostgreSQL and node.js for the asset pipeline. The <code>apt</code> cookbook is for running <code>apt-get dist-upgrade</code> and the cookbook <code>database</code> will be used later to create users to access the databases.</p>
 
 <p>You could skip one or two of the database servers if you like, but it can&#8217;t harm if you do install them all and don&#8217;t use them.</p>
+
+<p>Note: the <code>database</code> cookbook is provided with additional actions to set superuser privileges to PostgreSQL and MySQL.</p>
 
 <h4>Downloading the cookbooks</h4>
 
@@ -179,6 +181,21 @@
 <span class='line-number'>32</span>
 <span class='line-number'>33</span>
 <span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
 </pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># Setup database servers</span>
 </span><span class='line'><span class="c1">#</span>
 </span><span class='line'><span class="c1"># 1. Setup MySQL and PostgreSQL</span>
@@ -190,9 +207,24 @@
 </span><span class='line'>  <span class="ss">:username</span> <span class="o">=&gt;</span> <span class="s1">&#39;root&#39;</span><span class="p">,</span>
 </span><span class='line'>  <span class="ss">:password</span> <span class="o">=&gt;</span> <span class="n">node</span><span class="o">[</span><span class="s1">&#39;mysql&#39;</span><span class="o">][</span><span class="s1">&#39;server_root_password&#39;</span><span class="o">]</span>
 </span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># &#39;rails&#39;@&#39;localhost&#39;</span>
 </span><span class='line'><span class="n">mysql_database_user</span> <span class="s1">&#39;rails&#39;</span> <span class="k">do</span>
 </span><span class='line'>  <span class="n">connection</span> <span class="n">mysql_connection_info</span>
 </span><span class='line'>  <span class="n">password</span> <span class="s1">&#39;&#39;</span>
+</span><span class='line'>  <span class="n">host</span> <span class="s1">&#39;localhost&#39;</span>
+</span><span class='line'>  <span class="n">privileges</span> <span class="o">[</span><span class="s2">&quot;ALL PRIVILEGES&quot;</span><span class="o">]</span>
+</span><span class='line'>  <span class="n">grant_option</span> <span class="kp">true</span>
+</span><span class='line'>  <span class="n">action</span> <span class="ss">:grant</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># &#39;rails&#39;@&#39;%&#39;</span>
+</span><span class='line'><span class="n">mysql_database_user</span> <span class="s1">&#39;rails&#39;</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">connection</span> <span class="n">mysql_connection_info</span>
+</span><span class='line'>  <span class="n">password</span> <span class="s1">&#39;&#39;</span>
+</span><span class='line'>  <span class="n">host</span> <span class="s1">&#39;%&#39;</span>
+</span><span class='line'>  <span class="n">privileges</span> <span class="o">[</span><span class="s2">&quot;ALL PRIVILEGES&quot;</span><span class="o">]</span>
+</span><span class='line'>  <span class="n">grant_option</span> <span class="kp">true</span>
 </span><span class='line'>  <span class="n">action</span> <span class="ss">:grant</span>
 </span><span class='line'><span class="k">end</span>
 </span><span class='line'>
@@ -209,8 +241,8 @@
 </span><span class='line'>
 </span><span class='line'><span class="n">postgresql_database_user</span> <span class="s1">&#39;rails&#39;</span> <span class="k">do</span>
 </span><span class='line'>  <span class="n">connection</span> <span class="n">postgresql_connection_info</span>
-</span><span class='line'>  <span class="n">privileges</span> <span class="o">[</span><span class="ss">:Superuser</span><span class="o">]</span>
-</span><span class='line'>  <span class="n">password</span> <span class="s2">&quot;&quot;</span>
+</span><span class='line'>  <span class="n">password</span> <span class="s1">&#39;&#39;</span>
+</span><span class='line'>  <span class="n">role_attributes</span> <span class="ss">:superuser</span> <span class="o">=&gt;</span> <span class="kp">true</span><span class="p">,</span> <span class="ss">:createdb</span> <span class="o">=&gt;</span> <span class="kp">true</span>
 </span><span class='line'>  <span class="n">action</span> <span class="ss">:create</span>
 </span><span class='line'><span class="k">end</span>
 </span></code></pre></td></tr></table></div></figure>
@@ -309,14 +341,21 @@
 
 <h3>Setup Vagrant</h3>
 
-<p>Next we need to create a <code>Vagrantfile</code> that contains the configurations for creating a box from the base box. Create the config file by running:</p>
+<p>Next we need to create a <code>Vagrantfile</code> that contains the configurations for creating a box from the base box. Create the config file by running from the root of you project:</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>vagrant init precise64
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>Note: <code>precise64</code> is the name we used with the <code>vagrant add</code> command from step 4 above.</p>
+<p>Note: <code>precise64</code> is the name we used with the <code>vagrant box add</code> command from step 4 above.</p>
+
+<p>Also we want to add the virtual machine folder to our <code>.gitignore</code> file:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">echo</span> .vagrant &gt;&gt; .gitignore
+</span></code></pre></td></tr></table></div></figure>
+
 
 <h4>Modify the Vagrantfile</h4>
 
@@ -431,7 +470,7 @@
 </span><span class='line'><span class="c"># connect to the box with ssh</span>
 </span><span class='line'>vagrant ssh
 </span><span class='line'>
-</span><span class='line'><span class="c"># install gems and run the server on the box</span>
+</span><span class='line'><span class="c"># install gems and run the server on the box for a Rails application</span>
 </span><span class='line'><span class="nb">cd</span> /vagrant
 </span><span class='line'>bundle install
 </span><span class='line'>bundle <span class="nb">exec </span>rails s

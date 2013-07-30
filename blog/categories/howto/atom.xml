@@ -4,7 +4,7 @@
   <title><![CDATA[Category: howto | Manuel van Rijn]]></title>
   <link href="http://manuel.manuelles.nl/blog/categories/howto/atom.xml" rel="self"/>
   <link href="http://manuel.manuelles.nl/"/>
-  <updated>2013-07-29T13:41:22+02:00</updated>
+  <updated>2013-07-30T14:05:32+02:00</updated>
   <id>http://manuel.manuelles.nl/</id>
   <author>
     <name><![CDATA[Manuel van Rijn]]></name>
@@ -99,7 +99,7 @@ cookbook 'git'
 cookbook 'sqlite'
 cookbook 'mysql'
 cookbook 'postgresql'
-cookbook 'database'
+cookbook 'database', :git => 'git://github.com/manuelvanrijn/cookbook-database.git', :ref => 'grant-roles'
 cookbook 'nodejs'
 cookbook 'build-essential'
 cookbook 'ruby_build'
@@ -109,6 +109,8 @@ cookbook 'rbenv', :git => 'git://github.com/fnichol/chef-rbenv.git', :ref => 'v0
 <p>As you can see I've setup Git, Ruby with rbenv, SQLite, MySQL, PostgreSQL and node.js for the asset pipeline. The <code>apt</code> cookbook is for running <code>apt-get dist-upgrade</code> and the cookbook <code>database</code> will be used later to create users to access the databases.</p>
 
 <p>You could skip one or two of the database servers if you like, but it can't harm if you do install them all and don't use them.</p>
+
+<p>Note: the <code>database</code> cookbook is provided with additional actions to set superuser privileges to PostgreSQL and MySQL.</p>
 
 <h4>Downloading the cookbooks</h4>
 
@@ -138,10 +140,27 @@ librarian-chef install
   :host     => "localhost",
   :username => 'root',
   :password => node['mysql']['server_root_password']
-}
-mysql_database_user 'rails' do
+}</p>
+
+<h1>'rails'@'localhost'</h1>
+
+<p>mysql_database_user 'rails' do
   connection mysql_connection_info
   password ''
+  host 'localhost'
+  privileges ["ALL PRIVILEGES"]
+  grant_option true
+  action :grant
+end</p>
+
+<h1>'rails'@'%'</h1>
+
+<p>mysql_database_user 'rails' do
+  connection mysql_connection_info
+  password ''
+  host '%'
+  privileges ["ALL PRIVILEGES"]
+  grant_option true
   action :grant
 end</p>
 
@@ -159,8 +178,8 @@ end</p>
 
 <p>postgresql_database_user 'rails' do
   connection postgresql_connection_info
-  privileges [:Superuser]
-  password ""
+  password ''
+  role_attributes :superuser => true, :createdb => true
   action :create
 end
 ```</p>
@@ -221,13 +240,19 @@ run_list(
 
 <h3>Setup Vagrant</h3>
 
-<p>Next we need to create a <code>Vagrantfile</code> that contains the configurations for creating a box from the base box. Create the config file by running:</p>
+<p>Next we need to create a <code>Vagrantfile</code> that contains the configurations for creating a box from the base box. Create the config file by running from the root of you project:</p>
 
 <p><code>bash
 vagrant init precise64
 </code></p>
 
-<p>Note: <code>precise64</code> is the name we used with the <code>vagrant add</code> command from step 4 above.</p>
+<p>Note: <code>precise64</code> is the name we used with the <code>vagrant box add</code> command from step 4 above.</p>
+
+<p>Also we want to add the virtual machine folder to our <code>.gitignore</code> file:</p>
+
+<p><code>bash
+echo .vagrant &gt;&gt; .gitignore
+</code></p>
 
 <h4>Modify the Vagrantfile</h4>
 
@@ -298,7 +323,7 @@ end
 
 <p>vagrant ssh</p>
 
-<h1>install gems and run the server on the box</h1>
+<h1>install gems and run the server on the box for a Rails application</h1>
 
 <p>cd /vagrant
 bundle install
