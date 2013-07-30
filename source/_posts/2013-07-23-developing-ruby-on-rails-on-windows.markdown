@@ -75,7 +75,7 @@ cookbook 'git'
 cookbook 'sqlite'
 cookbook 'mysql'
 cookbook 'postgresql'
-cookbook 'database'
+cookbook 'database', :git => 'git://github.com/manuelvanrijn/cookbook-database.git', :ref => 'grant-roles'
 cookbook 'nodejs'
 cookbook 'build-essential'
 cookbook 'ruby_build'
@@ -85,6 +85,8 @@ cookbook 'rbenv', :git => 'git://github.com/fnichol/chef-rbenv.git', :ref => 'v0
 As you can see I've setup Git, Ruby with rbenv, SQLite, MySQL, PostgreSQL and node.js for the asset pipeline. The `apt` cookbook is for running `apt-get dist-upgrade` and the cookbook `database` will be used later to create users to access the databases.
 
 You could skip one or two of the database servers if you like, but it can't harm if you do install them all and don't use them.
+
+Note: the `database` cookbook is provided with additional actions to set superuser privileges to PostgreSQL and MySQL.
 
 #### Downloading the cookbooks
 
@@ -110,9 +112,24 @@ mysql_connection_info = {
   :username => 'root',
   :password => node['mysql']['server_root_password']
 }
+
+# 'rails'@'localhost'
 mysql_database_user 'rails' do
   connection mysql_connection_info
   password ''
+  host 'localhost'
+  privileges ["ALL PRIVILEGES"]
+  grant_option true
+  action :grant
+end
+
+# 'rails'@'%'
+mysql_database_user 'rails' do
+  connection mysql_connection_info
+  password ''
+  host '%'
+  privileges ["ALL PRIVILEGES"]
+  grant_option true
   action :grant
 end
 
@@ -129,8 +146,8 @@ postgresql_connection_info = {
 
 postgresql_database_user 'rails' do
   connection postgresql_connection_info
-  privileges [:Superuser]
-  password ""
+  password ''
+  role_attributes :superuser => true, :createdb => true
   action :create
 end
 ```
@@ -188,13 +205,19 @@ If you removed some cookbooks from the `chef/Cheffile` you should also remove th
 
 ### Setup Vagrant
 
-Next we need to create a `Vagrantfile` that contains the configurations for creating a box from the base box. Create the config file by running:
+Next we need to create a `Vagrantfile` that contains the configurations for creating a box from the base box. Create the config file by running from the root of you project:
 
 ``` bash
 vagrant init precise64
 ```
 
-Note: `precise64` is the name we used with the `vagrant add` command from step 4 above.
+Note: `precise64` is the name we used with the `vagrant box add` command from step 4 above.
+
+Also we want to add the virtual machine folder to our `.gitignore` file:
+
+``` bash
+echo .vagrant >> .gitignore
+```
 
 #### Modify the Vagrantfile
 
@@ -259,7 +282,7 @@ vagrant up
 # connect to the box with ssh
 vagrant ssh
 
-# install gems and run the server on the box
+# install gems and run the server on the box for a Rails application
 cd /vagrant
 bundle install
 bundle exec rails s
