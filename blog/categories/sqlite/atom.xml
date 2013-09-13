@@ -4,7 +4,7 @@
   <title><![CDATA[Category: sqlite | Manuel van Rijn]]></title>
   <link href="http://manuel.manuelles.nl/blog/categories/sqlite/atom.xml" rel="self"/>
   <link href="http://manuel.manuelles.nl/"/>
-  <updated>2013-07-30T14:05:32+02:00</updated>
+  <updated>2013-09-13T14:22:25+02:00</updated>
   <id>http://manuel.manuelles.nl/</id>
   <author>
     <name><![CDATA[Manuel van Rijn]]></name>
@@ -268,7 +268,7 @@ Vagrant.configure("2") do |config|
   config.vm.network :forwarded_port, guest: 3306, host: 3306  # forward the MySQL port
   config.vm.network :forwarded_port, guest: 5432, host: 5432  # forward the PostgreSQL port</p>
 
-<p>  config.vm.provision :shell, :inline => "gem install chef --version 11.4.2"</p>
+<p>  config.vm.provision :shell, :inline => "gem install chef --version 11.6.0"</p>
 
 <p>  config.vm.provision :chef_solo do |chef|</p>
 
@@ -302,10 +302,6 @@ chef.json = {
 <p>  end
 end
 ```</p>
-
-<h4>One catch</h4>
-
-<p>I had some troubles installing the (currently) latest version <code>11.4.4</code> of Chef because of a bug with Ruby v1.8.7, which is the default on a the base box. <a href="https://github.com/opscode/chef/pull/734">This problem</a> should be solved soon but until then I've added the <code>gem install chef --version 11.4.2</code> line to install a working (but a bit older) version.</p>
 
 <h2>Ready to rock!</h2>
 
