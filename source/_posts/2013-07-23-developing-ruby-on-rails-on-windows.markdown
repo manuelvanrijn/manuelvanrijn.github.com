@@ -233,7 +233,7 @@ Vagrant.configure("2") do |config|
   config.vm.network :forwarded_port, guest: 3306, host: 3306  # forward the MySQL port
   config.vm.network :forwarded_port, guest: 5432, host: 5432  # forward the PostgreSQL port
 
-  config.vm.provision :shell, :inline => "gem install chef --version 11.4.2"
+  config.vm.provision :shell, :inline => "gem install chef --version 11.6.0"
 
   config.vm.provision :chef_solo do |chef|
     chef.cookbooks_path = ["chef/cookbooks", "chef/site-cookbooks"]
@@ -264,10 +264,6 @@ Vagrant.configure("2") do |config|
   end
 end
 ```
-
-#### One catch
-
-I had some troubles installing the (currently) latest version `11.4.4` of Chef because of a bug with Ruby v1.8.7, which is the default on a the base box. [This problem](https://github.com/opscode/chef/pull/734) should be solved soon but until then I've added the `gem install chef --version 11.4.2` line to install a working (but a bit older) version.
 
 ## Ready to rock!
 
