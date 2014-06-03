@@ -4,7 +4,7 @@
   <title><![CDATA[Manuel van Rijn]]></title>
   <link href="http://manuel.manuelles.nl/atom.xml" rel="self"/>
   <link href="http://manuel.manuelles.nl/"/>
-  <updated>2013-09-13T14:22:25+02:00</updated>
+  <updated>2014-06-03T22:48:54+02:00</updated>
   <id>http://manuel.manuelles.nl/</id>
   <author>
     <name><![CDATA[Manuel van Rijn]]></name>
@@ -12,6 +12,36 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[OSX 10.10 Yosemite - Crashing Chrome]]></title>
+    <link href="http://manuel.manuelles.nl/blog/2014/06/03/osx-10-dot-10-yosemite-crashing-chrome/"/>
+    <updated>2014-06-03T22:34:00+02:00</updated>
+    <id>http://manuel.manuelles.nl/blog/2014/06/03/osx-10-dot-10-yosemite-crashing-chrome</id>
+    <content type="html"><![CDATA[<p><a href="http://manuel.manuelles.nl/blog/2014/06/03/osx-10-dot-10-yosemite-crashing-chrome/"><img class="left" src="http://manuel.manuelles.nl/images/posts/osx-10.10-chrome.jpg" width="150" height="150" title="Develop Ruby on Rails on Windows" ></a> After watching the WWDC I couldn&#8217;t wait installing the latest OSX Yosemite because I love cutting edge tech and of course cutting edge software.</p>
+
+<p>However I&#8217;ve ended up with a failing Google Chrome browser which I use like always!</p>
+
+<!-- more -->
+
+
+<h2>The problem</h2>
+
+<p>I crashes directly after launching a page! Arghh!</p>
+
+<h2>The workaround (read almost fix)</h2>
+
+<p>After some googling I stumbled upon a solution where you have to set &#8220;Show scroll bars&#8221; to &#8220;Always&#8221;. This seemed to work at first, but still it seems to fail at some sites. However it&#8217;s beter than crashing directly.</p>
+
+<p>Goto <strong>Settings</strong> -> <strong>General</strong> -> <strong>Show scroll bars</strong> -> <strong>Always</strong></p>
+
+<h2>To be continued</h2>
+
+<p>As metioned this fix seems to fail some times. I&#8217;ve had some troubles viewing some pull request on github but most of the time it seems to work.</p>
+
+<p>If anybody finds a beter way to fix this please leave a comment :)</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Developing Ruby on Rails on Windows]]></title>
@@ -1668,7 +1698,7 @@ Today I had to reinstall my Linux installation because my harddisk died a quick 
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[ΓÇ£Rake, pull me that DB!ΓÇ¥]]></title>
+    <title type="html"><![CDATA[“Rake, pull me that DB!”]]></title>
     <link href="http://manuel.manuelles.nl/blog/2012/01/19/rake-pull-me-that-db/"/>
     <updated>2012-01-19T15:15:00+01:00</updated>
     <id>http://manuel.manuelles.nl/blog/2012/01/19/rake-pull-me-that-db</id>
@@ -1704,24 +1734,7 @@ Today I had to reinstall my Linux installation because my harddisk died a quick 
 <p>Here&#8217;s example of a modified <code>config/database.yml</code>:</p>
 
 <div><script src='https://gist.github.com/1640429.js?file=database.yml'></script>
-<noscript><pre><code>development:
-  adapter: sqlite3
-  database: db/development.sqlite3
-  pool: 5
-  timeout: 5000
-
-production:
-  ssh_user: root                  # &lt;-- add username for ssh
-  ssh_host: productionserver.com  # &lt;-- add hostname for ssh
-  adapter: postgresql
-  host: localhost
-  port: 5432
-  username: db_user
-  password: db_pass
-  database: db_name
-  schema_search_path: public
-  encoding: utf8
-  template: template0</code></pre></noscript></div>
+<noscript><pre><code></code></pre></noscript></div>
 
 
 <h2>Get the Rake file</h2>
@@ -1729,106 +1742,7 @@ production:
 <p>Put the following code into <code>libs/tasks/database.rake</code></p>
 
 <div><script src='https://gist.github.com/1640429.js?file=database.rake'></script>
-<noscript><pre><code>require 'fileutils'
-
-namespace :db do
-  desc 'pull the production PostgreSQL database into the development SQLite'
-  task :pull do
-    Rake::Task['db:download_pg_dump'].invoke
-    Rake::Task['db:optimze_pg_dump_for_sqlite'].invoke
-    Rake::Task['db:recreate_with_dump'].invoke
-  end
-
-  desc 'download the pg_dump content into tmp/dump.sql'
-  task :download_pg_dump do
-    config = Rails.application.config.database_configuration
-
-    abort &quot;Missing production database config&quot; if config['production'].blank?
-
-    dev  = config['development']
-    prod = config['production']
-
-    abort &quot;Development db is not sqlite3&quot; unless dev['adapter'] =~ /sqlite3/
-    abort &quot;Production db is not postgresql&quot; unless prod['adapter'] =~ /postgresql/
-    abort &quot;Missing ssh host&quot; if prod['ssh_host'].blank?
-    abort &quot;Missing database name&quot; if prod['database'].blank?
-
-    # remove the old one
-    if File.exists?(pg_dump_file_path)
-      File.delete(pg_dump_file_path)
-    end
-
-    cmd  = &quot;ssh -C &quot;
-    cmd &lt;&lt; &quot;#{prod['ssh_user']}@&quot; if prod['ssh_user'].present?
-    cmd &lt;&lt; &quot;#{prod['ssh_host']} &quot;
-    cmd &lt;&lt; &quot;PGPASSWORD=#{prod['password']} &quot;
-    cmd &lt;&lt; &quot;pg_dump --data-only --inserts &quot;
-    cmd &lt;&lt; &quot;--username=#{prod['username']} #{prod['database']} &gt; &quot;
-    cmd &lt;&lt; pg_dump_file_path
-
-    system `#{cmd}`
-  end
-
-  desc 'remove unused statements and optimze sql for SQLite'
-  task :optimze_pg_dump_for_sqlite do
-    result = []
-    lines = File.readlines(pg_dump_file_path)
-    @version = 0
-    lines.each do | line |
-      next if line =~ /SELECT pg_catalog.setval/  # sequence value's
-      next if line =~ /SET /                      # postgres specific config
-      next if line =~ /--/                        # comment
-
-      if line =~ /INSERT INTO schema_migrations/
-        @version = line.match(/INSERT INTO schema_migrations VALUES \('([\d]*)/)[1]
-      end
-
-      # replace true and false for 't' and 'f'
-      line.gsub!(&quot;true&quot;,&quot;'t'&quot;)
-      line.gsub!(&quot;false&quot;,&quot;'f'&quot;)
-      result &lt;&lt; line
-    end
-
-    File.open(pg_dump_file_path, &quot;w&quot;) do |f|
-      # Add BEGIN and END so we add it to 1 transaction. Increase speed!
-      f.puts(&quot;BEGIN;&quot;)
-      result.each{|line| f.puts(line) unless line.blank?}
-      f.puts(&quot;END;&quot;)
-    end
-  end
-
-  desc 'backup development.sqlite3 and create a new one with the dumped data'
-  task :recreate_with_dump do
-    # sqlite so backup
-    database = Rails.configuration.database_configuration['development']['database']
-    database_path = File.expand_path(&quot;#{Rails.root}/#{database}&quot;)
-    # remove old backup
-    if File.exists?(database_path + '.backup')
-      File.delete(database_path + '.backup')
-    end
-    # copy current for backup
-    FileUtils.cp database_path, database_path + '.backup' if File.exists?(database_path)
-
-    # dropping and re-creating db
-    ENV['VERSION'] = @version
-    Rake::Task['db:drop'].invoke
-    Rake::Task[&quot;db:migrate&quot;].invoke
-
-    puts &quot;migrated to version: #{@version}&quot;
-    puts &quot;importing...&quot;
-    # remove migration info
-    system `sqlite3 #{database_path} &quot;delete from schema_migrations;&quot;`
-    # import dump.sql
-    system `sqlite3 #{database_path} &quot;.read #{pg_dump_file_path}&quot;`
-
-    puts &quot;DONE!&quot;
-    puts &quot;NOTE: you're now migrated to version #{@version}. Please run db:migrate to apply newer migrations&quot;
-  end
-
-  def pg_dump_file_path
-    File.expand_path(&quot;#{Rails.root}/tmp/dump.sql&quot;)
-  end
-end</code></pre></noscript></div>
+<noscript><pre><code></code></pre></noscript></div>
 
 
 <h2>Usage</h2>

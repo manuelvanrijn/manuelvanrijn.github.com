@@ -5,7 +5,7 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>ΓÇ£Rake, pull me that DB!ΓÇ¥ - Manuel van Rijn</title>
+  <title>“Rake, pull me that DB!” - Manuel van Rijn</title>
   <meta name="author" content="Manuel van Rijn">
 
   
@@ -82,7 +82,7 @@
   
   <header>
     
-      <h1 class="entry-title">ΓÇ£Rake, pull me that DB!ΓÇ¥</h1>
+      <h1 class="entry-title">“Rake, pull me that DB!”</h1>
     
     
       <p class="meta">
@@ -137,24 +137,7 @@
 <p>Here&#8217;s example of a modified <code>config/database.yml</code>:</p>
 
 <div><script src='https://gist.github.com/1640429.js?file=database.yml'></script>
-<noscript><pre><code>development:
-  adapter: sqlite3
-  database: db/development.sqlite3
-  pool: 5
-  timeout: 5000
-
-production:
-  ssh_user: root                  # &lt;-- add username for ssh
-  ssh_host: productionserver.com  # &lt;-- add hostname for ssh
-  adapter: postgresql
-  host: localhost
-  port: 5432
-  username: db_user
-  password: db_pass
-  database: db_name
-  schema_search_path: public
-  encoding: utf8
-  template: template0</code></pre></noscript></div>
+<noscript><pre><code></code></pre></noscript></div>
 
 
 <h2>Get the Rake file</h2>
@@ -162,106 +145,7 @@ production:
 <p>Put the following code into <code>libs/tasks/database.rake</code></p>
 
 <div><script src='https://gist.github.com/1640429.js?file=database.rake'></script>
-<noscript><pre><code>require 'fileutils'
-
-namespace :db do
-  desc 'pull the production PostgreSQL database into the development SQLite'
-  task :pull do
-    Rake::Task['db:download_pg_dump'].invoke
-    Rake::Task['db:optimze_pg_dump_for_sqlite'].invoke
-    Rake::Task['db:recreate_with_dump'].invoke
-  end
-
-  desc 'download the pg_dump content into tmp/dump.sql'
-  task :download_pg_dump do
-    config = Rails.application.config.database_configuration
-
-    abort &quot;Missing production database config&quot; if config['production'].blank?
-
-    dev  = config['development']
-    prod = config['production']
-
-    abort &quot;Development db is not sqlite3&quot; unless dev['adapter'] =~ /sqlite3/
-    abort &quot;Production db is not postgresql&quot; unless prod['adapter'] =~ /postgresql/
-    abort &quot;Missing ssh host&quot; if prod['ssh_host'].blank?
-    abort &quot;Missing database name&quot; if prod['database'].blank?
-
-    # remove the old one
-    if File.exists?(pg_dump_file_path)
-      File.delete(pg_dump_file_path)
-    end
-
-    cmd  = &quot;ssh -C &quot;
-    cmd &lt;&lt; &quot;#{prod['ssh_user']}@&quot; if prod['ssh_user'].present?
-    cmd &lt;&lt; &quot;#{prod['ssh_host']} &quot;
-    cmd &lt;&lt; &quot;PGPASSWORD=#{prod['password']} &quot;
-    cmd &lt;&lt; &quot;pg_dump --data-only --inserts &quot;
-    cmd &lt;&lt; &quot;--username=#{prod['username']} #{prod['database']} &gt; &quot;
-    cmd &lt;&lt; pg_dump_file_path
-
-    system `#{cmd}`
-  end
-
-  desc 'remove unused statements and optimze sql for SQLite'
-  task :optimze_pg_dump_for_sqlite do
-    result = []
-    lines = File.readlines(pg_dump_file_path)
-    @version = 0
-    lines.each do | line |
-      next if line =~ /SELECT pg_catalog.setval/  # sequence value's
-      next if line =~ /SET /                      # postgres specific config
-      next if line =~ /--/                        # comment
-
-      if line =~ /INSERT INTO schema_migrations/
-        @version = line.match(/INSERT INTO schema_migrations VALUES \('([\d]*)/)[1]
-      end
-
-      # replace true and false for 't' and 'f'
-      line.gsub!(&quot;true&quot;,&quot;'t'&quot;)
-      line.gsub!(&quot;false&quot;,&quot;'f'&quot;)
-      result &lt;&lt; line
-    end
-
-    File.open(pg_dump_file_path, &quot;w&quot;) do |f|
-      # Add BEGIN and END so we add it to 1 transaction. Increase speed!
-      f.puts(&quot;BEGIN;&quot;)
-      result.each{|line| f.puts(line) unless line.blank?}
-      f.puts(&quot;END;&quot;)
-    end
-  end
-
-  desc 'backup development.sqlite3 and create a new one with the dumped data'
-  task :recreate_with_dump do
-    # sqlite so backup
-    database = Rails.configuration.database_configuration['development']['database']
-    database_path = File.expand_path(&quot;#{Rails.root}/#{database}&quot;)
-    # remove old backup
-    if File.exists?(database_path + '.backup')
-      File.delete(database_path + '.backup')
-    end
-    # copy current for backup
-    FileUtils.cp database_path, database_path + '.backup' if File.exists?(database_path)
-
-    # dropping and re-creating db
-    ENV['VERSION'] = @version
-    Rake::Task['db:drop'].invoke
-    Rake::Task[&quot;db:migrate&quot;].invoke
-
-    puts &quot;migrated to version: #{@version}&quot;
-    puts &quot;importing...&quot;
-    # remove migration info
-    system `sqlite3 #{database_path} &quot;delete from schema_migrations;&quot;`
-    # import dump.sql
-    system `sqlite3 #{database_path} &quot;.read #{pg_dump_file_path}&quot;`
-
-    puts &quot;DONE!&quot;
-    puts &quot;NOTE: you're now migrated to version #{@version}. Please run db:migrate to apply newer migrations&quot;
-  end
-
-  def pg_dump_file_path
-    File.expand_path(&quot;#{Rails.root}/tmp/dump.sql&quot;)
-  end
-end</code></pre></noscript></div>
+<noscript><pre><code></code></pre></noscript></div>
 
 
 <h2>Usage</h2>
@@ -399,6 +283,10 @@ end</code></pre></noscript></div>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/06/03/osx-10-dot-10-yosemite-crashing-chrome/">OSX 10.10 Yosemite - Crashing Chrome</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2013/07/23/developing-ruby-on-rails-on-windows/">Developing Ruby on Rails on Windows</a>
       </li>
     
@@ -434,10 +322,6 @@ end</code></pre></noscript></div>
         <a href="/blog/2012/04/04/installing-android-skd-for-eclipse/">Installing Android SKD for Eclipse</a>
       </li>
     
-      <li class="post">
-        <a href="/blog/2012/03/20/failed-to-build-gem-native-extension/">Failed to build gem native extension</a>
-      </li>
-    
   </ul>
 </section>
 
@@ -470,7 +354,7 @@ end</code></pre></noscript></div>
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2013 - Manuel van Rijn -
+  Copyright &copy; 2014 - Manuel van Rijn -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 
