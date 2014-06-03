@@ -4,7 +4,7 @@
   <title><![CDATA[Category: chrome | Manuel van Rijn]]></title>
   <link href="http://manuel.manuelles.nl/blog/categories/chrome/atom.xml" rel="self"/>
   <link href="http://manuel.manuelles.nl/"/>
-  <updated>2014-06-03T22:49:28+02:00</updated>
+  <updated>2014-06-03T22:50:40+02:00</updated>
   <id>http://manuel.manuelles.nl/</id>
   <author>
     <name><![CDATA[Manuel van Rijn]]></name>
@@ -37,7 +37,7 @@
 
 <h2>To be continued</h2>
 
-<p>As metioned this fix seems to fail some times. I've had some troubles viewing some pull request on github but most of the time it seems to work.</p>
+<p>As mentioned this fix seems to fail some times. I've had some troubles viewing some pull request on github but most of the time it seems to work.</p>
 
 <p>If anybody finds a beter way to fix this please leave a comment :)</p>
 ]]></content>
