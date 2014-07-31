@@ -4,7 +4,7 @@
   <title><![CDATA[Category: ubuntu | Manuel van Rijn]]></title>
   <link href="http://manuel.manuelles.nl/blog/categories/ubuntu/atom.xml" rel="self"/>
   <link href="http://manuel.manuelles.nl/"/>
-  <updated>2014-06-03T22:55:30+02:00</updated>
+  <updated>2014-07-31T23:17:03+02:00</updated>
   <id>http://manuel.manuelles.nl/</id>
   <author>
     <name><![CDATA[Manuel van Rijn]]></name>
@@ -215,7 +215,7 @@ end
 
 <p>Next we have to create a role that defines what recipes should be executed in what order. Create the file <code>chef/roles/rails-dev.rb</code> containing the following content:</p>
 
-<p><code>ruby &lt;strong&gt;chef/roles/rails-dev.rb&lt;/strong&gt;
+<p>``` ruby <strong>chef/roles/rails-dev.rb</strong>
 name "rails-dev"
 description "setup for ruby on rails core development"
 run_list(
@@ -234,7 +234,15 @@ run_list(
   "recipe[database]",
   "recipe[postinstall]"
 )
-</code></p>
+default_attributes(
+  "build_essential" => {</p>
+
+<pre><code>"compiletime" =&gt; true
+</code></pre>
+
+<p>  }
+)
+```</p>
 
 <p>If you removed some cookbooks from the <code>chef/Cheffile</code> you should also remove them here.</p>
 

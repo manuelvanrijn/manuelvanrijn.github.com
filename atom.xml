@@ -4,7 +4,7 @@
   <title><![CDATA[Manuel van Rijn]]></title>
   <link href="http://manuel.manuelles.nl/atom.xml" rel="self"/>
   <link href="http://manuel.manuelles.nl/"/>
-  <updated>2014-06-03T22:55:30+02:00</updated>
+  <updated>2014-07-31T23:17:03+02:00</updated>
   <id>http://manuel.manuelles.nl/</id>
   <author>
     <name><![CDATA[Manuel van Rijn]]></name>
@@ -346,6 +346,11 @@
 <span class='line-number'>16</span>
 <span class='line-number'>17</span>
 <span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
 </pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">name</span> <span class="s2">&quot;rails-dev&quot;</span>
 </span><span class='line'><span class="n">description</span> <span class="s2">&quot;setup for ruby on rails core development&quot;</span>
 </span><span class='line'><span class="n">run_list</span><span class="p">(</span>
@@ -363,6 +368,11 @@
 </span><span class='line'>  <span class="s2">&quot;recipe[rbenv::vagrant]&quot;</span><span class="p">,</span>
 </span><span class='line'>  <span class="s2">&quot;recipe[database]&quot;</span><span class="p">,</span>
 </span><span class='line'>  <span class="s2">&quot;recipe[postinstall]&quot;</span>
+</span><span class='line'><span class="p">)</span>
+</span><span class='line'><span class="n">default_attributes</span><span class="p">(</span>
+</span><span class='line'>  <span class="s2">&quot;build_essential&quot;</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class='line'>    <span class="s2">&quot;compiletime&quot;</span> <span class="o">=&gt;</span> <span class="kp">true</span>
+</span><span class='line'>  <span class="p">}</span>
 </span><span class='line'><span class="p">)</span>
 </span></code></pre></td></tr></table></div></figure>
 
