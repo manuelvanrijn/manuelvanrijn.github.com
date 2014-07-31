@@ -199,6 +199,11 @@ run_list(
   "recipe[database]",
   "recipe[postinstall]"
 )
+default_attributes(
+  "build_essential" => {
+    "compiletime" => true
+  }
+)
 ```
 
 If you removed some cookbooks from the `chef/Cheffile` you should also remove them here.
