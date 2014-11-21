@@ -99,8 +99,10 @@ class MultipleCategoriesForArticles < ActiveRecord::Migration
 
     # add the belongs_to category to the has_and_belongs_to_many categories
     Article.all.each do | article |
-      article.categories << article.old_category
-      article.save
+      unless article.old_category.nil?
+        article.categories << article.old_category
+        article.save
+      end
     end
 
     # remove the old category_id column for the belongs_to associate
@@ -117,8 +119,8 @@ class MultipleCategoriesForArticles < ActiveRecord::Migration
     end
 
     Article.all.each do | article |
-      # NOTE: we'll grabe the first category, so if there are more, these will be lost!
-      article.new_category << article.categories.first
+      # NOTE: we'll grabe the first category (if present), so if there are more, these will be lost!
+      article.new_category = article.categories.first unless article.categories.empty?
       article.save
     end
 
