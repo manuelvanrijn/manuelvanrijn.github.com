@@ -4,7 +4,7 @@
   <title><![CDATA[Category: ruby | Manuel van Rijn]]></title>
   <link href="http://manuel.manuelles.nl/blog/categories/ruby/atom.xml" rel="self"/>
   <link href="http://manuel.manuelles.nl/"/>
-  <updated>2014-07-31T23:17:03+02:00</updated>
+  <updated>2014-11-21T14:31:53+01:00</updated>
   <id>http://manuel.manuelles.nl/</id>
   <author>
     <name><![CDATA[Manuel van Rijn]]></name>
@@ -481,8 +481,10 @@ end
 
 # add the belongs_to category to the has_and_belongs_to_many categories
 Article.all.each do | article |
-  article.categories &lt;&lt; article.old_category
-  article.save
+  unless article.old_category.nil?
+    article.categories &lt;&lt; article.old_category
+    article.save
+  end
 end
 
 # remove the old category_id column for the belongs_to associate
@@ -502,8 +504,8 @@ Article.class_eval do
 end
 
 Article.all.each do | article |
-  # NOTE: we'll grabe the first category, so if there are more, these will be lost!
-  article.new_category &lt;&lt; article.categories.first
+  # NOTE: we'll grabe the first category (if present), so if there are more, these will be lost!
+  article.new_category = article.categories.first unless article.categories.empty?
   article.save
 end
 

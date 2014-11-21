@@ -256,6 +256,8 @@
 <span class='line-number'>39</span>
 <span class='line-number'>40</span>
 <span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
 </pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">MultipleCategoriesForArticles</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Migration</span>
 </span><span class='line'>  <span class="k">def</span> <span class="nf">up</span>
 </span><span class='line'>    <span class="n">create_table</span> <span class="ss">:articles_categories</span><span class="p">,</span> <span class="ss">:id</span> <span class="o">=&gt;</span> <span class="kp">false</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
@@ -271,8 +273,10 @@
 </span><span class='line'>
 </span><span class='line'>    <span class="c1"># add the belongs_to category to the has_and_belongs_to_many categories</span>
 </span><span class='line'>    <span class="no">Article</span><span class="o">.</span><span class="n">all</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span> <span class="n">article</span> <span class="o">|</span>
-</span><span class='line'>      <span class="n">article</span><span class="o">.</span><span class="n">categories</span> <span class="o">&lt;&lt;</span> <span class="n">article</span><span class="o">.</span><span class="n">old_category</span>
-</span><span class='line'>      <span class="n">article</span><span class="o">.</span><span class="n">save</span>
+</span><span class='line'>      <span class="k">unless</span> <span class="n">article</span><span class="o">.</span><span class="n">old_category</span><span class="o">.</span><span class="n">nil?</span>
+</span><span class='line'>        <span class="n">article</span><span class="o">.</span><span class="n">categories</span> <span class="o">&lt;&lt;</span> <span class="n">article</span><span class="o">.</span><span class="n">old_category</span>
+</span><span class='line'>        <span class="n">article</span><span class="o">.</span><span class="n">save</span>
+</span><span class='line'>      <span class="k">end</span>
 </span><span class='line'>    <span class="k">end</span>
 </span><span class='line'>
 </span><span class='line'>    <span class="c1"># remove the old category_id column for the belongs_to associate</span>
@@ -289,8 +293,8 @@
 </span><span class='line'>    <span class="k">end</span>
 </span><span class='line'>
 </span><span class='line'>    <span class="no">Article</span><span class="o">.</span><span class="n">all</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span> <span class="n">article</span> <span class="o">|</span>
-</span><span class='line'>      <span class="c1"># NOTE: we&#39;ll grabe the first category, so if there are more, these will be lost!</span>
-</span><span class='line'>      <span class="n">article</span><span class="o">.</span><span class="n">new_category</span> <span class="o">&lt;&lt;</span> <span class="n">article</span><span class="o">.</span><span class="n">categories</span><span class="o">.</span><span class="n">first</span>
+</span><span class='line'>      <span class="c1"># NOTE: we&#39;ll grabe the first category (if present), so if there are more, these will be lost!</span>
+</span><span class='line'>      <span class="n">article</span><span class="o">.</span><span class="n">new_category</span> <span class="o">=</span> <span class="n">article</span><span class="o">.</span><span class="n">categories</span><span class="o">.</span><span class="n">first</span> <span class="k">unless</span> <span class="n">article</span><span class="o">.</span><span class="n">categories</span><span class="o">.</span><span class="n">empty?</span>
 </span><span class='line'>      <span class="n">article</span><span class="o">.</span><span class="n">save</span>
 </span><span class='line'>    <span class="k">end</span>
 </span><span class='line'>
