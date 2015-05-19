@@ -4,7 +4,7 @@
   <title><![CDATA[Manuel van Rijn]]></title>
   <link href="http://manuel.manuelles.nl/atom.xml" rel="self"/>
   <link href="http://manuel.manuelles.nl/"/>
-  <updated>2014-11-21T14:31:53+01:00</updated>
+  <updated>2015-05-20T00:01:30+02:00</updated>
   <id>http://manuel.manuelles.nl/</id>
   <author>
     <name><![CDATA[Manuel van Rijn]]></name>
@@ -14,11 +14,217 @@
 
   
   <entry>
+    <title type="html"><![CDATA[Rails subdomains for localhost/development]]></title>
+    <link href="http://manuel.manuelles.nl/blog/2015/05/19/rails-subdomains-for-localhost-development/"/>
+    <updated>2015-05-19T23:00:00+02:00</updated>
+    <id>http://manuel.manuelles.nl/blog/2015/05/19/rails-subdomains-for-localhost-development</id>
+    <content type="html"><![CDATA[<p><a href="http://manuel.manuelles.nl/blog/2015/05/19/rails-subdomains-for-localhost-development/"><img class="right" src="http://manuel.manuelles.nl/images/posts/local-subdomains.jpg" width="300" height="150" title="Rails subdomains for localhost development" ></a> Today I&#8217;ve just released version 1.0.0 of my latest gem <a href="https://github.com/manuelvanrijn/local-subdomain">local-subdomains</a> offering subdomain support for your development environment, out of the box.</p>
+
+<p>In this post I&#8217;d like to describe my findings and motivations.</p>
+
+<!-- more -->
+
+
+<h2>What I&#8217;d used to do</h2>
+
+<p>To support subdomains during development is frustrating. By default you can&#8217;t have some subdomain.localhost to just bind to localhost.
+So you have to edit your <code>/etc/hosts</code> file to add some fake subdomain and when you have to test another subdomain, you&#8217;d had to edit the file again and again and&#8230; well you get my point.</p>
+
+<h3>But then!</h3>
+
+<p>I&#8217;ve stubbled on the magic domain <a href="http://lvh.me">http://lvh.me</a> which redirects all request (including subdomains) to <code>127.0.0.1</code>. This means <a href="http://some-subdomain.lvh.me:3000">http://some-subdomain.lvh.me:3000</a> redirects to <code>127.0.0.1</code> on port <code>3000</code> and let <code>request.subdomain</code> to return <code>some-subdomain</code> on my Rails controller.</p>
+
+<figure class='code'><figcaption><span>$ dig lvh.me</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>; &lt;&lt;&gt;&gt; DiG 9.8.3-P1 &lt;&lt;&gt;&gt; lvh.me
+</span><span class='line'>;; global options: +cmd
+</span><span class='line'>;; Got answer:
+</span><span class='line'>;; -&gt;&gt;HEADER<span class="s">&lt;&lt;- opco</span>de: QUERY, status: NOERROR, id: 48494
+</span><span class='line'>;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 2, ADDITIONAL: 0
+</span><span class='line'>
+</span><span class='line'>;; QUESTION SECTION:
+</span><span class='line'>;lvh.me.        IN  A
+</span><span class='line'>
+</span><span class='line'>;; ANSWER SECTION:
+</span><span class='line'>lvh.me.     3600  IN  A 127.0.0.1
+</span><span class='line'>
+</span><span class='line'>;; AUTHORITY SECTION:
+</span><span class='line'>lvh.me.     3600  IN  NS  ns36.domaincontrol.com.
+</span><span class='line'>lvh.me.     3600  IN  NS  ns35.domaincontrol.com.
+</span><span class='line'>
+</span><span class='line'>;; Query <span class="nb">time</span>: 167 msec
+</span><span class='line'>;; SERVER: 90.145.32.32#53<span class="o">(</span>90.145.32.32<span class="o">)</span>
+</span><span class='line'>;; WHEN: Tue May 19 23:05:01 2015
+</span><span class='line'>;; MSG SIZE  rcvd: 95
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Why this gem?</h2>
+
+<p>This week I&#8217;ve started on a side project that includes subdomain support. I remembered that I could use <a href="http://lvh.me">http://lvh.me</a> but when I browsed to the url it just said <strong>ERR_CONNECTION_REFUSED</strong></p>
+
+<p>After some time I remembered Rails binds the <code>development</code> environment by default to <code>localhost</code> which is != <code>127.0.0.1</code> where <a href="http://lvh.me">http://lvh.me</a> is redirecting to..</p>
+
+<p>So after fixing this, I remembered to have some code, that checks if I was browsing to <a href="http://localhost:3000">http://localhost:3000</a> and if so redirecting me to <a href="http://lvh.me:3000">http://lvh.me:3000</a>. Just to help me remember and enforce request for subdomains to go through <a href="http://lvh.me">http://lvh.me</a> for subdomain support.</p>
+
+<h2>So a gem it is!</h2>
+
+<p>Well because as many developers, I don&#8217;t like to repeat myself, and decided to make the above to steps possible within a gem.</p>
+
+<h3>1. The before filter</h3>
+
+<p>The easy part was creating a module that adds a <code>before_filter</code> to the controller where the modules is included. The action would check if the request is from <code>lvh.me</code> and if not, redirect to it. Nothing special.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">module</span> <span class="nn">LocalSubdomain</span>
+</span><span class='line'>  <span class="kp">extend</span> <span class="ss">ActiveSupport</span><span class="p">:</span><span class="ss">:Concern</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">included</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">before_filter</span> <span class="ss">:redirect_to_lvh_me</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">redirect_to_lvh_me</span>
+</span><span class='line'>    <span class="k">return</span> <span class="k">unless</span> <span class="no">Rails</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">development?</span>
+</span><span class='line'>    <span class="n">served_by_lvh_me</span> <span class="o">=</span> <span class="o">!</span><span class="n">request</span><span class="o">.</span><span class="n">env</span><span class="o">[</span><span class="s1">&#39;SERVER_NAME&#39;</span><span class="o">][</span><span class="sr">/lvh.me$/</span><span class="o">].</span><span class="n">nil?</span>
+</span><span class='line'>    <span class="k">return</span> <span class="k">if</span> <span class="n">served_by_lvh_me</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">http</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">env</span><span class="o">[</span><span class="s1">&#39;rack.url_scheme&#39;</span><span class="o">]</span>
+</span><span class='line'>    <span class="n">port</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">env</span><span class="o">[</span><span class="s1">&#39;SERVER_PORT&#39;</span><span class="o">]</span>
+</span><span class='line'>    <span class="n">path</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">env</span><span class="o">[</span><span class="s1">&#39;ORIGINAL_FULLPATH&#39;</span><span class="o">]</span>
+</span><span class='line'>    <span class="n">redirect_to</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">http</span><span class="si">}</span><span class="s2">://lvh.me:</span><span class="si">#{</span><span class="n">port</span><span class="si">}#{</span><span class="n">path</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>2. The Rack::Handler</h3>
+
+<p>This part was kind of tricky because we have to inject our code before the <code>boot</code> of rails is triggered, because we want to enforce the binding address <code>localhost</code> to be changed to <code>0.0.0.0</code>.</p>
+
+<p>After some reading about the <a href="http://guides.rubyonrails.org/initialization.html">rails initialization process</a> and experimenting I noticed that the gems are required (and if so) executed before the <code>Rack::Handler</code> is being called, which will trigger a Ruby server to be executed (WEBrick by default).</p>
+
+<p>While looking at the <a href="https://github.com/rack/rack/blob/master/lib/rack/handler.rb">rack/handler.rb</a> I noticed that the method <code>self.default</code> returns a Ruby server handler. Based on what Ruby server is being used, this will return a different handler.</p>
+
+<p>After inspecting <a href="https://github.com/rack/rack/blob/master/lib/rack/handler/webrick.rb">WEBrick&#8217;s</a> and <a href="https://github.com/puma/puma/blob/master/lib/rack/handler/puma.rb">Puma&#8217;s</a> rack handlers, we&#8217;ll see they both have the <code>self.run</code> method with the <code>options</code> argument, containing the <code>Host</code> which indicates the binding address.</p>
+
+<p>Here&#8217;s a code example, showing how to intercept the used Ruby server (Puma, WEBrick, &#8230;) handler and extend that handler, with a custom <code>run</code> method to be able to modify the <code>options</code></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">module</span> <span class="nn">Rack</span>
+</span><span class='line'>  <span class="k">module</span> <span class="nn">Handler</span>
+</span><span class='line'>    <span class="c1"># first override the self.default, to be able to intercept the handler</span>
+</span><span class='line'>    <span class="c1"># used by Puma, WEBrick, Thin, ... other?</span>
+</span><span class='line'>    <span class="k">class</span> <span class="o">&lt;&lt;</span> <span class="nb">self</span>
+</span><span class='line'>      <span class="n">alias_method</span> <span class="ss">:orig_default</span><span class="p">,</span> <span class="ss">:default</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">default</span><span class="p">(</span><span class="n">options</span> <span class="o">=</span> <span class="p">{})</span>
+</span><span class='line'>      <span class="c1"># call the original method to return the handler and extend it&#39;s self.run method</span>
+</span><span class='line'>      <span class="n">orig_default</span><span class="o">.</span><span class="n">instance_eval</span> <span class="k">do</span>
+</span><span class='line'>        <span class="k">class</span> <span class="o">&lt;&lt;</span> <span class="nb">self</span>
+</span><span class='line'>          <span class="n">alias_method</span> <span class="ss">:orig_run</span><span class="p">,</span> <span class="ss">:run</span>
+</span><span class='line'>        <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">run</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">options</span> <span class="o">=</span> <span class="p">{})</span>
+</span><span class='line'>          <span class="n">env</span> <span class="o">=</span> <span class="p">(</span><span class="n">options</span><span class="o">[</span><span class="ss">:environment</span><span class="o">]</span> <span class="o">||</span> <span class="no">Rails</span><span class="o">.</span><span class="n">env</span><span class="p">)</span>
+</span><span class='line'>          <span class="c1"># only modify the options[:Host] if environment is development</span>
+</span><span class='line'>          <span class="c1"># and options[:Host] equals &#39;localhost&#39;</span>
+</span><span class='line'>          <span class="k">if</span> <span class="n">options</span><span class="o">[</span><span class="ss">:Host</span><span class="o">]</span> <span class="o">==</span> <span class="s1">&#39;localhost&#39;</span> <span class="o">&amp;&amp;</span> <span class="n">env</span> <span class="o">==</span> <span class="s1">&#39;development&#39;</span>
+</span><span class='line'>            <span class="n">options</span><span class="o">.</span><span class="n">merge!</span><span class="p">(</span><span class="ss">Host</span><span class="p">:</span> <span class="s1">&#39;0.0.0.0&#39;</span><span class="p">)</span>
+</span><span class='line'>          <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>          <span class="c1"># after modifications, trigger original run method with the new options</span>
+</span><span class='line'>          <span class="n">orig_run</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">options</span><span class="p">)</span>
+</span><span class='line'>        <span class="k">end</span>
+</span><span class='line'>      <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="c1"># don&#39;t forget to return the extended handler</span>
+</span><span class='line'>      <span class="n">orig_default</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Conclusion</h2>
+
+<p>After finishing these two pieces, I&#8217;ve bundled them into a Gem called <a href="https://github.com/manuelvanrijn/local-subdomain">local-subdomain</a>, so I don&#8217;t have to add the <code>before_filter</code> and add <code>-b 0.0.0.0</code> to my <code>rails s</code> command.</p>
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[OSX 10.10 Yosemite - Crashing Chrome]]></title>
     <link href="http://manuel.manuelles.nl/blog/2014/06/03/osx-10-dot-10-yosemite-crashing-chrome/"/>
     <updated>2014-06-03T22:34:00+02:00</updated>
     <id>http://manuel.manuelles.nl/blog/2014/06/03/osx-10-dot-10-yosemite-crashing-chrome</id>
-    <content type="html"><![CDATA[<p><a href="http://manuel.manuelles.nl/blog/2014/06/03/osx-10-dot-10-yosemite-crashing-chrome/"><img class="left" src="http://manuel.manuelles.nl/images/posts/osx-10.10-chrome.jpg" width="150" height="150" title="Develop Ruby on Rails on Windows" ></a> After watching the WWDC I couldn&#8217;t wait installing the latest OSX Yosemite because I love cutting edge tech and of course cutting edge software.</p>
+    <content type="html"><![CDATA[<p><a href="http://manuel.manuelles.nl/blog/2014/06/03/osx-10-dot-10-yosemite-crashing-chrome/"><img class="left" src="http://manuel.manuelles.nl/images/posts/osx-10.10-chrome.jpg" width="150" height="150" title="Chrome" ></a> After watching the WWDC I couldn&#8217;t wait installing the latest OSX Yosemite because I love cutting edge tech and of course cutting edge software.</p>
 
 <p>However I&#8217;ve ended up with a failing Google Chrome browser which I use like always!</p>
 

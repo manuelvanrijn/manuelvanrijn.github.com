@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: domains | Manuel van Rijn]]></title>
+  <link href="http://manuel.manuelles.nl/blog/categories/domains/atom.xml" rel="self"/>
+  <link href="http://manuel.manuelles.nl/"/>
+  <updated>2015-05-20T00:01:30+02:00</updated>
+  <id>http://manuel.manuelles.nl/</id>
+  <author>
+    <name><![CDATA[Manuel van Rijn]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Rails subdomains for localhost/development]]></title>
+    <link href="http://manuel.manuelles.nl/blog/2015/05/19/rails-subdomains-for-localhost-development/"/>
+    <updated>2015-05-19T23:00:00+02:00</updated>
+    <id>http://manuel.manuelles.nl/blog/2015/05/19/rails-subdomains-for-localhost-development</id>
+    <content type="html"><![CDATA[<p><a href="/blog/2015/05/19/rails-subdomains-for-localhost-development/"><img class="right" src="/images/posts/local-subdomains.jpg" width="300" height="150" title="Rails subdomains for localhost development" ></a> Today I've just released version 1.0.0 of my latest gem <a href="https://github.com/manuelvanrijn/local-subdomain">local-subdomains</a> offering subdomain support for your development environment, out of the box.</p>
+
+<p>In this post I'd like to describe my findings and motivations.</p>
+
+<!-- more -->
+
+
+<h2>What I'd used to do</h2>
+
+<p>To support subdomains during development is frustrating. By default you can't have some subdomain.localhost to just bind to localhost.
+So you have to edit your <code>/etc/hosts</code> file to add some fake subdomain and when you have to test another subdomain, you'd had to edit the file again and again and... well you get my point.</p>
+
+<h3>But then!</h3>
+
+<p>I've stubbled on the magic domain <a href="http://lvh.me">http://lvh.me</a> which redirects all request (including subdomains) to <code>127.0.0.1</code>. This means <a href="http://some-subdomain.lvh.me:3000">http://some-subdomain.lvh.me:3000</a> redirects to <code>127.0.0.1</code> on port <code>3000</code> and let <code>request.subdomain</code> to return <code>some-subdomain</code> on my Rails controller.</p>
+
+<p>```bash $ dig lvh.me
+; &lt;&lt;>> DiG 9.8.3-P1 &lt;&lt;>> lvh.me
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER&lt;&lt;- opcode: QUERY, status: NOERROR, id: 48494
+;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 2, ADDITIONAL: 0</p>
+
+<p>;; QUESTION SECTION:
+;lvh.me.        IN  A</p>
+
+<p>;; ANSWER SECTION:
+lvh.me.     3600  IN  A 127.0.0.1</p>
+
+<p>;; AUTHORITY SECTION:
+lvh.me.     3600  IN  NS  ns36.domaincontrol.com.
+lvh.me.     3600  IN  NS  ns35.domaincontrol.com.</p>
+
+<p>;; Query time: 167 msec
+;; SERVER: 90.145.32.32#53(90.145.32.32)
+;; WHEN: Tue May 19 23:05:01 2015
+;; MSG SIZE  rcvd: 95
+```</p>
+
+<h2>Why this gem?</h2>
+
+<p>This week I've started on a side project that includes subdomain support. I remembered that I could use <a href="http://lvh.me">http://lvh.me</a> but when I browsed to the url it just said <strong>ERR_CONNECTION_REFUSED</strong></p>
+
+<p>After some time I remembered Rails binds the <code>development</code> environment by default to <code>localhost</code> which is != <code>127.0.0.1</code> where <a href="http://lvh.me">http://lvh.me</a> is redirecting to..</p>
+
+<p>So after fixing this, I remembered to have some code, that checks if I was browsing to <a href="http://localhost:3000">http://localhost:3000</a> and if so redirecting me to <a href="http://lvh.me:3000">http://lvh.me:3000</a>. Just to help me remember and enforce request for subdomains to go through <a href="http://lvh.me">http://lvh.me</a> for subdomain support.</p>
+
+<h2>So a gem it is!</h2>
+
+<p>Well because as many developers, I don't like to repeat myself, and decided to make the above to steps possible within a gem.</p>
+
+<h3>1. The before filter</h3>
+
+<p>The easy part was creating a module that adds a <code>before_filter</code> to the controller where the modules is included. The action would check if the request is from <code>lvh.me</code> and if not, redirect to it. Nothing special.</p>
+
+<p>```ruby
+module LocalSubdomain
+  extend ActiveSupport::Concern</p>
+
+<p>  included do</p>
+
+<pre><code>before_filter :redirect_to_lvh_me
+</code></pre>
+
+<p>  end</p>
+
+<p>  def redirect_to_lvh_me</p>
+
+<pre><code>return unless Rails.env.development?
+served_by_lvh_me = !request.env['SERVER_NAME'][/lvh.me$/].nil?
+return if served_by_lvh_me
+
+http = request.env['rack.url_scheme']
+port = request.env['SERVER_PORT']
+path = request.env['ORIGINAL_FULLPATH']
+redirect_to "#{http}://lvh.me:#{port}#{path}"
+</code></pre>
+
+<p>  end
+end
+```</p>
+
+<h3>2. The Rack::Handler</h3>
+
+<p>This part was kind of tricky because we have to inject our code before the <code>boot</code> of rails is triggered, because we want to enforce the binding address <code>localhost</code> to be changed to <code>0.0.0.0</code>.</p>
+
+<p>After some reading about the <a href="http://guides.rubyonrails.org/initialization.html">rails initialization process</a> and experimenting I noticed that the gems are required (and if so) executed before the <code>Rack::Handler</code> is being called, which will trigger a Ruby server to be executed (WEBrick by default).</p>
+
+<p>While looking at the <a href="https://github.com/rack/rack/blob/master/lib/rack/handler.rb">rack/handler.rb</a> I noticed that the method <code>self.default</code> returns a Ruby server handler. Based on what Ruby server is being used, this will return a different handler.</p>
+
+<p>After inspecting <a href="https://github.com/rack/rack/blob/master/lib/rack/handler/webrick.rb">WEBrick's</a> and <a href="https://github.com/puma/puma/blob/master/lib/rack/handler/puma.rb">Puma's</a> rack handlers, we'll see they both have the <code>self.run</code> method with the <code>options</code> argument, containing the <code>Host</code> which indicates the binding address.</p>
+
+<p>Here's a code example, showing how to intercept the used Ruby server (Puma, WEBrick, ...) handler and extend that handler, with a custom <code>run</code> method to be able to modify the <code>options</code></p>
+
+<p>```ruby
+module Rack
+  module Handler</p>
+
+<pre><code># first override the self.default, to be able to intercept the handler
+# used by Puma, WEBrick, Thin, ... other?
+class &lt;&lt; self
+  alias_method :orig_default, :default
+end
+
+def self.default(options = {})
+  # call the original method to return the handler and extend it's self.run method
+  orig_default.instance_eval do
+    class &lt;&lt; self
+      alias_method :orig_run, :run
+    end
+
+    def self.run(app, options = {})
+      env = (options[:environment] || Rails.env)
+      # only modify the options[:Host] if environment is development
+      # and options[:Host] equals 'localhost'
+      if options[:Host] == 'localhost' &amp;&amp; env == 'development'
+        options.merge!(Host: '0.0.0.0')
+      end
+
+      # after modifications, trigger original run method with the new options
+      orig_run(app, options)
+    end
+  end
+
+  # don't forget to return the extended handler
+  orig_default
+end
+</code></pre>
+
+<p>  end
+end
+```</p>
+
+<h2>Conclusion</h2>
+
+<p>After finishing these two pieces, I've bundled them into a Gem called <a href="https://github.com/manuelvanrijn/local-subdomain">local-subdomain</a>, so I don't have to add the <code>before_filter</code> and add <code>-b 0.0.0.0</code> to my <code>rails s</code> command.</p>
+]]></content>
+  </entry>
+  
+</feed>

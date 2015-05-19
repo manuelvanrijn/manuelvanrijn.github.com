@@ -74,15 +74,21 @@
         <loc>
             http://manuel.manuelles.nl/blog/2014/06/03/osx-10-dot-10-yosemite-crashing-chrome/
         </loc>
-        <lastmod>2014-07-31T23:12:00+02:00</lastmod>
+        <lastmod>2015-05-19T23:00:04+02:00</lastmod>
+    </url>
+    <url>
+        <loc>
+            http://manuel.manuelles.nl/blog/2015/05/19/rails-subdomains-for-localhost-development/
+        </loc>
+        <lastmod>2015-05-20T00:00:25+02:00</lastmod>
     </url>
     <url>
         <loc>http://manuel.manuelles.nl/blog/archives/</loc>
-        <lastmod>2014-11-21T14:30:53+01:00</lastmod>
+        <lastmod>2015-05-20T00:00:25+02:00</lastmod>
     </url>
     <url>
         <loc>http://manuel.manuelles.nl/</loc>
-        <lastmod>2014-11-21T14:30:53+01:00</lastmod>
+        <lastmod>2015-05-20T00:00:25+02:00</lastmod>
     </url>
     <url>
         <loc>http://manuel.manuelles.nl/robots.txt</loc>
