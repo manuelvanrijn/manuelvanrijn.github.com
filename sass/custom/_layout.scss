@@ -19,3 +19,8 @@
 //$sidebar-pad-medium: 15px;
 //$sidebar-pad-wide: 20px;
 //$sidebar-width-wide: 300px;
+
+#content .blog-index article h1,
+article header h1 {
+  font-size: 2em!important;
+}

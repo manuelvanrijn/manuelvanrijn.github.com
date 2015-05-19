@@ -7,7 +7,7 @@ categories: [osx, cutting-edge, chrome, google, crash]
 published: true
 ---
 
-[{% img left /images/posts/osx-10.10-chrome.jpg 150 150 Develop Ruby on Rails on Windows %}](/blog/2014/06/03/osx-10-dot-10-yosemite-crashing-chrome/) After watching the WWDC I couldn't wait installing the latest OSX Yosemite because I love cutting edge tech and of course cutting edge software.
+[{% img left /images/posts/osx-10.10-chrome.jpg 150 150 Chrome %}](/blog/2014/06/03/osx-10-dot-10-yosemite-crashing-chrome/) After watching the WWDC I couldn't wait installing the latest OSX Yosemite because I love cutting edge tech and of course cutting edge software.
 
 However I've ended up with a failing Google Chrome browser which I use like always!
 
