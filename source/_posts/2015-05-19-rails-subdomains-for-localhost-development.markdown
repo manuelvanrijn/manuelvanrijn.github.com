@@ -7,7 +7,7 @@ categories: [rails, subdomains, development, ruby, domains, redirect, rack, hand
 published: true
 ---
 
-[{% img right /images/posts/local-subdomains.jpg 300 150 Rails subdomains for localhost development %}](/blog/2015/05/19/rails-subdomains-for-localhost-development/) Today I've just released version 1.0.0 of my latest gem [local-subdomains](https://github.com/manuelvanrijn/local-subdomain) offering subdomain support for your development environment, out of the box.
+[{% img right /images/posts/local-subdomains.jpg 300 150 Rails subdomains for localhost development %}](/blog/2015/05/19/rails-subdomains-for-localhost-development/) Today I've just released version 1.0.0 of my latest gem [local-subdomain](https://github.com/manuelvanrijn/local-subdomain) offering subdomain support for your development environment, out of the box.
 
 In this post I'd like to describe my findings and motivations.
 
