@@ -9,7 +9,7 @@
   <meta name="author" content="Manuel van Rijn">
 
   
-  <meta name="description" content="Today I&#8217;ve just released version 1.0.0 of my latest gem local-subdomains offering subdomain support for your development environment, out of &hellip;">
+  <meta name="description" content="Today I&#8217;ve just released version 1.0.0 of my latest gem local-subdomain offering subdomain support for your development environment, out of &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -32,17 +32,16 @@
 <link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
 
   
-  <script type="text/javascript">
-    var _gaq = _gaq || [];
-    _gaq.push(['_setAccount', 'UA-17149124-1']);
-    _gaq.push(['_trackPageview']);
-
-    (function() {
-      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-    })();
+  <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
+  <script>
+    (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
+    function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
+    e=o.createElement(i);r=o.getElementsByTagName(i)[0];
+    e.src='https://www.google-analytics.com/analytics.js';
+    r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
+    ga('create','UA-17149124-1','auto');ga('send','pageview');
   </script>
+
 
 
 </head>
@@ -108,7 +107,7 @@
   </header>
 
 
-  <div class="entry-content"><p><a href="/blog/2015/05/19/rails-subdomains-for-localhost-development/"><img class="right" src="/images/posts/local-subdomains.jpg" width="300" height="150" title="Rails subdomains for localhost development" ></a> Today I&#8217;ve just released version 1.0.0 of my latest gem <a href="https://github.com/manuelvanrijn/local-subdomain">local-subdomains</a> offering subdomain support for your development environment, out of the box.</p>
+  <div class="entry-content"><p><a href="/blog/2015/05/19/rails-subdomains-for-localhost-development/"><img class="right" src="/images/posts/local-subdomains.jpg" width="300" height="150" title="Rails subdomains for localhost development" ></a> Today I&#8217;ve just released version 1.0.0 of my latest gem <a href="https://github.com/manuelvanrijn/local-subdomain">local-subdomain</a> offering subdomain support for your development environment, out of the box.</p>
 
 <p>In this post I&#8217;d like to describe my findings and motivations.</p>
 
@@ -229,7 +228,6 @@
       Work: <a href="http://www.sping.nl/">www.sping.nl</a><br /><br />
       <a rel="author" href="https://github.com/manuelvanrijn" class="zocial icon github">Manuel van Rijn on Github</a>
       <a rel="author" href="http://nl.linkedin.com/in/manuelvanrijn" class="zocial icon linkedin">Manuel van Rijn on LinkedIn</a>
-      <a rel="author" href="http://facebook.com/manuelvanrijn" class="zocial icon facebook">Manuel van Rijn on Facebook</a>
       <a rel="author" href="http://twitter.com/manuelvanrijn" class="zocial icon twitter">Manuel van Rijn on Twitter</a>
     </small>
   </p>

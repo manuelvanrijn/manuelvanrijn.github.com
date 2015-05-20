@@ -80,15 +80,15 @@
         <loc>
             http://manuel.manuelles.nl/blog/2015/05/19/rails-subdomains-for-localhost-development/
         </loc>
-        <lastmod>2015-05-20T00:00:25+02:00</lastmod>
+        <lastmod>2015-05-20T00:25:45+02:00</lastmod>
     </url>
     <url>
         <loc>http://manuel.manuelles.nl/blog/archives/</loc>
-        <lastmod>2015-05-20T00:00:25+02:00</lastmod>
+        <lastmod>2015-05-20T00:25:45+02:00</lastmod>
     </url>
     <url>
         <loc>http://manuel.manuelles.nl/</loc>
-        <lastmod>2015-05-20T00:00:25+02:00</lastmod>
+        <lastmod>2015-05-20T00:25:45+02:00</lastmod>
     </url>
     <url>
         <loc>http://manuel.manuelles.nl/robots.txt</loc>
@@ -96,6 +96,6 @@
     </url>
     <url>
         <loc>http://manuel.manuelles.nl/work/</loc>
-        <lastmod>2014-07-31T23:12:00+02:00</lastmod>
+        <lastmod>2015-05-20T08:11:16+02:00</lastmod>
     </url>
 </urlset>

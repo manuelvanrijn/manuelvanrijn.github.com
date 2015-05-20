@@ -9,7 +9,7 @@
   <meta name="author" content="Manuel van Rijn">
 
   
-  <meta name="description" content="Today I&#8217;ve just released version 1.0.0 of my latest gem local-subdomains offering subdomain support for your development environment, out of &hellip;">
+  <meta name="description" content="Today I&#8217;ve just released version 1.0.0 of my latest gem local-subdomain offering subdomain support for your development environment, out of &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -32,17 +32,16 @@
 <link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
 
   
-  <script type="text/javascript">
-    var _gaq = _gaq || [];
-    _gaq.push(['_setAccount', 'UA-17149124-1']);
-    _gaq.push(['_trackPageview']);
-
-    (function() {
-      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-    })();
+  <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
+  <script>
+    (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
+    function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
+    e=o.createElement(i);r=o.getElementsByTagName(i)[0];
+    e.src='https://www.google-analytics.com/analytics.js';
+    r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
+    ga('create','UA-17149124-1','auto');ga('send','pageview');
   </script>
+
 
 
 </head>
@@ -105,7 +104,7 @@
   </header>
 
 
-<div class="entry-content"><p><a href="/blog/2015/05/19/rails-subdomains-for-localhost-development/"><img class="right" src="/images/posts/local-subdomains.jpg" width="300" height="150" title="Rails subdomains for localhost development" ></a> Today I&#8217;ve just released version 1.0.0 of my latest gem <a href="https://github.com/manuelvanrijn/local-subdomain">local-subdomains</a> offering subdomain support for your development environment, out of the box.</p>
+<div class="entry-content"><p><a href="/blog/2015/05/19/rails-subdomains-for-localhost-development/"><img class="right" src="/images/posts/local-subdomains.jpg" width="300" height="150" title="Rails subdomains for localhost development" ></a> Today I&#8217;ve just released version 1.0.0 of my latest gem <a href="https://github.com/manuelvanrijn/local-subdomain">local-subdomain</a> offering subdomain support for your development environment, out of the box.</p>
 
 <p>In this post I&#8217;d like to describe my findings and motivations.</p>
 
@@ -119,7 +118,7 @@ So you have to edit your <code>/etc/hosts</code> file to add some fake subdomain
 
 <h3>But then!</h3>
 
-<p>I&#8217;ve stubbled on the magic domain <a href="http://lvh.me">http://lvh.me</a> which redirects all request (including subdomains) to <code>127.0.0.1</code>. This means <a href="http://some-subdomain.lvh.me:3000">http://some-subdomain.lvh.me:3000</a> redirects to <code>127.0.0.1</code> on port <code>3000</code> and let <code>request.subdomain</code> to return <code>some-subdomain</code> on my Rails controller.</p>
+<p>I&#8217;ve stubbled on the magic domain <a href="http://lvh.me">http://lvh.me</a> which redirects all request (including subdomains) to <code>127.0.0.1</code>. This means <a href="http://some-subdomain.lvh.me:3000">http://some-subdomain.lvh.me:3000</a> redirects to <code>127.0.0.1</code> on port <code>3000</code> and let <code>request.subdomain</code> to return <code>some-subdomain</code> within your Rails controller.</p>
 
 <figure class='code'><figcaption><span>$ dig lvh.me</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -166,19 +165,19 @@ So you have to edit your <code>/etc/hosts</code> file to add some fake subdomain
 
 <h2>Why this gem?</h2>
 
-<p>This week I&#8217;ve started on a side project that includes subdomain support. I remembered that I could use <a href="http://lvh.me">http://lvh.me</a> but when I browsed to the url it just said <strong>ERR_CONNECTION_REFUSED</strong></p>
+<p>This week I started on a side project, requiring subdomain support. I remembered that I could use <a href="http://lvh.me">http://lvh.me</a> but when I browsed to the url it just said <strong>ERR_CONNECTION_REFUSED</strong></p>
 
 <p>After some time I remembered Rails binds the <code>development</code> environment by default to <code>localhost</code> which is != <code>127.0.0.1</code> where <a href="http://lvh.me">http://lvh.me</a> is redirecting to..</p>
 
-<p>So after fixing this, I remembered to have some code, that checks if I was browsing to <a href="http://localhost:3000">http://localhost:3000</a> and if so redirecting me to <a href="http://lvh.me:3000">http://lvh.me:3000</a>. Just to help me remember and enforce request for subdomains to go through <a href="http://lvh.me">http://lvh.me</a> for subdomain support.</p>
+<p>So after fixing this, I remembered to have some code, that checks if you are browsing to <a href="http://localhost:3000">http://localhost:3000</a> to redirect to <a href="http://lvh.me:3000">http://lvh.me:3000</a>. Just to help remember and enforce request for subdomains to go through <a href="http://lvh.me">http://lvh.me</a></p>
 
 <h2>So a gem it is!</h2>
 
-<p>Well because as many developers, I don&#8217;t like to repeat myself, and decided to make the above to steps possible within a gem.</p>
+<p>As many developers, I don&#8217;t like to repeat myself, and decided to make the above two steps possible within a gem.</p>
 
 <h3>1. The before filter</h3>
 
-<p>The easy part was creating a module that adds a <code>before_filter</code> to the controller where the modules is included. The action would check if the request is from <code>lvh.me</code> and if not, redirect to it. Nothing special.</p>
+<p>The easy part was creating a module that adds a <code>before_filter</code> to the controller where the module <code>LocalSubdomain</code> is included. The action would check if the request is from <code>lvh.me</code> and if not, redirect to it. Nothing special.</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -221,15 +220,15 @@ So you have to edit your <code>/etc/hosts</code> file to add some fake subdomain
 
 <h3>2. The Rack::Handler</h3>
 
-<p>This part was kind of tricky because we have to inject our code before the <code>boot</code> of rails is triggered, because we want to enforce the binding address <code>localhost</code> to be changed to <code>0.0.0.0</code>.</p>
+<p>This part was kind of tricky because we have to inject our code before the <code>boot</code> of Rails is triggered,  to enforce the binding address <code>localhost</code> to be changed to <code>0.0.0.0</code>.</p>
 
 <p>After some reading about the <a href="http://guides.rubyonrails.org/initialization.html">rails initialization process</a> and experimenting I noticed that the gems are required (and if so) executed before the <code>Rack::Handler</code> is being called, which will trigger a Ruby server to be executed (WEBrick by default).</p>
 
-<p>While looking at the <a href="https://github.com/rack/rack/blob/master/lib/rack/handler.rb">rack/handler.rb</a> I noticed that the method <code>self.default</code> returns a Ruby server handler. Based on what Ruby server is being used, this will return a different handler.</p>
+<p>While looking at the <a href="https://github.com/rack/rack/blob/master/lib/rack/handler.rb">rack/handler.rb</a> I noticed that the method <code>self.default</code> returns a Ruby server handler. Based on which Ruby server is being used, this will return a different handler.</p>
 
-<p>After inspecting <a href="https://github.com/rack/rack/blob/master/lib/rack/handler/webrick.rb">WEBrick&#8217;s</a> and <a href="https://github.com/puma/puma/blob/master/lib/rack/handler/puma.rb">Puma&#8217;s</a> rack handlers, we&#8217;ll see they both have the <code>self.run</code> method with the <code>options</code> argument, containing the <code>Host</code> which indicates the binding address.</p>
+<p>After inspecting <a href="https://github.com/rack/rack/blob/master/lib/rack/handler/webrick.rb">WEBrick&#8217;s</a> and <a href="https://github.com/puma/puma/blob/master/lib/rack/handler/puma.rb">Puma&#8217;s</a> rack handlers, I noticed, they both have the <code>self.run</code> method with the <code>options</code> argument, containing the <code>Host</code> which indicates the binding address.</p>
 
-<p>Here&#8217;s a code example, showing how to intercept the used Ruby server (Puma, WEBrick, &#8230;) handler and extend that handler, with a custom <code>run</code> method to be able to modify the <code>options</code></p>
+<p>Here&#8217;s a stipped part of the code I used in the gem, showing how to intercept the used Ruby server (Puma, WEBrick, &#8230;) handler and extend that handler, with a custom <code>run</code> method to be able to modify the <code>options</code></p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -377,7 +376,6 @@ So you have to edit your <code>/etc/hosts</code> file to add some fake subdomain
       Work: <a href="http://www.sping.nl/">www.sping.nl</a><br /><br />
       <a rel="author" href="https://github.com/manuelvanrijn" class="zocial icon github">Manuel van Rijn on Github</a>
       <a rel="author" href="http://nl.linkedin.com/in/manuelvanrijn" class="zocial icon linkedin">Manuel van Rijn on LinkedIn</a>
-      <a rel="author" href="http://facebook.com/manuelvanrijn" class="zocial icon facebook">Manuel van Rijn on Facebook</a>
       <a rel="author" href="http://twitter.com/manuelvanrijn" class="zocial icon twitter">Manuel van Rijn on Twitter</a>
     </small>
   </p>
