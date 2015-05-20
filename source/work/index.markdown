@@ -14,7 +14,7 @@ footer: true
 
 ## <a id="ruby"></a>Ruby
 
-1. **[local-subdomain](https://github.com/manuelvanrijn/local-sudomain)** - Gem that helps you out working with subdomains during development.
+1. **[local-subdomain](https://github.com/manuelvanrijn/local-subdomain)** - Gem that helps you out working with subdomains during development.
 2. **[genericons-rails](https://github.com/manuelvanrijn/genericons-rails)** - A small gem for putting [genericons](http://genericons.com/) into the Rails asset pipeline
 3. **[ideal-mollie](http://manuel.manuelles.nl/ideal-mollie)** - A Ruby implementation for handling Mollie iDeal transactions
 4. **[mollie-bank](http://manuel.manuelles.nl/mollie-bank)** - Implementation of the Mollie iDeal bank for testing on your local machine
