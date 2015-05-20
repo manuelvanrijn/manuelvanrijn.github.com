@@ -14,11 +14,12 @@ footer: true
 
 ## <a id="ruby"></a>Ruby
 
-1. **[genericons-rails](https://github.com/manuelvanrijn/genericons-rails)** - A small gem for putting [genericons](http://genericons.com/) into the Rails asset pipeline
-2. **[ideal-mollie](http://manuel.manuelles.nl/ideal-mollie)** - A Ruby implementation for handling Mollie iDeal transactions
-3. **[mollie-bank](http://manuel.manuelles.nl/mollie-bank)** - Implementation of the Mollie iDeal bank for testing on your local machine
-4. **[selectize-rails](https://github.com/manuelvanrijn/selectize-rails)** - A small gem for putting selectize.js into the Rails asset pipeline
-5. **[bootstrap-switch-rails](https://github.com/manuelvanrijn/bootstrap-switch-rails)** - A small gem for putting bootstrap-switch into the Rails asset pipeline
+1. **[local-sudomain](https://github.com/manuelvanrijn/local-sudomain)** - Gem that helps you out working with subdomains during development.
+2. **[genericons-rails](https://github.com/manuelvanrijn/genericons-rails)** - A small gem for putting [genericons](http://genericons.com/) into the Rails asset pipeline
+3. **[ideal-mollie](http://manuel.manuelles.nl/ideal-mollie)** - A Ruby implementation for handling Mollie iDeal transactions
+4. **[mollie-bank](http://manuel.manuelles.nl/mollie-bank)** - Implementation of the Mollie iDeal bank for testing on your local machine
+5. **[selectize-rails](https://github.com/manuelvanrijn/selectize-rails)** - A small gem for putting selectize.js into the Rails asset pipeline
+6. **[bootstrap-switch-rails](https://github.com/manuelvanrijn/bootstrap-switch-rails)** - A small gem for putting bootstrap-switch into the Rails asset pipeline
 
 ## <a id="jquery"></a>jQuery and Javascript
 
