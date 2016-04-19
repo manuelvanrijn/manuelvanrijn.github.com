@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: filters | Manuel van Rijn]]></title>
-  <link href="http://manuel.manuelles.nl/blog/categories/filters/atom.xml" rel="self"/>
-  <link href="http://manuel.manuelles.nl/"/>
-  <updated>2015-05-20T08:15:46+02:00</updated>
-  <id>http://manuel.manuelles.nl/</id>
+  <link href="http://manuelvanrijn.nl/blog/categories/filters/atom.xml" rel="self"/>
+  <link href="http://manuelvanrijn.nl/"/>
+  <updated>2016-04-19T21:07:54+02:00</updated>
+  <id>http://manuelvanrijn.nl/</id>
   <author>
     <name><![CDATA[Manuel van Rijn]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Rails subdomains for localhost/development]]></title>
-    <link href="http://manuel.manuelles.nl/blog/2015/05/19/rails-subdomains-for-localhost-development/"/>
+    <link href="http://manuelvanrijn.nl/blog/2015/05/19/rails-subdomains-for-localhost-development/"/>
     <updated>2015-05-19T23:00:00+02:00</updated>
-    <id>http://manuel.manuelles.nl/blog/2015/05/19/rails-subdomains-for-localhost-development</id>
+    <id>http://manuelvanrijn.nl/blog/2015/05/19/rails-subdomains-for-localhost-development</id>
     <content type="html"><![CDATA[<p><a href="/blog/2015/05/19/rails-subdomains-for-localhost-development/"><img class="right" src="/images/posts/local-subdomains.jpg" width="300" height="150" title="Rails subdomains for localhost development" ></a> Today I've just released version 1.0.0 of my latest gem <a href="https://github.com/manuelvanrijn/local-subdomain">local-subdomain</a> offering subdomain support for your development environment, out of the box.</p>
 
 <p>In this post I'd like to describe my findings and motivations.</p>

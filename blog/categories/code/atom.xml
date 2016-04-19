@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: code | Manuel van Rijn]]></title>
-  <link href="http://manuel.manuelles.nl/blog/categories/code/atom.xml" rel="self"/>
-  <link href="http://manuel.manuelles.nl/"/>
-  <updated>2015-05-20T08:15:46+02:00</updated>
-  <id>http://manuel.manuelles.nl/</id>
+  <link href="http://manuelvanrijn.nl/blog/categories/code/atom.xml" rel="self"/>
+  <link href="http://manuelvanrijn.nl/"/>
+  <updated>2016-04-19T21:07:54+02:00</updated>
+  <id>http://manuelvanrijn.nl/</id>
   <author>
     <name><![CDATA[Manuel van Rijn]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Yeoman meets Travis CI]]></title>
-    <link href="http://manuel.manuelles.nl/blog/2012/09/17/yeoman-meets-travis-ci/"/>
+    <link href="http://manuelvanrijn.nl/blog/2012/09/17/yeoman-meets-travis-ci/"/>
     <updated>2012-09-17T14:45:00+02:00</updated>
-    <id>http://manuel.manuelles.nl/blog/2012/09/17/yeoman-meets-travis-ci</id>
+    <id>http://manuelvanrijn.nl/blog/2012/09/17/yeoman-meets-travis-ci</id>
     <content type="html"><![CDATA[<p><a href="/blog/2012/06/22/integrate-travis-ci-into-grunt/"><img class="right" src="/images/posts/yeoman-logo.png" width="200" height="200" title="Yeoman" ></a> Today I'd like to show how you can integrate Travis CI within your Yeoman project.</p>
 
 <p><a href="http://travis-ci.org/">Travis CI</a> is a hosted continuous integration service for open source projects and <a href="http://yeoman.io">Yeoman</a> is a robust and opinionated set of tools, libraries, and a workflow that can help developers quickly build beautiful, compelling web apps.</p>
@@ -88,10 +88,10 @@ node_js:
   
   <entry>
     <title type="html"><![CDATA[Integrate Travis CI into Grunt]]></title>
-    <link href="http://manuel.manuelles.nl/blog/2012/06/22/integrate-travis-ci-into-grunt/"/>
+    <link href="http://manuelvanrijn.nl/blog/2012/06/22/integrate-travis-ci-into-grunt/"/>
     <updated>2012-06-22T15:04:00+02:00</updated>
-    <id>http://manuel.manuelles.nl/blog/2012/06/22/integrate-travis-ci-into-grunt</id>
-    <content type="html"><![CDATA[<p><a href="/blog/2012/06/22/integrate-travis-ci-into-grunt/"><img class="right" src="/images/posts/travis-grunt.jpg" width="200" height="200" title="Code Fail" ></a> Today I've done some research how to get my latest jQuery plugin (<a href="http://manuel.manuelles.nl/jquery-numeric_input/">jquery-numeric_input</a>) to be tested automatically with the help of <a href="http://travis-ci.org/">Travis CI</a>. Travis CI is a hosted continuous integration service for open source projects.</p>
+    <id>http://manuelvanrijn.nl/blog/2012/06/22/integrate-travis-ci-into-grunt</id>
+    <content type="html"><![CDATA[<p><a href="/blog/2012/06/22/integrate-travis-ci-into-grunt/"><img class="right" src="/images/posts/travis-grunt.jpg" width="200" height="200" title="Code Fail" ></a> Today I've done some research how to get my latest jQuery plugin (<a href="http://manuelvanrijn.nl/jquery-numeric_input/">jquery-numeric_input</a>) to be tested automatically with the help of <a href="http://travis-ci.org/">Travis CI</a>. Travis CI is a hosted continuous integration service for open source projects.</p>
 
 <p>Because I've just finished the latest functionality of the plugin I wanted to add the project to Travis CI, just like I do with all my other projects (the ones with unit tests).</p>
 
@@ -185,9 +185,9 @@ node_js:
   
   <entry>
     <title type="html"><![CDATA[Taking MemSQL for a spin]]></title>
-    <link href="http://manuel.manuelles.nl/blog/2012/06/20/taking-memsql-for-a-spin/"/>
+    <link href="http://manuelvanrijn.nl/blog/2012/06/20/taking-memsql-for-a-spin/"/>
     <updated>2012-06-20T10:18:00+02:00</updated>
-    <id>http://manuel.manuelles.nl/blog/2012/06/20/taking-memsql-for-a-spin</id>
+    <id>http://manuelvanrijn.nl/blog/2012/06/20/taking-memsql-for-a-spin</id>
     <content type="html"><![CDATA[<p><a href="/blog/2012/06/20/taking-memsql-for-a-spin/"><img class="left" src="/images/posts/memsql.png" width="200" height="200" title="MemSQL" ></a> This week I read an article on <a href="http://news.ycombinator.com/item?id=4126007">HackerNews</a> about Ex-facebook employs releasing a new database server called MemSQL.</p>
 
 <p>After viewing there <a href="http://developers.memsql.com/">product overview video</a> I got excited and wanted to take this product for a spin.</p>
@@ -344,9 +344,9 @@ The first time it took just a bit longer, but with an average of 7.044ms for 685
   
   <entry>
     <title type="html"><![CDATA[Installing Android SKD for Eclipse]]></title>
-    <link href="http://manuel.manuelles.nl/blog/2012/04/04/installing-android-skd-for-eclipse/"/>
+    <link href="http://manuelvanrijn.nl/blog/2012/04/04/installing-android-skd-for-eclipse/"/>
     <updated>2012-04-04T09:53:00+02:00</updated>
-    <id>http://manuel.manuelles.nl/blog/2012/04/04/installing-android-skd-for-eclipse</id>
+    <id>http://manuelvanrijn.nl/blog/2012/04/04/installing-android-skd-for-eclipse</id>
     <content type="html"><![CDATA[<p><img class="right" src="/images/posts/android.jpg" width="140" height="140" title="Android!" > Today I was trying to install the Android SDK for Eclipse for a new project I'll work on. After downloading the necessary packages I got some strange error I couldn't resolve quickly, so I like to share the solution with you guys.</p>
 
 <p>The error Eclipse returned was</p>
@@ -377,9 +377,9 @@ requires 'org.eclipse.wst.sse.core 0.0.0' but it could not be found
   
   <entry>
     <title type="html"><![CDATA[Failed to build gem native extension]]></title>
-    <link href="http://manuel.manuelles.nl/blog/2012/03/20/failed-to-build-gem-native-extension/"/>
+    <link href="http://manuelvanrijn.nl/blog/2012/03/20/failed-to-build-gem-native-extension/"/>
     <updated>2012-03-20T13:14:00+01:00</updated>
-    <id>http://manuel.manuelles.nl/blog/2012/03/20/failed-to-build-gem-native-extension</id>
+    <id>http://manuelvanrijn.nl/blog/2012/03/20/failed-to-build-gem-native-extension</id>
     <content type="html"><![CDATA[<p><img class="left" src="/images/posts/failed-gem.jpg" width="140" height="140" title="Go fix!" >
 Today I had to reinstall my Linux installation because my harddisk died a quick dead. While configuring all the software I use to develop I got some weird error after I'd installed <a href="https://github.com/sstephenson/rbenv">rbenv</a> and tried to execute <code>bundle install</code> on one of our projects.<br /><br /></p>
 

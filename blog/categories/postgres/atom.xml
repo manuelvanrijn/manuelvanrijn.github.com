@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: postgres | Manuel van Rijn]]></title>
-  <link href="http://manuel.manuelles.nl/blog/categories/postgres/atom.xml" rel="self"/>
-  <link href="http://manuel.manuelles.nl/"/>
-  <updated>2015-05-20T08:15:46+02:00</updated>
-  <id>http://manuel.manuelles.nl/</id>
+  <link href="http://manuelvanrijn.nl/blog/categories/postgres/atom.xml" rel="self"/>
+  <link href="http://manuelvanrijn.nl/"/>
+  <updated>2016-04-19T21:07:54+02:00</updated>
+  <id>http://manuelvanrijn.nl/</id>
   <author>
     <name><![CDATA[Manuel van Rijn]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[SELECT total_rows FROM database]]></title>
-    <link href="http://manuel.manuelles.nl/blog/2012/07/26/select-total-rows-from-database/"/>
+    <link href="http://manuelvanrijn.nl/blog/2012/07/26/select-total-rows-from-database/"/>
     <updated>2012-07-26T14:34:00+02:00</updated>
-    <id>http://manuel.manuelles.nl/blog/2012/07/26/select-total-rows-from-database</id>
+    <id>http://manuelvanrijn.nl/blog/2012/07/26/select-total-rows-from-database</id>
     <content type="html"><![CDATA[<p><a href="/blog/2012/07/26/select-total-rows-from-database/"><img class="left" src="/images/posts/heroku-postgres.png" width="200" height="200" title="Heroku Postgres" ></a> On the first of August this year, <a href="http://www.heroku.com">Heroku</a> will add 2 new plans to their database add-on known as <strong>Dev</strong> and <strong>Basic</strong>. Both plans have a row limit restriction and that made me thinking how I could fetch that number with one simple query.</p>
 
 <!-- more -->

@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: sqlite | Manuel van Rijn]]></title>
-  <link href="http://manuel.manuelles.nl/blog/categories/sqlite/atom.xml" rel="self"/>
-  <link href="http://manuel.manuelles.nl/"/>
-  <updated>2015-05-20T08:15:46+02:00</updated>
-  <id>http://manuel.manuelles.nl/</id>
+  <link href="http://manuelvanrijn.nl/blog/categories/sqlite/atom.xml" rel="self"/>
+  <link href="http://manuelvanrijn.nl/"/>
+  <updated>2016-04-19T21:07:54+02:00</updated>
+  <id>http://manuelvanrijn.nl/</id>
   <author>
     <name><![CDATA[Manuel van Rijn]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Developing Ruby on Rails on Windows]]></title>
-    <link href="http://manuel.manuelles.nl/blog/2013/07/23/developing-ruby-on-rails-on-windows/"/>
+    <link href="http://manuelvanrijn.nl/blog/2013/07/23/developing-ruby-on-rails-on-windows/"/>
     <updated>2013-07-23T23:06:00+02:00</updated>
-    <id>http://manuel.manuelles.nl/blog/2013/07/23/developing-ruby-on-rails-on-windows</id>
+    <id>http://manuelvanrijn.nl/blog/2013/07/23/developing-ruby-on-rails-on-windows</id>
     <content type="html"><![CDATA[<p><a href="/blog/2013/03/04/rails-belongs-to-to-has-many/"><img class="right" src="/images/posts/developing-ruby-on-rails-on-windows.png" width="250" height="250" title="Develop Ruby on Rails on Windows" ></a> I do a lot of C# web development which means I have to work with Visual Studio on Windows. I usually grab the Mac to do my Ruby on Rails development, but it would be easier not to switch every time I have to do C# and Ruby development.</p>
 
 <p>A while ago I tried several things getting a fast Rails experience on Windows, but it failed. It was just too slow ... until now! In this post I'd like to share my current setup which I plan to use as long as it pleases me.</p>
@@ -372,10 +372,10 @@ bundle exec rails s
   
   <entry>
     <title type="html"><![CDATA[“Rake, pull me that DB!”]]></title>
-    <link href="http://manuel.manuelles.nl/blog/2012/01/19/rake-pull-me-that-db/"/>
+    <link href="http://manuelvanrijn.nl/blog/2012/01/19/rake-pull-me-that-db/"/>
     <updated>2012-01-19T15:15:00+01:00</updated>
-    <id>http://manuel.manuelles.nl/blog/2012/01/19/rake-pull-me-that-db</id>
-    <content type="html"><![CDATA[<p>After writing my last article how to <a href="http://manuel.manuelles.nl/blog/2012/01/18/convert-postgresql-to-sqlite/" title="How to: Convert a PostgreSQL database to a SQLite database">Convert PostgreSQL to SQLite</a>, I was asked why this couldn't be automated?</p>
+    <id>http://manuelvanrijn.nl/blog/2012/01/19/rake-pull-me-that-db</id>
+    <content type="html"><![CDATA[<p>After writing my last article how to <a href="http://manuelvanrijn.nl/blog/2012/01/18/convert-postgresql-to-sqlite/" title="How to: Convert a PostgreSQL database to a SQLite database">Convert PostgreSQL to SQLite</a>, I was asked why this couldn't be automated?</p>
 
 <p>So I started coding and managed to create a <a href="http://rake.rubyforge.org/" title="Rake -- Ruby Make">Rake</a> task that will do all of the steps I described in the article in just a few seconds!</p>
 
@@ -471,9 +471,9 @@ ssh root@productionserver.com
   
   <entry>
     <title type="html"><![CDATA[Convert PostgreSQL to SQLite]]></title>
-    <link href="http://manuel.manuelles.nl/blog/2012/01/18/convert-postgresql-to-sqlite/"/>
+    <link href="http://manuelvanrijn.nl/blog/2012/01/18/convert-postgresql-to-sqlite/"/>
     <updated>2012-01-18T00:30:00+01:00</updated>
-    <id>http://manuel.manuelles.nl/blog/2012/01/18/convert-postgresql-to-sqlite</id>
+    <id>http://manuelvanrijn.nl/blog/2012/01/18/convert-postgresql-to-sqlite</id>
     <content type="html"><![CDATA[<p><img class="right" src="/images/posts/postgres-to-sqlite.png" width="220" height="220" title="Postgres to SQLite" ></p>
 
 <p>Today I'd like to share the steps I take when I need to convert a <a href="http://www.postgresql.org/" title="PostgreSQL">PostgreSQL</a> database into a <a href="http://www.sqlite.org/" title="SQLite">SQLite</a> database.</p>

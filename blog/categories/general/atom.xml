@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: General | Manuel van Rijn]]></title>
-  <link href="http://manuel.manuelles.nl/blog/categories/general/atom.xml" rel="self"/>
-  <link href="http://manuel.manuelles.nl/"/>
-  <updated>2015-05-20T08:15:46+02:00</updated>
-  <id>http://manuel.manuelles.nl/</id>
+  <link href="http://manuelvanrijn.nl/blog/categories/general/atom.xml" rel="self"/>
+  <link href="http://manuelvanrijn.nl/"/>
+  <updated>2016-04-19T21:07:54+02:00</updated>
+  <id>http://manuelvanrijn.nl/</id>
   <author>
     <name><![CDATA[Manuel van Rijn]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Intro: Start blogging like a hacker(?)]]></title>
-    <link href="http://manuel.manuelles.nl/blog/2011/12/08/intro-start-blogging-like-a-hacker/"/>
+    <link href="http://manuelvanrijn.nl/blog/2011/12/08/intro-start-blogging-like-a-hacker/"/>
     <updated>2011-12-08T15:28:00+01:00</updated>
-    <id>http://manuel.manuelles.nl/blog/2011/12/08/intro-start-blogging-like-a-hacker</id>
+    <id>http://manuelvanrijn.nl/blog/2011/12/08/intro-start-blogging-like-a-hacker</id>
     <content type="html"><![CDATA[<p>I've just decided to switch from <a href="http://www.wordpress.com/" title="Wordpress">Wordpress</a> to <a href="http://octopress.org/" title="Octopress">Octopress</a> because I wanted something new and not something over-featured</p>
 
 <p>All the plugins and choice's I had to made, and the maintenance of all these, just kept me from doing what I supposed to do with it, blogging.</p>

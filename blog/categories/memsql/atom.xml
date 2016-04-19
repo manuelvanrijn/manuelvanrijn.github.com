@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: memsql | Manuel van Rijn]]></title>
-  <link href="http://manuel.manuelles.nl/blog/categories/memsql/atom.xml" rel="self"/>
-  <link href="http://manuel.manuelles.nl/"/>
-  <updated>2015-05-20T08:15:46+02:00</updated>
-  <id>http://manuel.manuelles.nl/</id>
+  <link href="http://manuelvanrijn.nl/blog/categories/memsql/atom.xml" rel="self"/>
+  <link href="http://manuelvanrijn.nl/"/>
+  <updated>2016-04-19T21:07:54+02:00</updated>
+  <id>http://manuelvanrijn.nl/</id>
   <author>
     <name><![CDATA[Manuel van Rijn]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Taking MemSQL for a spin]]></title>
-    <link href="http://manuel.manuelles.nl/blog/2012/06/20/taking-memsql-for-a-spin/"/>
+    <link href="http://manuelvanrijn.nl/blog/2012/06/20/taking-memsql-for-a-spin/"/>
     <updated>2012-06-20T10:18:00+02:00</updated>
-    <id>http://manuel.manuelles.nl/blog/2012/06/20/taking-memsql-for-a-spin</id>
+    <id>http://manuelvanrijn.nl/blog/2012/06/20/taking-memsql-for-a-spin</id>
     <content type="html"><![CDATA[<p><a href="/blog/2012/06/20/taking-memsql-for-a-spin/"><img class="left" src="/images/posts/memsql.png" width="200" height="200" title="MemSQL" ></a> This week I read an article on <a href="http://news.ycombinator.com/item?id=4126007">HackerNews</a> about Ex-facebook employs releasing a new database server called MemSQL.</p>
 
 <p>After viewing there <a href="http://developers.memsql.com/">product overview video</a> I got excited and wanted to take this product for a spin.</p>

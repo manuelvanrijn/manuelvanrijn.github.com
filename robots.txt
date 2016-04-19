@@ -1,4 +1,4 @@
 User-agent: *
 Disallow: 
 
-Sitemap: http://manuel.manuelles.nl/sitemap.xml 
+Sitemap: http://manuelvanrijn.nl/sitemap.xml 

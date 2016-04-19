@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: threading | Manuel van Rijn]]></title>
-  <link href="http://manuel.manuelles.nl/blog/categories/threading/atom.xml" rel="self"/>
-  <link href="http://manuel.manuelles.nl/"/>
-  <updated>2015-05-20T08:15:46+02:00</updated>
-  <id>http://manuel.manuelles.nl/</id>
+  <link href="http://manuelvanrijn.nl/blog/categories/threading/atom.xml" rel="self"/>
+  <link href="http://manuelvanrijn.nl/"/>
+  <updated>2016-04-19T21:07:54+02:00</updated>
+  <id>http://manuelvanrijn.nl/</id>
   <author>
     <name><![CDATA[Manuel van Rijn]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Sidekiq on Heroku with Redis To Go Nano]]></title>
-    <link href="http://manuel.manuelles.nl/blog/2012/11/13/sidekiq-on-heroku-with-redistogo-nano/"/>
+    <link href="http://manuelvanrijn.nl/blog/2012/11/13/sidekiq-on-heroku-with-redistogo-nano/"/>
     <updated>2012-11-13T15:42:00+01:00</updated>
-    <id>http://manuel.manuelles.nl/blog/2012/11/13/sidekiq-on-heroku-with-redistogo-nano</id>
+    <id>http://manuelvanrijn.nl/blog/2012/11/13/sidekiq-on-heroku-with-redistogo-nano</id>
     <content type="html"><![CDATA[<p><a href="/blog/2012/11/13/sidekiq-on-heroku-with-redistogo-nano/"><img class="right" src="/images/posts/redis.png" width="200" height="200" title="Redis" ></a> As a follow-up of <a href="/blog/2012/11/13/scalable-heroku-worker-for-sidekiq/">my previous post</a> I want to explain how to get <a href="http://sidekiq.org/">Sidekiq</a> to work on <a href="http://www.heroku.com">Heroku</a> with a <a href="https://addons.heroku.com/redistogo">Redis To Go</a> Nano instance.</p>
 
 <p>Because the Nano instance has some connection limitation you have to make some config changes so you won't get <code>ERR max number of clients reached</code> error messages.</p>
@@ -33,7 +33,7 @@
 
 <p>If you just want to know what you need to change/setup you can go directly to a small tool I've built to calculate the number of connections/concurrencies need for a number of workers/web workers etc.</p>
 
-<p><a href="http://manuel.manuelles.nl/sidekiq-heroku-redis-calc" class="special_button">SidekiqHerokuRedis calculator</a></p>
+<p><a href="http://manuelvanrijn.nl/sidekiq-heroku-redis-calc" class="special_button">SidekiqHerokuRedis calculator</a></p>
 
 <h2>Why ERR max number of clients reached?</h2>
 
@@ -141,9 +141,9 @@ worker_processes 3
   
   <entry>
     <title type="html"><![CDATA[Scalable Heroku worker for Sidekiq]]></title>
-    <link href="http://manuel.manuelles.nl/blog/2012/11/13/scalable-heroku-worker-for-sidekiq/"/>
+    <link href="http://manuelvanrijn.nl/blog/2012/11/13/scalable-heroku-worker-for-sidekiq/"/>
     <updated>2012-11-13T09:02:00+01:00</updated>
-    <id>http://manuel.manuelles.nl/blog/2012/11/13/scalable-heroku-worker-for-sidekiq</id>
+    <id>http://manuelvanrijn.nl/blog/2012/11/13/scalable-heroku-worker-for-sidekiq</id>
     <content type="html"><![CDATA[<p><a href="/blog/2012/11/13/scalable-heroku-worker-for-sidekiq/"><img class="left" src="/images/posts/more-workers.jpg" width="200" height="200" title="More workers" ></a> In this post I'd like to show you guys how to deploy your Rails application to <a href="http://www.heroku.com/">Heroku</a> with a <a href="http://sidekiq.org/">Sidekiq</a> worker that only gets initiated when there are tasks in the queue to process.</p>
 
 <p>Our goal is to start a worker when a task is added to the queue and to destroy the worker after its done processing the queue tasks. This will result in a much lower bill at the end of the month because the worker doesn't have to be up the whole month.</p>

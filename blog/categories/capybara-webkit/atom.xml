@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: capybara-webkit | Manuel van Rijn]]></title>
-  <link href="http://manuel.manuelles.nl/blog/categories/capybara-webkit/atom.xml" rel="self"/>
-  <link href="http://manuel.manuelles.nl/"/>
-  <updated>2015-05-20T08:15:46+02:00</updated>
-  <id>http://manuel.manuelles.nl/</id>
+  <link href="http://manuelvanrijn.nl/blog/categories/capybara-webkit/atom.xml" rel="self"/>
+  <link href="http://manuelvanrijn.nl/"/>
+  <updated>2016-04-19T21:07:54+02:00</updated>
+  <id>http://manuelvanrijn.nl/</id>
   <author>
     <name><![CDATA[Manuel van Rijn]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Failed to build gem native extension]]></title>
-    <link href="http://manuel.manuelles.nl/blog/2012/03/20/failed-to-build-gem-native-extension/"/>
+    <link href="http://manuelvanrijn.nl/blog/2012/03/20/failed-to-build-gem-native-extension/"/>
     <updated>2012-03-20T13:14:00+01:00</updated>
-    <id>http://manuel.manuelles.nl/blog/2012/03/20/failed-to-build-gem-native-extension</id>
+    <id>http://manuelvanrijn.nl/blog/2012/03/20/failed-to-build-gem-native-extension</id>
     <content type="html"><![CDATA[<p><img class="left" src="/images/posts/failed-gem.jpg" width="140" height="140" title="Go fix!" >
 Today I had to reinstall my Linux installation because my harddisk died a quick dead. While configuring all the software I use to develop I got some weird error after I'd installed <a href="https://github.com/sstephenson/rbenv">rbenv</a> and tried to execute <code>bundle install</code> on one of our projects.<br /><br /></p>
 

@@ -1,101 +1,95 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
     <url>
-        <loc>http://manuel.manuelles.nl/blog/2011/12/08/intro-start-blogging-like-a-hacker/</loc>
+        <loc>http://manuelvanrijn.nl/blog/2011/12/08/intro-start-blogging-like-a-hacker/</loc>
         <lastmod>2014-07-31T23:12:00+02:00</lastmod>
     </url>
     <url>
-        <loc>http://manuel.manuelles.nl/blog/2011/12/22/shrinking-your-git-repository/</loc>
-        <lastmod>2014-07-31T23:12:00+02:00</lastmod>
-    </url>
-    <url>
-        <loc>
-            http://manuel.manuelles.nl/blog/2012/01/12/disable-rails-before-slash-after-callback/
-        </loc>
-        <lastmod>2014-07-31T23:12:00+02:00</lastmod>
-    </url>
-    <url>
-        <loc>http://manuel.manuelles.nl/blog/2012/01/18/convert-postgresql-to-sqlite/</loc>
-        <lastmod>2014-07-31T23:12:00+02:00</lastmod>
-    </url>
-    <url>
-        <loc>http://manuel.manuelles.nl/blog/2012/01/19/rake-pull-me-that-db/</loc>
-        <lastmod>2014-07-31T23:12:00+02:00</lastmod>
-    </url>
-    <url>
-        <loc>http://manuel.manuelles.nl/blog/2012/02/29/mollie-bank/</loc>
+        <loc>http://manuelvanrijn.nl/blog/2011/12/22/shrinking-your-git-repository/</loc>
         <lastmod>2014-07-31T23:12:00+02:00</lastmod>
     </url>
     <url>
         <loc>
-            http://manuel.manuelles.nl/blog/2012/03/20/failed-to-build-gem-native-extension/
+            http://manuelvanrijn.nl/blog/2012/01/12/disable-rails-before-slash-after-callback/
         </loc>
         <lastmod>2014-07-31T23:12:00+02:00</lastmod>
     </url>
     <url>
-        <loc>http://manuel.manuelles.nl/blog/2012/04/04/installing-android-skd-for-eclipse/</loc>
+        <loc>http://manuelvanrijn.nl/blog/2012/01/18/convert-postgresql-to-sqlite/</loc>
         <lastmod>2014-07-31T23:12:00+02:00</lastmod>
     </url>
     <url>
-        <loc>http://manuel.manuelles.nl/blog/2012/06/20/taking-memsql-for-a-spin/</loc>
+        <loc>http://manuelvanrijn.nl/blog/2012/01/19/rake-pull-me-that-db/</loc>
+        <lastmod>2016-04-19T21:00:18+02:00</lastmod>
+    </url>
+    <url>
+        <loc>http://manuelvanrijn.nl/blog/2012/02/29/mollie-bank/</loc>
         <lastmod>2014-07-31T23:12:00+02:00</lastmod>
     </url>
     <url>
-        <loc>http://manuel.manuelles.nl/blog/2012/06/22/integrate-travis-ci-into-grunt/</loc>
+        <loc>http://manuelvanrijn.nl/blog/2012/03/20/failed-to-build-gem-native-extension/</loc>
         <lastmod>2014-07-31T23:12:00+02:00</lastmod>
     </url>
     <url>
-        <loc>http://manuel.manuelles.nl/blog/2012/07/26/select-total-rows-from-database/</loc>
+        <loc>http://manuelvanrijn.nl/blog/2012/04/04/installing-android-skd-for-eclipse/</loc>
         <lastmod>2014-07-31T23:12:00+02:00</lastmod>
     </url>
     <url>
-        <loc>http://manuel.manuelles.nl/blog/2012/09/17/yeoman-meets-travis-ci/</loc>
+        <loc>http://manuelvanrijn.nl/blog/2012/06/20/taking-memsql-for-a-spin/</loc>
         <lastmod>2014-07-31T23:12:00+02:00</lastmod>
     </url>
     <url>
-        <loc>http://manuel.manuelles.nl/blog/2012/11/13/scalable-heroku-worker-for-sidekiq/</loc>
+        <loc>http://manuelvanrijn.nl/blog/2012/06/22/integrate-travis-ci-into-grunt/</loc>
+        <lastmod>2016-04-19T21:00:34+02:00</lastmod>
+    </url>
+    <url>
+        <loc>http://manuelvanrijn.nl/blog/2012/07/26/select-total-rows-from-database/</loc>
         <lastmod>2014-07-31T23:12:00+02:00</lastmod>
     </url>
     <url>
-        <loc>
-            http://manuel.manuelles.nl/blog/2012/11/13/sidekiq-on-heroku-with-redistogo-nano/
-        </loc>
+        <loc>http://manuelvanrijn.nl/blog/2012/09/17/yeoman-meets-travis-ci/</loc>
         <lastmod>2014-07-31T23:12:00+02:00</lastmod>
     </url>
     <url>
-        <loc>http://manuel.manuelles.nl/blog/2013/03/04/rails-belongs-to-to-has-many/</loc>
+        <loc>http://manuelvanrijn.nl/blog/2012/11/13/scalable-heroku-worker-for-sidekiq/</loc>
+        <lastmod>2014-07-31T23:12:00+02:00</lastmod>
+    </url>
+    <url>
+        <loc>http://manuelvanrijn.nl/blog/2012/11/13/sidekiq-on-heroku-with-redistogo-nano/</loc>
+        <lastmod>2016-04-19T21:00:43+02:00</lastmod>
+    </url>
+    <url>
+        <loc>http://manuelvanrijn.nl/blog/2013/03/04/rails-belongs-to-to-has-many/</loc>
         <lastmod>2014-11-21T14:30:53+01:00</lastmod>
     </url>
     <url>
-        <loc>http://manuel.manuelles.nl/blog/2013/07/23/developing-ruby-on-rails-on-windows/</loc>
+        <loc>http://manuelvanrijn.nl/blog/2013/07/23/developing-ruby-on-rails-on-windows/</loc>
         <lastmod>2014-07-31T23:16:07+02:00</lastmod>
     </url>
     <url>
-        <loc>
-            http://manuel.manuelles.nl/blog/2014/06/03/osx-10-dot-10-yosemite-crashing-chrome/
-        </loc>
+        <loc>http://manuelvanrijn.nl/blog/2014/06/03/osx-10-dot-10-yosemite-crashing-chrome/</loc>
         <lastmod>2015-05-19T23:00:04+02:00</lastmod>
     </url>
     <url>
         <loc>
-            http://manuel.manuelles.nl/blog/2015/05/19/rails-subdomains-for-localhost-development/
+            http://manuelvanrijn.nl/blog/2015/05/19/rails-subdomains-for-localhost-development/
         </loc>
         <lastmod>2015-05-20T00:25:45+02:00</lastmod>
     </url>
     <url>
-        <loc>http://manuel.manuelles.nl/blog/archives/</loc>
-        <lastmod>2015-05-20T00:25:45+02:00</lastmod>
+        <loc>http://manuelvanrijn.nl/blog/archives/</loc>
+        <lastmod>2016-04-19T21:00:43+02:00</lastmod>
     </url>
     <url>
-        <loc>http://manuel.manuelles.nl/</loc>
-        <lastmod>2015-05-20T00:25:45+02:00</lastmod>
+        <loc>http://manuelvanrijn.nl/</loc>
+        <lastmod>2016-04-19T21:00:43+02:00</lastmod>
     </url>
     <url>
-        <loc>http://manuel.manuelles.nl/robots.txt</loc>
+        <loc>http://manuelvanrijn.nl/robots.txt</loc>
         <lastmod>2014-07-31T23:12:00+02:00</lastmod>
     </url>
     <url>
-        <loc>http://manuel.manuelles.nl/work/</loc>
-        <lastmod>2015-05-20T08:15:32+02:00</lastmod>
+        <loc>http://manuelvanrijn.nl/work/</loc>
+        <lastmod>2016-04-19T21:00:54+02:00</lastmod>
     </url>
 </urlset>

@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: yeoman | Manuel van Rijn]]></title>
-  <link href="http://manuel.manuelles.nl/blog/categories/yeoman/atom.xml" rel="self"/>
-  <link href="http://manuel.manuelles.nl/"/>
-  <updated>2015-05-20T08:15:46+02:00</updated>
-  <id>http://manuel.manuelles.nl/</id>
+  <link href="http://manuelvanrijn.nl/blog/categories/yeoman/atom.xml" rel="self"/>
+  <link href="http://manuelvanrijn.nl/"/>
+  <updated>2016-04-19T21:07:54+02:00</updated>
+  <id>http://manuelvanrijn.nl/</id>
   <author>
     <name><![CDATA[Manuel van Rijn]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Yeoman meets Travis CI]]></title>
-    <link href="http://manuel.manuelles.nl/blog/2012/09/17/yeoman-meets-travis-ci/"/>
+    <link href="http://manuelvanrijn.nl/blog/2012/09/17/yeoman-meets-travis-ci/"/>
     <updated>2012-09-17T14:45:00+02:00</updated>
-    <id>http://manuel.manuelles.nl/blog/2012/09/17/yeoman-meets-travis-ci</id>
+    <id>http://manuelvanrijn.nl/blog/2012/09/17/yeoman-meets-travis-ci</id>
     <content type="html"><![CDATA[<p><a href="/blog/2012/06/22/integrate-travis-ci-into-grunt/"><img class="right" src="/images/posts/yeoman-logo.png" width="200" height="200" title="Yeoman" ></a> Today I'd like to show how you can integrate Travis CI within your Yeoman project.</p>
 
 <p><a href="http://travis-ci.org/">Travis CI</a> is a hosted continuous integration service for open source projects and <a href="http://yeoman.io">Yeoman</a> is a robust and opinionated set of tools, libraries, and a workflow that can help developers quickly build beautiful, compelling web apps.</p>

@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: mollie-bank | Manuel van Rijn]]></title>
-  <link href="http://manuel.manuelles.nl/blog/categories/mollie-bank/atom.xml" rel="self"/>
-  <link href="http://manuel.manuelles.nl/"/>
-  <updated>2015-05-20T08:15:46+02:00</updated>
-  <id>http://manuel.manuelles.nl/</id>
+  <link href="http://manuelvanrijn.nl/blog/categories/mollie-bank/atom.xml" rel="self"/>
+  <link href="http://manuelvanrijn.nl/"/>
+  <updated>2016-04-19T21:07:54+02:00</updated>
+  <id>http://manuelvanrijn.nl/</id>
   <author>
     <name><![CDATA[Manuel van Rijn]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Mollie Bank]]></title>
-    <link href="http://manuel.manuelles.nl/blog/2012/02/29/mollie-bank/"/>
+    <link href="http://manuelvanrijn.nl/blog/2012/02/29/mollie-bank/"/>
     <updated>2012-02-29T21:29:00+01:00</updated>
-    <id>http://manuel.manuelles.nl/blog/2012/02/29/mollie-bank</id>
+    <id>http://manuelvanrijn.nl/blog/2012/02/29/mollie-bank</id>
     <content type="html"><![CDATA[<p>The past week I've been working with the iDeal API from Mollie. <a href="http://www.mollie.nl/">Mollie</a> is a company that give's us developers an easy way to make iDeal payments through there API, for a small fee.</p>
 
 <p>After a long search I wasn't able to find a stable, well tested gem, I could use in our Rails project, so I developed the <a href="https://rubygems.org/gems/ideal-mollie">ideal-mollie gem</a>. After I finishing this gem, there was only one problem.</p>

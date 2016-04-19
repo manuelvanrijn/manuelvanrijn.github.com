@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: chrome | Manuel van Rijn]]></title>
-  <link href="http://manuel.manuelles.nl/blog/categories/chrome/atom.xml" rel="self"/>
-  <link href="http://manuel.manuelles.nl/"/>
-  <updated>2015-05-20T08:15:46+02:00</updated>
-  <id>http://manuel.manuelles.nl/</id>
+  <link href="http://manuelvanrijn.nl/blog/categories/chrome/atom.xml" rel="self"/>
+  <link href="http://manuelvanrijn.nl/"/>
+  <updated>2016-04-19T21:07:54+02:00</updated>
+  <id>http://manuelvanrijn.nl/</id>
   <author>
     <name><![CDATA[Manuel van Rijn]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[OSX 10.10 Yosemite - Crashing Chrome]]></title>
-    <link href="http://manuel.manuelles.nl/blog/2014/06/03/osx-10-dot-10-yosemite-crashing-chrome/"/>
+    <link href="http://manuelvanrijn.nl/blog/2014/06/03/osx-10-dot-10-yosemite-crashing-chrome/"/>
     <updated>2014-06-03T22:34:00+02:00</updated>
-    <id>http://manuel.manuelles.nl/blog/2014/06/03/osx-10-dot-10-yosemite-crashing-chrome</id>
+    <id>http://manuelvanrijn.nl/blog/2014/06/03/osx-10-dot-10-yosemite-crashing-chrome</id>
     <content type="html"><![CDATA[<p><a href="/blog/2014/06/03/osx-10-dot-10-yosemite-crashing-chrome/"><img class="left" src="/images/posts/osx-10.10-chrome.jpg" width="150" height="150" title="Chrome" ></a> After watching the WWDC I couldn't wait installing the latest OSX Yosemite because I love cutting edge tech and of course cutting edge software.</p>
 
 <p>However I've ended up with a failing Google Chrome browser which I use like always!</p>

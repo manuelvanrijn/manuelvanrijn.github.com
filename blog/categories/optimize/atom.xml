@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: optimize | Manuel van Rijn]]></title>
-  <link href="http://manuel.manuelles.nl/blog/categories/optimize/atom.xml" rel="self"/>
-  <link href="http://manuel.manuelles.nl/"/>
-  <updated>2015-05-20T08:15:46+02:00</updated>
-  <id>http://manuel.manuelles.nl/</id>
+  <link href="http://manuelvanrijn.nl/blog/categories/optimize/atom.xml" rel="self"/>
+  <link href="http://manuelvanrijn.nl/"/>
+  <updated>2016-04-19T21:07:54+02:00</updated>
+  <id>http://manuelvanrijn.nl/</id>
   <author>
     <name><![CDATA[Manuel van Rijn]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Disable Rails callback]]></title>
-    <link href="http://manuel.manuelles.nl/blog/2012/01/12/disable-rails-before-slash-after-callback/"/>
+    <link href="http://manuelvanrijn.nl/blog/2012/01/12/disable-rails-before-slash-after-callback/"/>
     <updated>2012-01-12T21:30:00+01:00</updated>
-    <id>http://manuel.manuelles.nl/blog/2012/01/12/disable-rails-before-slash-after-callback</id>
+    <id>http://manuelvanrijn.nl/blog/2012/01/12/disable-rails-before-slash-after-callback</id>
     <content type="html"><![CDATA[<p><img class="left" src="/images/posts/skip-step.png" width="240" height="240" title="Skip Step" ></p>
 
 <p>Today I've had some difficulties with a Rails migration, that took ages to complete. After some debugging I figured out that the issues was because of the <code>before_save</code> and <code>after_save</code> callbacks.</p>
