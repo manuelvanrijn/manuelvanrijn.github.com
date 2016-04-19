@@ -7,7 +7,7 @@ categories: [rails, code, sqlite, postgresql, rake, ruby]
 published: true
 ---
 
-After writing my last article how to [Convert PostgreSQL to SQLite](http://manuel.manuelles.nl/blog/2012/01/18/convert-postgresql-to-sqlite/ "How to: Convert a PostgreSQL database to a SQLite database"), I was asked why this couldn't be automated?
+After writing my last article how to [Convert PostgreSQL to SQLite](http://manuelvanrijn.nl/blog/2012/01/18/convert-postgresql-to-sqlite/ "How to: Convert a PostgreSQL database to a SQLite database"), I was asked why this couldn't be automated?
 
 So I started coding and managed to create a [Rake](http://rake.rubyforge.org/ "Rake -- Ruby Make") task that will do all of the steps I described in the article in just a few seconds!
 

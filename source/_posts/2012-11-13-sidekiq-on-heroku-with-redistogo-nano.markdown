@@ -21,7 +21,7 @@ Today I've been struggling a lot with getting the Sidekiq to work probably with 
 
 If you just want to know what you need to change/setup you can go directly to a small tool I've built to calculate the number of connections/concurrencies need for a number of workers/web workers etc.
 
-<a href="http://manuel.manuelles.nl/sidekiq-heroku-redis-calc" class="special_button">SidekiqHerokuRedis calculator</a>
+<a href="http://manuelvanrijn.nl/sidekiq-heroku-redis-calc" class="special_button">SidekiqHerokuRedis calculator</a>
 
 ## Why ERR max number of clients reached?
 

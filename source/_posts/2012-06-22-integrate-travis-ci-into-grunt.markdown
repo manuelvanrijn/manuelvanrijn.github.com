@@ -7,7 +7,7 @@ categories: [code, grunt, travis-ci, qunit, javascript, jquery, testing, continu
 published: true
 ---
 
-[{% img right /images/posts/travis-grunt.jpg 200 200 Code Fail %}](/blog/2012/06/22/integrate-travis-ci-into-grunt/) Today I've done some research how to get my latest jQuery plugin ([jquery-numeric_input](http://manuel.manuelles.nl/jquery-numeric_input/)) to be tested automatically with the help of [Travis CI](http://travis-ci.org/). Travis CI is a hosted continuous integration service for open source projects.
+[{% img right /images/posts/travis-grunt.jpg 200 200 Code Fail %}](/blog/2012/06/22/integrate-travis-ci-into-grunt/) Today I've done some research how to get my latest jQuery plugin ([jquery-numeric_input](http://manuelvanrijn.nl/jquery-numeric_input/)) to be tested automatically with the help of [Travis CI](http://travis-ci.org/). Travis CI is a hosted continuous integration service for open source projects.
 
 Because I've just finished the latest functionality of the plugin I wanted to add the project to Travis CI, just like I do with all my other projects (the ones with unit tests).
 
