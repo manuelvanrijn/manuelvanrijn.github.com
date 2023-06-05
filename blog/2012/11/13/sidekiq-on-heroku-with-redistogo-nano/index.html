@@ -1,24 +1,26 @@
-
 <!DOCTYPE html>
 <!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
 <!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
-<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!-->
+<html class="no-js" lang="en"><!--<![endif]-->
+
 <head>
   <meta charset="utf-8">
   <title>Sidekiq on Heroku with Redis To Go Nano - Manuel van Rijn</title>
   <meta name="author" content="Manuel van Rijn">
 
-  
-  <meta name="description" content="As a follow-up of my previous post I want to explain how to get Sidekiq to work on Heroku with a Redis To Go Nano instance. Because the Nano &hellip;">
-  
 
-  <!-- http://t.co/dKP3o1e -->
+  <meta name="description"
+    content="As a follow-up of my previous post I want to explain how to get Sidekiq to work on Heroku with a Redis To Go Nano instance. Because the Nano &hellip;">
+
+
+  <!-- https://t.co/dKP3o1e -->
   <meta name="HandheldFriendly" content="True">
   <meta name="MobileOptimized" content="320">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  
-  <link rel="canonical" href="http://manuelvanrijn.nl/blog/2012/11/13/sidekiq-on-heroku-with-redistogo-nano/">
+
+  <link rel="canonical" href="https://manuelvanrijn.nl/blog/2012/11/13/sidekiq-on-heroku-with-redistogo-nano/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/stylesheets/zocial/zocial.css" media="screen, projection" rel="stylesheet" type="text/css">
@@ -27,65 +29,70 @@
   <script src="/javascripts/ender.js"></script>
   <script src="/javascripts/octopress.js" type="text/javascript"></script>
   <link href="/atom.xml" rel="alternate" title="Manuel van Rijn" type="application/atom+xml">
-  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
-<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
-<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+  <!--Fonts from Google"s Web font directory at https://google.com/webfonts -->
+  <link href="https://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet"
+    type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet"
+    type="text/css">
 
-  
-  <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-PYTQBZ3YZT"></script>
   <script>
-    (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
-    function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
-    e=o.createElement(i);r=o.getElementsByTagName(i)[0];
-    e.src='https://www.google-analytics.com/analytics.js';
-    r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
-    ga('create','UA-17149124-1','auto');ga('send','pageview');
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+
+    gtag('config', 'G-PYTQBZ3YZT');
   </script>
+  <script async src="https://analytics.uppersource.nl/script.js"
+    data-website-id="49f17683-91d9-4ec5-82db-80a3857595e7"></script>
 
 
 
 </head>
 
-<body   >
-  <header role="banner"><hgroup>
-  <h1><a href="/">Manuel van Rijn</a></h1>
-  
-    <h2>Bit blog</h2>
-  
-</hgroup>
+<body>
+  <header role="banner">
+    <hgroup>
+      <h1><a href="/">Manuel van Rijn</a></h1>
 
-</header>
-  <nav role="navigation"><ul class="subscription" data-subscription="rss">
-  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
-  
-</ul>
-  
-<form action="http://google.com/search" method="get">
-  <fieldset role="search">
-    <input type="hidden" name="q" value="site:manuelvanrijn.nl" />
-    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
-  </fieldset>
-</form>
-  
-<ul class="main-navigation">
-  <li><a href="/">Blog</a></li>
-  <li><a href="/blog/archives">Archives</a></li>
-  <li><a href="/work">Work</a></li>
-</ul>
+      <h2>Bit blog</h2>
 
-</nav>
+    </hgroup>
+
+  </header>
+  <nav role="navigation">
+    <ul class="subscription" data-subscription="rss">
+      <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+
+    </ul>
+
+    <form action="https://google.com/search" method="get">
+      <fieldset role="search">
+        <input type="hidden" name="q" value="site:manuelvanrijn.nl" />
+        <input class="search" type="text" name="q" results="0" placeholder="Search" />
+      </fieldset>
+    </form>
+
+    <ul class="main-navigation">
+      <li><a href="/">Blog</a></li>
+      <li><a href="/blog/archives">Archives</a></li>
+      <li><a href="/work">Work</a></li>
+    </ul>
+
+  </nav>
   <div id="main">
     <div id="content">
       <div>
-<article class="hentry" role="article">
-  
-  <header>
-    
-      <h1 class="entry-title">Sidekiq on Heroku with Redis To Go Nano</h1>
-    
-    
-      <p class="meta">
-        
+        <article class="hentry" role="article">
+
+          <header>
+
+            <h1 class="entry-title">Sidekiq on Heroku with Redis To Go Nano</h1>
+
+
+            <p class="meta">
 
 
 
@@ -94,120 +101,175 @@
 
 
 
-  
 
 
-<time datetime="2012-11-13T15:42:00+01:00" pubdate data-updated="true">Nov 13<span>th</span>, 2012</time>
-        
-      </p>
-    
-  </header>
 
 
-<div class="entry-content"><p><a href="/blog/2012/11/13/sidekiq-on-heroku-with-redistogo-nano/"><img class="right" src="/images/posts/redis.png" width="200" height="200" title="Redis" ></a> As a follow-up of <a href="/blog/2012/11/13/scalable-heroku-worker-for-sidekiq/">my previous post</a> I want to explain how to get <a href="http://sidekiq.org/">Sidekiq</a> to work on <a href="http://www.heroku.com">Heroku</a> with a <a href="https://addons.heroku.com/redistogo">Redis To Go</a> Nano instance.</p>
+              <time datetime="2012-11-13T15:42:00+01:00" pubdate data-updated="true">Nov 13<span>th</span>, 2012</time>
 
-<p>Because the Nano instance has some connection limitation you have to make some config changes so you won&#8217;t get <code>ERR max number of clients reached</code> error messages.</p>
+            </p>
 
-<!-- more -->
-
-
-<h2>Why this post</h2>
-
-<p>Today I&#8217;ve been struggling a lot with getting the Sidekiq to work probably with Redis to Go Nano on Heroku. The main problem was I was having difficulties with the amount of connection&#8217;s being created to the Redis server. Because the Nano variant is free but large enough for handling normal sized queues of work, we have to face the limitation of 10 connections.</p>
-
-<h2>A calculation Tool!</h2>
-
-<p>If you just want to know what you need to change/setup you can go directly to a small tool I&#8217;ve built to calculate the number of connections/concurrencies need for a number of workers/web workers etc.</p>
-
-<p><a href="http://manuelvanrijn.nl/sidekiq-heroku-redis-calc" class="special_button">SidekiqHerokuRedis calculator</a></p>
-
-<h2>Why ERR max number of clients reached?</h2>
-
-<p>The error <code>Error fetching message: ERR max number of clients reached</code>, is quite clear isn&#8217;t it? The actual question is how we can reduce the connections being opened to match the 10 connection limit given by the Nano instance.</p>
-
-<p>After some research I found the factors that you have to tweak in order to reach the magic number of 10.</p>
-
-<ol>
-<li>Sidekiq Client connection size</li>
-<li>Sidekiq Server connection size</li>
-<li>Sidekiq Server reserved connections (reserved for the Fetcher and Retrier)</li>
-<li>Sidekiq concurrency size</li>
-<li>Unicorn worker_process size</li>
-<li>Heroku Web Dyno count</li>
-<li>Heroku Worker count</li>
-</ol>
+          </header>
 
 
-<p>The answer for all our problems could be described in the following sum:</p>
+          <div class="entry-content">
+            <p><a href="/blog/2012/11/13/sidekiq-on-heroku-with-redistogo-nano/"><img class="right"
+                  src="/images/posts/redis.png" width="200" height="200" title="Redis"></a> As a follow-up of <a
+                href="/blog/2012/11/13/scalable-heroku-worker-for-sidekiq/">my previous post</a> I want to explain how
+              to get <a href="https://sidekiq.org/">Sidekiq</a> to work on <a href="https://www.heroku.com">Heroku</a>
+              with a <a href="https://addons.heroku.com/redistogo">Redis To Go</a> Nano instance.</p>
 
-<p>max connections = (Heroku worker count * (concurrency + 2 reserved connections)) + (web dyno count * (client connection size * unicorn worker_process size))</p>
+            <p>Because the Nano instance has some connection limitation you have to make some config changes so you
+              won&#8217;t get <code>ERR max number of clients reached</code> error messages.</p>
 
-<h2>Connections and concurrencies</h2>
-
-<p>If you have a small amount of Redis connections we need to make some modifications in order to get all our processes happy and not throwing connection errors around.</p>
-
-<p>At the bottom of this post I&#8217;ll put my final configuration files.</p>
-
-<h3>Dynos * (unicorns * client size)</h3>
-
-<p>The first thing I changed was the Redis connection size for the client. By default Sidekiq takes <strong>5</strong> connections per client. Because my applications only queries Redis for adding tasks to the Sidekiq queue, one connection should be more than enough.</p>
-
-<p><span class='pullquote-right' data-pullquote='3 workers * dyno count = redis_connections'>
-One mistake I made was forgetting about the number of dynos and Unicorn worker_process size. In my <code>app/config/unicorn.rb</code> I had <code>worker_processes 3</code> defined which actually means 3 workers * dyno count = redis_connections taken by the Client.
-</span></p>
-
-<h4>Examples:</h4>
-
-<p>In my case where I&#8217;ve set the connection size to one we could have the following examples</p>
-
-<ol>
-<li><strong>1</strong> web dyno with <strong>2</strong> unicorn worker_processes takes <strong>2 Redis connections</strong></li>
-<li><strong>2</strong> web dyno with <strong>2</strong> unicorn worker_processes takes <strong>4 Redis connections</strong></li>
-<li><strong>5</strong> web dyno with <strong>4</strong> unicorn worker_processes takes <strong>20 Redis connections</strong></li>
-</ol>
+            <!-- more -->
 
 
-<p>If you up the client size to, for example 3 you should also multiply the Redis connections by this number (so for example 3 you&#8217;ll have 20 * 3 = 60 connections).</p>
+            <h2>Why this post</h2>
 
-<h3>Worker * (concurrency + 2)</h3>
+            <p>Today I&#8217;ve been struggling a lot with getting the Sidekiq to work probably with Redis to Go Nano on
+              Heroku. The main problem was I was having difficulties with the amount of connection&#8217;s being created
+              to the Redis server. Because the Nano variant is free but large enough for handling normal sized queues of
+              work, we have to face the limitation of 10 connections.</p>
 
-<p>When calculating the number of connections the Sidekiq server needs, we need to modify the number of currencies it initializes on launch. This number represents the number of threads created by the Sidekiq server which will perform queued tasks. Each concurrency/thread takes up 1 Redis connection.</p>
+            <h2>A calculation Tool!</h2>
 
-<p>When tweaking this number I found out the Sidekiq server took 2 additional connections upon the concurrency number. This seemed to be default behavior becase Sidekiq server uses these two for the Fetcher and Retrier commands.</p>
+            <p>If you just want to know what you need to change/setup you can go directly to a small tool I&#8217;ve
+              built to calculate the number of connections/concurrencies need for a number of workers/web workers etc.
+            </p>
 
-<h4>Examples:</h4>
+            <p><a href="https://manuelvanrijn.nl/sidekiq-heroku-redis-calc" class="special_button">SidekiqHerokuRedis
+                calculator</a></p>
 
-<ol>
-<li><strong>1</strong> worker dyno running Sidekiq, with <strong>1</strong> concurrency takes <strong>3 Redis connections</strong></li>
-<li><strong>1</strong> worker dyno running Sidekiq, with <strong>2</strong> concurrency takes <strong>4 Redis connections</strong></li>
-<li><strong>2</strong> worker dyno running Sidekiq, with <strong>2</strong> concurrency takes <strong>8 Redis connections</strong></li>
-</ol>
+            <h2>Why ERR max number of clients reached?</h2>
+
+            <p>The error <code>Error fetching message: ERR max number of clients reached</code>, is quite clear
+              isn&#8217;t it? The actual question is how we can reduce the connections being opened to match the 10
+              connection limit given by the Nano instance.</p>
+
+            <p>After some research I found the factors that you have to tweak in order to reach the magic number of 10.
+            </p>
+
+            <ol>
+              <li>Sidekiq Client connection size</li>
+              <li>Sidekiq Server connection size</li>
+              <li>Sidekiq Server reserved connections (reserved for the Fetcher and Retrier)</li>
+              <li>Sidekiq concurrency size</li>
+              <li>Unicorn worker_process size</li>
+              <li>Heroku Web Dyno count</li>
+              <li>Heroku Worker count</li>
+            </ol>
 
 
-<p>The default concurrency size of Sidekiq is set to 25 which mean that without modifications you need at least 27 Redis connections for the Sidekiq server.</p>
+            <p>The answer for all our problems could be described in the following sum:</p>
 
-<h2>My final code</h2>
+            <p>max connections = (Heroku worker count * (concurrency + 2 reserved connections)) + (web dyno count *
+              (client connection size * unicorn worker_process size))</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+            <h2>Connections and concurrencies</h2>
+
+            <p>If you have a small amount of Redis connections we need to make some modifications in order to get all
+              our processes happy and not throwing connection errors around.</p>
+
+            <p>At the bottom of this post I&#8217;ll put my final configuration files.</p>
+
+            <h3>Dynos * (unicorns * client size)</h3>
+
+            <p>The first thing I changed was the Redis connection size for the client. By default Sidekiq takes
+              <strong>5</strong> connections per client. Because my applications only queries Redis for adding tasks to
+              the Sidekiq queue, one connection should be more than enough.
+            </p>
+
+            <p><span class='pullquote-right' data-pullquote='3 workers * dyno count = redis_connections'>
+                One mistake I made was forgetting about the number of dynos and Unicorn worker_process size. In my
+                <code>app/config/unicorn.rb</code> I had <code>worker_processes 3</code> defined which actually means 3
+                workers * dyno count = redis_connections taken by the Client.
+              </span></p>
+
+            <h4>Examples:</h4>
+
+            <p>In my case where I&#8217;ve set the connection size to one we could have the following examples</p>
+
+            <ol>
+              <li><strong>1</strong> web dyno with <strong>2</strong> unicorn worker_processes takes <strong>2 Redis
+                  connections</strong></li>
+              <li><strong>2</strong> web dyno with <strong>2</strong> unicorn worker_processes takes <strong>4 Redis
+                  connections</strong></li>
+              <li><strong>5</strong> web dyno with <strong>4</strong> unicorn worker_processes takes <strong>20 Redis
+                  connections</strong></li>
+            </ol>
+
+
+            <p>If you up the client size to, for example 3 you should also multiply the Redis connections by this number
+              (so for example 3 you&#8217;ll have 20 * 3 = 60 connections).</p>
+
+            <h3>Worker * (concurrency + 2)</h3>
+
+            <p>When calculating the number of connections the Sidekiq server needs, we need to modify the number of
+              currencies it initializes on launch. This number represents the number of threads created by the Sidekiq
+              server which will perform queued tasks. Each concurrency/thread takes up 1 Redis connection.</p>
+
+            <p>When tweaking this number I found out the Sidekiq server took 2 additional connections upon the
+              concurrency number. This seemed to be default behavior becase Sidekiq server uses these two for the
+              Fetcher and Retrier commands.</p>
+
+            <h4>Examples:</h4>
+
+            <ol>
+              <li><strong>1</strong> worker dyno running Sidekiq, with <strong>1</strong> concurrency takes <strong>3
+                  Redis connections</strong></li>
+              <li><strong>1</strong> worker dyno running Sidekiq, with <strong>2</strong> concurrency takes <strong>4
+                  Redis connections</strong></li>
+              <li><strong>2</strong> worker dyno running Sidekiq, with <strong>2</strong> concurrency takes <strong>8
+                  Redis connections</strong></li>
+            </ol>
+
+
+            <p>The default concurrency size of Sidekiq is set to 25 which mean that without modifications you need at
+              least 27 Redis connections for the Sidekiq server.</p>
+
+            <h2>My final code</h2>
+
+            <figure class='code'>
+              <figcaption><span></span></figcaption>
+              <div class="highlight">
+                <table>
+                  <tr>
+                    <td class="gutter">
+                      <pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
 <span class='line-number'>6</span>
 <span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>connection limit:           10
+</pre>
+                    </td>
+                    <td class='code'>
+                      <pre><code class='bash'><span class='line'>connection limit:           10
 </span><span class='line'>unicorn processes:           3
 </span><span class='line'>web dynos:                   2
 </span><span class='line'>worker dynos <span class="o">(</span>sidekiq<span class="o">)</span>:      1
 </span><span class='line'>client pool size:            1
 </span><span class='line'>server pool size:            2
 </span><span class='line'>concurrency:                 2
-</span></code></pre></td></tr></table></div></figure>
+</span></code></pre>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </figure>
 
 
 
 
-<figure class='code'><figcaption><span>app/config/initializers/sidekiq.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+            <figure class='code'>
+              <figcaption><span>app/config/initializers/sidekiq.rb</span></figcaption>
+              <div class="highlight">
+                <table>
+                  <tr>
+                    <td class="gutter">
+                      <pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -216,7 +278,10 @@ One mistake I made was forgetting about the number of dynos and Unicorn worker_p
 <span class='line-number'>7</span>
 <span class='line-number'>8</span>
 <span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;sidekiq&#39;</span>
+</pre>
+                    </td>
+                    <td class='code'>
+                      <pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;sidekiq&#39;</span>
 </span><span class='line'>
 </span><span class='line'><span class="no">Sidekiq</span><span class="o">.</span><span class="n">configure_client</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
 </span><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">redis</span> <span class="o">=</span> <span class="p">{</span> <span class="ss">:size</span> <span class="o">=&gt;</span> <span class="mi">1</span> <span class="p">}</span>
@@ -225,207 +290,276 @@ One mistake I made was forgetting about the number of dynos and Unicorn worker_p
 </span><span class='line'><span class="no">Sidekiq</span><span class="o">.</span><span class="n">configure_server</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
 </span><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">redis</span> <span class="o">=</span> <span class="p">{</span> <span class="ss">:size</span> <span class="o">=&gt;</span> <span class="mi">2</span> <span class="p">}</span>
 </span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
+</span></code></pre>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </figure>
 
 
 
 
-<figure class='code'><figcaption><span>app/config/sidekiq.yml</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='yaml'><span class='line'><span class="l-Scalar-Plain">:concurrency</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">2</span>
-</span></code></pre></td></tr></table></div></figure>
+            <figure class='code'>
+              <figcaption><span>app/config/sidekiq.yml</span></figcaption>
+              <div class="highlight">
+                <table>
+                  <tr>
+                    <td class="gutter">
+                      <pre class="line-numbers"><span class='line-number'>1</span>
+</pre>
+                    </td>
+                    <td class='code'>
+                      <pre><code class='yaml'><span class='line'><span class="l-Scalar-Plain">:concurrency</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">2</span>
+</span></code></pre>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </figure>
 
 
 
 
-<figure class='code'><figcaption><span>Procfile</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+            <figure class='code'>
+              <figcaption><span>Procfile</span></figcaption>
+              <div class="highlight">
+                <table>
+                  <tr>
+                    <td class="gutter">
+                      <pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>web: bundle <span class="nb">exec </span>unicorn -p <span class="nv">$PORT</span> -c ./config/unicorn.rb
+</pre>
+                    </td>
+                    <td class='code'>
+                      <pre><code class='bash'><span class='line'>web: bundle <span class="nb">exec </span>unicorn -p <span class="nv">$PORT</span> -c ./config/unicorn.rb
 </span><span class='line'>worker: bundle <span class="nb">exec </span>sidekiq -e production -C config/sidekiq.yml
-</span></code></pre></td></tr></table></div></figure>
+</span></code></pre>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </figure>
 
 
 
 
-<figure class='code'><figcaption><span>app/config/unicorn.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">worker_processes</span> <span class="mi">3</span>
-</span></code></pre></td></tr></table></div></figure>
+            <figure class='code'>
+              <figcaption><span>app/config/unicorn.rb</span></figcaption>
+              <div class="highlight">
+                <table>
+                  <tr>
+                    <td class="gutter">
+                      <pre class="line-numbers"><span class='line-number'>1</span>
+</pre>
+                    </td>
+                    <td class='code'>
+                      <pre><code class='ruby'><span class='line'><span class="n">worker_processes</span> <span class="mi">3</span>
+</span></code></pre>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </figure>
 
-</div>
-
-
-  <footer>
-    <p class="meta">
-      
-  
-
-<span class="byline author vcard">by <span class="fn">Manuel van Rijn</span></span>
-
-      
-
-
-
-
-
-
+          </div>
 
 
-  
+          <footer>
+            <p class="meta">
 
 
-<time datetime="2012-11-13T15:42:00+01:00" pubdate data-updated="true">Nov 13<span>th</span>, 2012</time>
-      
 
-<span class="categories">
-  
-    <a class='category' href='/blog/categories/connections/'>connections</a>, <a class='category' href='/blog/categories/heroku/'>heroku</a>, <a class='category' href='/blog/categories/rails/'>rails</a>, <a class='category' href='/blog/categories/redis/'>redis</a>, <a class='category' href='/blog/categories/redis-to-go/'>redis to go</a>, <a class='category' href='/blog/categories/ruby/'>ruby</a>, <a class='category' href='/blog/categories/sidekiq/'>sidekiq</a>, <a class='category' href='/blog/categories/threading/'>threading</a>
-  
-</span>
-
-
-    </p>
-    
-      <div class="sharing">
-  
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://manuelvanrijn.nl/blog/2012/11/13/sidekiq-on-heroku-with-redistogo-nano/" data-via="" data-counturl="http://manuelvanrijn.nl/blog/2012/11/13/sidekiq-on-heroku-with-redistogo-nano/" >Tweet</a>
-  
-  
-  
-</div>
-
-    
-    <p class="meta">
-      
-        <a class="basic-alignment left" href="/blog/2012/11/13/scalable-heroku-worker-for-sidekiq/" title="Previous Post: Scalable Heroku worker for Sidekiq">&laquo; Scalable Heroku worker for Sidekiq</a>
-      
-      
-        <a class="basic-alignment right" href="/blog/2013/03/04/rails-belongs-to-to-has-many/" title="Next Post: Rails belongs_to to has_many">Rails belongs_to to has_many &raquo;</a>
-      
-    </p>
-  </footer>
-</article>
-
-  <section>
-    <h1>Comments</h1>
-    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-</div>
-  </section>
-
-</div>
-
-<aside class="sidebar">
-  
-    <section>
-  <h1>About Me</h1>
-  <p>
-    <img class="left" src="http://www.gravatar.com/avatar/5c42621691011e9f8fcabf1b4e23d4ad?s=80" title="Manuel van Rijn" />
-    <small>
-      Manuel van Rijn<br />
-      iOS, Front &amp; Backend Developer<br />
-      Work: <a href="http://www.sping.nl/">www.sping.nl</a><br /><br />
-      <a rel="author" href="https://github.com/manuelvanrijn" class="zocial icon github">Manuel van Rijn on Github</a>
-      <a rel="author" href="http://nl.linkedin.com/in/manuelvanrijn" class="zocial icon linkedin">Manuel van Rijn on LinkedIn</a>
-      <a rel="author" href="http://twitter.com/manuelvanrijn" class="zocial icon twitter">Manuel van Rijn on Twitter</a>
-    </small>
-  </p>
-</section>
-<section>
-  <h1>Recent Posts</h1>
-  <ul id="recent_posts">
-    
-      <li class="post">
-        <a href="/blog/2015/05/19/rails-subdomains-for-localhost-development/">Rails subdomains for localhost/development</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/06/03/osx-10-dot-10-yosemite-crashing-chrome/">OSX 10.10 Yosemite - Crashing Chrome</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/07/23/developing-ruby-on-rails-on-windows/">Developing Ruby on Rails on Windows</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/03/04/rails-belongs-to-to-has-many/">Rails belongs_to to has_many</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/11/13/sidekiq-on-heroku-with-redistogo-nano/">Sidekiq on Heroku with Redis To Go Nano</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/11/13/scalable-heroku-worker-for-sidekiq/">Scalable Heroku worker for Sidekiq</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/09/17/yeoman-meets-travis-ci/">Yeoman meets Travis CI</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/07/26/select-total-rows-from-database/">SELECT total_rows FROM database</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/06/22/integrate-travis-ci-into-grunt/">Integrate Travis CI into Grunt</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/06/20/taking-memsql-for-a-spin/">Taking MemSQL for a spin</a>
-      </li>
-    
-  </ul>
-</section>
+              <span class="byline author vcard">by <span class="fn">Manuel van Rijn</span></span>
 
 
 
 
-<section class="googleplus googleplus-hidden">
-  <h1>
-    <a href="https://plus.google.com/117895812778172164201?rel=author">
-      <img src="http://www.google.com/images/icons/ui/gprofile_button-32.png" width="32" height="32">
-      Google+
-    </a>
-  </h1>
-</section>
 
 
 
-<section id="stackoverflow">
-  <h1>Stack Overflow</h1>
-  <a href="http://stackoverflow.com/users/959041/manuel-van-rijn">
-  <img src="http://stackoverflow.com/users/flair/959041.png?theme=default" width="208" height="58" alt="profile for Manuel van Rijn at Stack Overflow, Q&amp;A for professional and enthusiast programmers" title="profile for Manuel van Rijn at Stack Overflow, Q&amp;A for professional and enthusiast programmers">
-  </a>
-</section>
 
 
-  
-</aside>
+
+
+
+
+              <time datetime="2012-11-13T15:42:00+01:00" pubdate data-updated="true">Nov 13<span>th</span>, 2012</time>
+
+
+              <span class="categories">
+
+                <a class='category' href='/blog/categories/connections/'>connections</a>, <a class='category'
+                  href='/blog/categories/heroku/'>heroku</a>, <a class='category'
+                  href='/blog/categories/rails/'>rails</a>, <a class='category'
+                  href='/blog/categories/redis/'>redis</a>, <a class='category'
+                  href='/blog/categories/redis-to-go/'>redis to go</a>, <a class='category'
+                  href='/blog/categories/ruby/'>ruby</a>, <a class='category'
+                  href='/blog/categories/sidekiq/'>sidekiq</a>, <a class='category'
+                  href='/blog/categories/threading/'>threading</a>
+
+              </span>
+
+
+            </p>
+
+            <div class="sharing">
+
+              <a href="https://twitter.com/share" class="twitter-share-button"
+                data-url="https://manuelvanrijn.nl/blog/2012/11/13/sidekiq-on-heroku-with-redistogo-nano/" data-via=""
+                data-counturl="https://manuelvanrijn.nl/blog/2012/11/13/sidekiq-on-heroku-with-redistogo-nano/">Tweet</a>
+
+
+
+            </div>
+
+
+            <p class="meta">
+
+              <a class="basic-alignment left" href="/blog/2012/11/13/scalable-heroku-worker-for-sidekiq/"
+                title="Previous Post: Scalable Heroku worker for Sidekiq">&laquo; Scalable Heroku worker for Sidekiq</a>
+
+
+              <a class="basic-alignment right" href="/blog/2013/03/04/rails-belongs-to-to-has-many/"
+                title="Next Post: Rails belongs_to to has_many">Rails belongs_to to has_many &raquo;</a>
+
+            </p>
+          </footer>
+        </article>
+
+        <section>
+          <h1>Comments</h1>
+          <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a
+                href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+          </div>
+        </section>
+
+      </div>
+
+      <aside class="sidebar">
+
+        <section>
+          <h1>About Me</h1>
+          <p>
+            <img class="left" src="https://www.gravatar.com/avatar/5c42621691011e9f8fcabf1b4e23d4ad?s=80"
+              title="Manuel van Rijn" />
+            <small>
+              Manuel van Rijn<br />
+              iOS, Front &amp; Backend Developer<br />
+              Work: <a href="https://www.sping.nl/">www.sping.nl</a><br /><br />
+              <a rel="author" href="https://github.com/manuelvanrijn" class="zocial icon github">Manuel van Rijn on
+                Github</a>
+              <a rel="author" href="https://nl.linkedin.com/in/manuelvanrijn" class="zocial icon linkedin">Manuel van
+                Rijn on LinkedIn</a>
+              <a rel="author" href="https://twitter.com/manuelvanrijn" class="zocial icon twitter">Manuel van Rijn on
+                Twitter</a>
+            </small>
+          </p>
+        </section>
+        <section>
+          <h1>Recent Posts</h1>
+          <ul id="recent_posts">
+
+            <li class="post">
+              <a href="/blog/2015/05/19/rails-subdomains-for-localhost-development/">Rails subdomains for
+                localhost/development</a>
+            </li>
+
+            <li class="post">
+              <a href="/blog/2014/06/03/osx-10-dot-10-yosemite-crashing-chrome/">OSX 10.10 Yosemite - Crashing
+                Chrome</a>
+            </li>
+
+            <li class="post">
+              <a href="/blog/2013/07/23/developing-ruby-on-rails-on-windows/">Developing Ruby on Rails on Windows</a>
+            </li>
+
+            <li class="post">
+              <a href="/blog/2013/03/04/rails-belongs-to-to-has-many/">Rails belongs_to to has_many</a>
+            </li>
+
+            <li class="post">
+              <a href="/blog/2012/11/13/sidekiq-on-heroku-with-redistogo-nano/">Sidekiq on Heroku with Redis To Go
+                Nano</a>
+            </li>
+
+            <li class="post">
+              <a href="/blog/2012/11/13/scalable-heroku-worker-for-sidekiq/">Scalable Heroku worker for Sidekiq</a>
+            </li>
+
+            <li class="post">
+              <a href="/blog/2012/09/17/yeoman-meets-travis-ci/">Yeoman meets Travis CI</a>
+            </li>
+
+            <li class="post">
+              <a href="/blog/2012/07/26/select-total-rows-from-database/">SELECT total_rows FROM database</a>
+            </li>
+
+            <li class="post">
+              <a href="/blog/2012/06/22/integrate-travis-ci-into-grunt/">Integrate Travis CI into Grunt</a>
+            </li>
+
+            <li class="post">
+              <a href="/blog/2012/06/20/taking-memsql-for-a-spin/">Taking MemSQL for a spin</a>
+            </li>
+
+          </ul>
+        </section>
+
+
+
+
+        <section class="googleplus googleplus-hidden">
+          <h1>
+            <a href="https://plus.google.com/117895812778172164201?rel=author">
+              <img src="https://www.google.com/images/icons/ui/gprofile_button-32.png" width="32" height="32">
+              Google+
+            </a>
+          </h1>
+        </section>
+
+
+
+        <section id="stackoverflow">
+          <h1>Stack Overflow</h1>
+          <a href="https://stackoverflow.com/users/959041/manuel-van-rijn">
+            <img src="https://stackoverflow.com/users/flair/959041.png?theme=default" width="208" height="58"
+              alt="profile for Manuel van Rijn at Stack Overflow, Q&amp;A for professional and enthusiast programmers"
+              title="profile for Manuel van Rijn at Stack Overflow, Q&amp;A for professional and enthusiast programmers">
+          </a>
+        </section>
+
+
+
+      </aside>
 
 
     </div>
   </div>
-  <footer role="contentinfo"><p>
-  Copyright &copy; 2016 - Manuel van Rijn -
-  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
-</p>
+  <footer role="contentinfo">
+    <p>
+      Copyright &copy; 2016 - Manuel van Rijn -
+      <span class="credit">Powered by <a href="https://octopress.org">Octopress</a></span>
+    </p>
 
-</footer>
-  
+  </footer>
 
-<script type="text/javascript">
-      var disqus_shortname = 'manuelvanrijn';
-      
-        
-        // var disqus_developer = 1;
-        var disqus_identifier = 'http://manuelvanrijn.nl/blog/2012/11/13/sidekiq-on-heroku-with-redistogo-nano/';
-        var disqus_url = 'http://manuelvanrijn.nl/blog/2012/11/13/sidekiq-on-heroku-with-redistogo-nano/';
-        var disqus_script = 'embed.js';
-      
+
+  <script type="text/javascript">
+    var disqus_shortname = 'manuelvanrijn';
+
+
+    // var disqus_developer = 1;
+    var disqus_identifier = 'https://manuelvanrijn.nl/blog/2012/11/13/sidekiq-on-heroku-with-redistogo-nano/';
+    var disqus_url = 'https://manuelvanrijn.nl/blog/2012/11/13/sidekiq-on-heroku-with-redistogo-nano/';
+    var disqus_script = 'embed.js';
+
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      dsq.src = 'https://' + disqus_shortname + '.disqus.com/' + disqus_script;
       (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
     }());
-</script>
+  </script>
 
 
 
@@ -434,11 +568,11 @@ One mistake I made was forgetting about the number of dynos and Unicorn worker_p
 
 
   <script type="text/javascript">
-    (function(){
+    (function () {
       var twitterWidgets = document.createElement('script');
       twitterWidgets.type = 'text/javascript';
       twitterWidgets.async = true;
-      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      twitterWidgets.src = 'https://platform.twitter.com/widgets.js';
       document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
     })();
   </script>
@@ -448,4 +582,5 @@ One mistake I made was forgetting about the number of dynos and Unicorn worker_p
 
 
 </body>
+
 </html>

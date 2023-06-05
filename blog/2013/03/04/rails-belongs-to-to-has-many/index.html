@@ -1,24 +1,26 @@
-
 <!DOCTYPE html>
 <!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
 <!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
-<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!-->
+<html class="no-js" lang="en"><!--<![endif]-->
+
 <head>
   <meta charset="utf-8">
   <title>Rails belongs_to to has_many - Manuel van Rijn</title>
   <meta name="author" content="Manuel van Rijn">
 
-  
-  <meta name="description" content="Today I had to change a belongs_to associate to an has_and_belongs_to_many in a Rails project I&#8217;m currently working on. Not that hard you &hellip;">
-  
 
-  <!-- http://t.co/dKP3o1e -->
+  <meta name="description"
+    content="Today I had to change a belongs_to associate to an has_and_belongs_to_many in a Rails project I&#8217;m currently working on. Not that hard you &hellip;">
+
+
+  <!-- https://t.co/dKP3o1e -->
   <meta name="HandheldFriendly" content="True">
   <meta name="MobileOptimized" content="320">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  
-  <link rel="canonical" href="http://manuelvanrijn.nl/blog/2013/03/04/rails-belongs-to-to-has-many/">
+
+  <link rel="canonical" href="https://manuelvanrijn.nl/blog/2013/03/04/rails-belongs-to-to-has-many/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/stylesheets/zocial/zocial.css" media="screen, projection" rel="stylesheet" type="text/css">
@@ -27,65 +29,70 @@
   <script src="/javascripts/ender.js"></script>
   <script src="/javascripts/octopress.js" type="text/javascript"></script>
   <link href="/atom.xml" rel="alternate" title="Manuel van Rijn" type="application/atom+xml">
-  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
-<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
-<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+  <!--Fonts from Google"s Web font directory at https://google.com/webfonts -->
+  <link href="https://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet"
+    type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet"
+    type="text/css">
 
-  
-  <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-PYTQBZ3YZT"></script>
   <script>
-    (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
-    function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
-    e=o.createElement(i);r=o.getElementsByTagName(i)[0];
-    e.src='https://www.google-analytics.com/analytics.js';
-    r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
-    ga('create','UA-17149124-1','auto');ga('send','pageview');
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+
+    gtag('config', 'G-PYTQBZ3YZT');
   </script>
+  <script async src="https://analytics.uppersource.nl/script.js"
+    data-website-id="49f17683-91d9-4ec5-82db-80a3857595e7"></script>
 
 
 
 </head>
 
-<body   >
-  <header role="banner"><hgroup>
-  <h1><a href="/">Manuel van Rijn</a></h1>
-  
-    <h2>Bit blog</h2>
-  
-</hgroup>
+<body>
+  <header role="banner">
+    <hgroup>
+      <h1><a href="/">Manuel van Rijn</a></h1>
 
-</header>
-  <nav role="navigation"><ul class="subscription" data-subscription="rss">
-  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
-  
-</ul>
-  
-<form action="http://google.com/search" method="get">
-  <fieldset role="search">
-    <input type="hidden" name="q" value="site:manuelvanrijn.nl" />
-    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
-  </fieldset>
-</form>
-  
-<ul class="main-navigation">
-  <li><a href="/">Blog</a></li>
-  <li><a href="/blog/archives">Archives</a></li>
-  <li><a href="/work">Work</a></li>
-</ul>
+      <h2>Bit blog</h2>
 
-</nav>
+    </hgroup>
+
+  </header>
+  <nav role="navigation">
+    <ul class="subscription" data-subscription="rss">
+      <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+
+    </ul>
+
+    <form action="https://google.com/search" method="get">
+      <fieldset role="search">
+        <input type="hidden" name="q" value="site:manuelvanrijn.nl" />
+        <input class="search" type="text" name="q" results="0" placeholder="Search" />
+      </fieldset>
+    </form>
+
+    <ul class="main-navigation">
+      <li><a href="/">Blog</a></li>
+      <li><a href="/blog/archives">Archives</a></li>
+      <li><a href="/work">Work</a></li>
+    </ul>
+
+  </nav>
   <div id="main">
     <div id="content">
       <div>
-<article class="hentry" role="article">
-  
-  <header>
-    
-      <h1 class="entry-title">Rails belongs_to to has_many</h1>
-    
-    
-      <p class="meta">
-        
+        <article class="hentry" role="article">
+
+          <header>
+
+            <h1 class="entry-title">Rails belongs_to to has_many</h1>
+
+
+            <p class="meta">
 
 
 
@@ -94,48 +101,78 @@
 
 
 
-  
 
 
-<time datetime="2013-03-04T17:19:00+01:00" pubdate data-updated="true">Mar 4<span>th</span>, 2013</time>
-        
-      </p>
-    
-  </header>
 
 
-<div class="entry-content"><p><a href="/blog/2013/03/04/rails-belongs-to-to-has-many/"><img class="left" src="/images/posts/habtm-migration.jpg" width="250" height="250" title="Migration what?!" ></a> Today I had to change a <code>belongs_to</code> associate to an <code>has_and_belongs_to_many</code> in a Rails project I&#8217;m currently working on. Not that hard you would say, but there were some catches for deploying/migrating these changes to the production environment.</p>
+              <time datetime="2013-03-04T17:19:00+01:00" pubdate data-updated="true">Mar 4<span>th</span>, 2013</time>
 
-<br />
+            </p>
 
-
-<p>In this post I&#8217;d like to explain how to achieve this without having to do multiple deployments of your model to maintain a consistent database schema and model.</p>
-
-<!-- more -->
+          </header>
 
 
-<h2>TL;DR;</h2>
+          <div class="entry-content">
+            <p><a href="/blog/2013/03/04/rails-belongs-to-to-has-many/"><img class="left"
+                  src="/images/posts/habtm-migration.jpg" width="250" height="250" title="Migration what?!"></a> Today I
+              had to change a <code>belongs_to</code> associate to an <code>has_and_belongs_to_many</code> in a Rails
+              project I&#8217;m currently working on. Not that hard you would say, but there were some catches for
+              deploying/migrating these changes to the production environment.</p>
 
-<p>Here you can find <a href="#final-migration">the final migration</a>. Note that this example could also be solved with plain sql instead of using ActiveRecord, but there might be cases were you depend on the ActiveRecord associates. In these cases this is a great workaround</p>
+            <br />
 
-<h2>The problem</h2>
 
-<p>Let&#8217;s say we have a Article that belongs to a Category. Our model would look like something like this:</p>
+            <p>In this post I&#8217;d like to explain how to achieve this without having to do multiple deployments of
+              your model to maintain a consistent database schema and model.</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+            <!-- more -->
+
+
+            <h2>TL;DR;</h2>
+
+            <p>Here you can find <a href="#final-migration">the final migration</a>. Note that this example could also
+              be solved with plain sql instead of using ActiveRecord, but there might be cases were you depend on the
+              ActiveRecord associates. In these cases this is a great workaround</p>
+
+            <h2>The problem</h2>
+
+            <p>Let&#8217;s say we have a Article that belongs to a Category. Our model would look like something like
+              this:</p>
+
+            <figure class='code'>
+              <figcaption><span></span></figcaption>
+              <div class="highlight">
+                <table>
+                  <tr>
+                    <td class="gutter">
+                      <pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Article</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+</pre>
+                    </td>
+                    <td class='code'>
+                      <pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Article</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
 </span><span class='line'>  <span class="n">attr_accessible</span> <span class="ss">:title</span><span class="p">,</span> <span class="ss">:content</span>
 </span><span class='line'>  <span class="n">belongs_to</span> <span class="ss">:category</span>
 </span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
+</span></code></pre>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </figure>
 
 
-<p>And the executed migration would look like this:</p>
+            <p>And the executed migration would look like this:</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+            <figure class='code'>
+              <figcaption><span></span></figcaption>
+              <div class="highlight">
+                <table>
+                  <tr>
+                    <td class="gutter">
+                      <pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -144,7 +181,10 @@
 <span class='line-number'>7</span>
 <span class='line-number'>8</span>
 <span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">CreateArticle</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Migration</span>
+</pre>
+                    </td>
+                    <td class='code'>
+                      <pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">CreateArticle</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Migration</span>
 </span><span class='line'>  <span class="k">def</span> <span class="nf">change</span>
 </span><span class='line'>    <span class="n">create_table</span> <span class="ss">:articles</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
 </span><span class='line'>      <span class="n">t</span><span class="o">.</span><span class="n">string</span> <span class="ss">:title</span>
@@ -153,14 +193,26 @@
 </span><span class='line'>    <span class="k">end</span>
 </span><span class='line'>  <span class="k">end</span>
 </span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
+</span></code></pre>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </figure>
 
 
-<h2>The initial migration</h2>
+            <h2>The initial migration</h2>
 
-<p>First let&#8217;s create a new table that can hold the associate between multiple Articles and Categories. The migration would look like this:</p>
+            <p>First let&#8217;s create a new table that can hold the associate between multiple Articles and
+              Categories. The migration would look like this:</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+            <figure class='code'>
+              <figcaption><span></span></figcaption>
+              <div class="highlight">
+                <table>
+                  <tr>
+                    <td class="gutter">
+                      <pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -171,7 +223,10 @@
 <span class='line-number'>9</span>
 <span class='line-number'>10</span>
 <span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">MultipleCategoriesForArticles</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Migration</span>
+</pre>
+                    </td>
+                    <td class='code'>
+                      <pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">MultipleCategoriesForArticles</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Migration</span>
 </span><span class='line'>  <span class="k">def</span> <span class="nf">up</span>
 </span><span class='line'>    <span class="n">create_table</span> <span class="ss">:articles_categories</span><span class="p">,</span> <span class="ss">:id</span> <span class="o">=&gt;</span> <span class="kp">false</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
 </span><span class='line'>      <span class="n">t</span><span class="o">.</span><span class="n">references</span> <span class="ss">:article</span><span class="p">,</span> <span class="ss">:category</span>
@@ -182,39 +237,72 @@
 </span><span class='line'>    <span class="n">drop_table</span> <span class="ss">:articles_categories</span>
 </span><span class='line'>  <span class="k">end</span>
 </span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
+</span></code></pre>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </figure>
 
 
-<p>At this point all is fine and we can migrate the database without any problems. Only this doesn&#8217;t add the current category to the new collection of categories.</p>
+            <p>At this point all is fine and we can migrate the database without any problems. Only this doesn&#8217;t
+              add the current category to the new collection of categories.</p>
 
-<h3>Moving the belongs_to associate</h3>
+            <h3>Moving the belongs_to associate</h3>
 
-<p>Here&#8217;s were the problem actually starts, because to move the category to the categories collection for the articles, we have to define the <code>belongs_to</code> but also the <code>has_and_belongs_to_many</code> associate on the <code>Article</code> model.</p>
+            <p>Here&#8217;s were the problem actually starts, because to move the category to the categories collection
+              for the articles, we have to define the <code>belongs_to</code> but also the
+              <code>has_and_belongs_to_many</code> associate on the <code>Article</code> model.
+            </p>
 
-<p>I don&#8217;t like this approach because we&#8217;ll have to define both these associates and the <code>belongs_to</code> should be removed in the next release. So how to deal with this?</p>
+            <p>I don&#8217;t like this approach because we&#8217;ll have to define both these associates and the
+              <code>belongs_to</code> should be removed in the next release. So how to deal with this?
+            </p>
 
-<p><a id="final-migration"></a></p>
+            <p><a id="final-migration"></a></p>
 
-<h2>The fix</h2>
+            <h2>The fix</h2>
 
-<p>The fix is quite simple. We remove the <code>belongs_to</code> associate from the model and only define the new <code>has_and_belongs_to_many</code> associate and within the migration we extend the model with the &#8220;old&#8221; <code>belongs_to</code> associate so we can use this within the migration.</p>
+            <p>The fix is quite simple. We remove the <code>belongs_to</code> associate from the model and only define
+              the new <code>has_and_belongs_to_many</code> associate and within the migration we extend the model with
+              the &#8220;old&#8221; <code>belongs_to</code> associate so we can use this within the migration.</p>
 
-<p>So our files will look like this</p>
+            <p>So our files will look like this</p>
 
-<figure class='code'><figcaption><span>app/models/article.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+            <figure class='code'>
+              <figcaption><span>app/models/article.rb</span></figcaption>
+              <div class="highlight">
+                <table>
+                  <tr>
+                    <td class="gutter">
+                      <pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Article</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+</pre>
+                    </td>
+                    <td class='code'>
+                      <pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Article</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
 </span><span class='line'>  <span class="n">attr_accessible</span> <span class="ss">:title</span><span class="p">,</span> <span class="ss">:content</span>
 </span><span class='line'>  <span class="n">has_and_belongs_to_many</span> <span class="ss">:categories</span>
 </span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
+</span></code></pre>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </figure>
 
 
 
 
-<figure class='code'><figcaption><span>db/migrate/20130305120000_multiple_categories_for_articles.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+            <figure class='code'>
+              <figcaption><span>db/migrate/20130305120000_multiple_categories_for_articles.rb</span></figcaption>
+              <div class="highlight">
+                <table>
+                  <tr>
+                    <td class="gutter">
+                      <pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -257,7 +345,10 @@
 <span class='line-number'>41</span>
 <span class='line-number'>42</span>
 <span class='line-number'>43</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">MultipleCategoriesForArticles</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Migration</span>
+</pre>
+                    </td>
+                    <td class='code'>
+                      <pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">MultipleCategoriesForArticles</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Migration</span>
 </span><span class='line'>  <span class="k">def</span> <span class="nf">up</span>
 </span><span class='line'>    <span class="n">create_table</span> <span class="ss">:articles_categories</span><span class="p">,</span> <span class="ss">:id</span> <span class="o">=&gt;</span> <span class="kp">false</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
 </span><span class='line'>      <span class="n">t</span><span class="o">.</span><span class="n">references</span> <span class="ss">:article</span><span class="p">,</span> <span class="ss">:category</span>
@@ -300,186 +391,212 @@
 </span><span class='line'>    <span class="n">drop_table</span> <span class="ss">:articles_categories</span>
 </span><span class='line'>  <span class="k">end</span>
 </span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
+</span></code></pre>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </figure>
 
 
 
-</div>
+          </div>
 
 
-  <footer>
-    <p class="meta">
-      
-  
-
-<span class="byline author vcard">by <span class="fn">Manuel van Rijn</span></span>
-
-      
+          <footer>
+            <p class="meta">
 
 
 
-
-
-
-
-
-  
-
-
-<time datetime="2013-03-04T17:19:00+01:00" pubdate data-updated="true">Mar 4<span>th</span>, 2013</time>
-      
-
-<span class="categories">
-  
-    <a class='category' href='/blog/categories/activerecord/'>ActiveRecord</a>, <a class='category' href='/blog/categories/associates/'>associates</a>, <a class='category' href='/blog/categories/migrations/'>migrations</a>, <a class='category' href='/blog/categories/rails/'>rails</a>, <a class='category' href='/blog/categories/relations/'>relations</a>, <a class='category' href='/blog/categories/ruby/'>ruby</a>
-  
-</span>
-
-
-    </p>
-    
-      <div class="sharing">
-  
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://manuelvanrijn.nl/blog/2013/03/04/rails-belongs-to-to-has-many/" data-via="" data-counturl="http://manuelvanrijn.nl/blog/2013/03/04/rails-belongs-to-to-has-many/" >Tweet</a>
-  
-  
-  
-</div>
-
-    
-    <p class="meta">
-      
-        <a class="basic-alignment left" href="/blog/2012/11/13/sidekiq-on-heroku-with-redistogo-nano/" title="Previous Post: Sidekiq on Heroku with Redis To Go Nano">&laquo; Sidekiq on Heroku with Redis To Go Nano</a>
-      
-      
-        <a class="basic-alignment right" href="/blog/2013/07/23/developing-ruby-on-rails-on-windows/" title="Next Post: Developing Ruby on Rails on Windows">Developing Ruby on Rails on Windows &raquo;</a>
-      
-    </p>
-  </footer>
-</article>
-
-  <section>
-    <h1>Comments</h1>
-    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-</div>
-  </section>
-
-</div>
-
-<aside class="sidebar">
-  
-    <section>
-  <h1>About Me</h1>
-  <p>
-    <img class="left" src="http://www.gravatar.com/avatar/5c42621691011e9f8fcabf1b4e23d4ad?s=80" title="Manuel van Rijn" />
-    <small>
-      Manuel van Rijn<br />
-      iOS, Front &amp; Backend Developer<br />
-      Work: <a href="http://www.sping.nl/">www.sping.nl</a><br /><br />
-      <a rel="author" href="https://github.com/manuelvanrijn" class="zocial icon github">Manuel van Rijn on Github</a>
-      <a rel="author" href="http://nl.linkedin.com/in/manuelvanrijn" class="zocial icon linkedin">Manuel van Rijn on LinkedIn</a>
-      <a rel="author" href="http://twitter.com/manuelvanrijn" class="zocial icon twitter">Manuel van Rijn on Twitter</a>
-    </small>
-  </p>
-</section>
-<section>
-  <h1>Recent Posts</h1>
-  <ul id="recent_posts">
-    
-      <li class="post">
-        <a href="/blog/2015/05/19/rails-subdomains-for-localhost-development/">Rails subdomains for localhost/development</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/06/03/osx-10-dot-10-yosemite-crashing-chrome/">OSX 10.10 Yosemite - Crashing Chrome</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/07/23/developing-ruby-on-rails-on-windows/">Developing Ruby on Rails on Windows</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/03/04/rails-belongs-to-to-has-many/">Rails belongs_to to has_many</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/11/13/sidekiq-on-heroku-with-redistogo-nano/">Sidekiq on Heroku with Redis To Go Nano</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/11/13/scalable-heroku-worker-for-sidekiq/">Scalable Heroku worker for Sidekiq</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/09/17/yeoman-meets-travis-ci/">Yeoman meets Travis CI</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/07/26/select-total-rows-from-database/">SELECT total_rows FROM database</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/06/22/integrate-travis-ci-into-grunt/">Integrate Travis CI into Grunt</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/06/20/taking-memsql-for-a-spin/">Taking MemSQL for a spin</a>
-      </li>
-    
-  </ul>
-</section>
+              <span class="byline author vcard">by <span class="fn">Manuel van Rijn</span></span>
 
 
 
 
-<section class="googleplus googleplus-hidden">
-  <h1>
-    <a href="https://plus.google.com/117895812778172164201?rel=author">
-      <img src="http://www.google.com/images/icons/ui/gprofile_button-32.png" width="32" height="32">
-      Google+
-    </a>
-  </h1>
-</section>
 
 
 
-<section id="stackoverflow">
-  <h1>Stack Overflow</h1>
-  <a href="http://stackoverflow.com/users/959041/manuel-van-rijn">
-  <img src="http://stackoverflow.com/users/flair/959041.png?theme=default" width="208" height="58" alt="profile for Manuel van Rijn at Stack Overflow, Q&amp;A for professional and enthusiast programmers" title="profile for Manuel van Rijn at Stack Overflow, Q&amp;A for professional and enthusiast programmers">
-  </a>
-</section>
 
 
-  
-</aside>
+
+
+
+
+              <time datetime="2013-03-04T17:19:00+01:00" pubdate data-updated="true">Mar 4<span>th</span>, 2013</time>
+
+
+              <span class="categories">
+
+                <a class='category' href='/blog/categories/activerecord/'>ActiveRecord</a>, <a class='category'
+                  href='/blog/categories/associates/'>associates</a>, <a class='category'
+                  href='/blog/categories/migrations/'>migrations</a>, <a class='category'
+                  href='/blog/categories/rails/'>rails</a>, <a class='category'
+                  href='/blog/categories/relations/'>relations</a>, <a class='category'
+                  href='/blog/categories/ruby/'>ruby</a>
+
+              </span>
+
+
+            </p>
+
+            <div class="sharing">
+
+              <a href="https://twitter.com/share" class="twitter-share-button"
+                data-url="https://manuelvanrijn.nl/blog/2013/03/04/rails-belongs-to-to-has-many/" data-via=""
+                data-counturl="https://manuelvanrijn.nl/blog/2013/03/04/rails-belongs-to-to-has-many/">Tweet</a>
+
+
+
+            </div>
+
+
+            <p class="meta">
+
+              <a class="basic-alignment left" href="/blog/2012/11/13/sidekiq-on-heroku-with-redistogo-nano/"
+                title="Previous Post: Sidekiq on Heroku with Redis To Go Nano">&laquo; Sidekiq on Heroku with Redis To
+                Go Nano</a>
+
+
+              <a class="basic-alignment right" href="/blog/2013/07/23/developing-ruby-on-rails-on-windows/"
+                title="Next Post: Developing Ruby on Rails on Windows">Developing Ruby on Rails on Windows &raquo;</a>
+
+            </p>
+          </footer>
+        </article>
+
+        <section>
+          <h1>Comments</h1>
+          <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a
+                href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+          </div>
+        </section>
+
+      </div>
+
+      <aside class="sidebar">
+
+        <section>
+          <h1>About Me</h1>
+          <p>
+            <img class="left" src="https://www.gravatar.com/avatar/5c42621691011e9f8fcabf1b4e23d4ad?s=80"
+              title="Manuel van Rijn" />
+            <small>
+              Manuel van Rijn<br />
+              iOS, Front &amp; Backend Developer<br />
+              Work: <a href="https://www.sping.nl/">www.sping.nl</a><br /><br />
+              <a rel="author" href="https://github.com/manuelvanrijn" class="zocial icon github">Manuel van Rijn on
+                Github</a>
+              <a rel="author" href="https://nl.linkedin.com/in/manuelvanrijn" class="zocial icon linkedin">Manuel van
+                Rijn on LinkedIn</a>
+              <a rel="author" href="https://twitter.com/manuelvanrijn" class="zocial icon twitter">Manuel van Rijn on
+                Twitter</a>
+            </small>
+          </p>
+        </section>
+        <section>
+          <h1>Recent Posts</h1>
+          <ul id="recent_posts">
+
+            <li class="post">
+              <a href="/blog/2015/05/19/rails-subdomains-for-localhost-development/">Rails subdomains for
+                localhost/development</a>
+            </li>
+
+            <li class="post">
+              <a href="/blog/2014/06/03/osx-10-dot-10-yosemite-crashing-chrome/">OSX 10.10 Yosemite - Crashing
+                Chrome</a>
+            </li>
+
+            <li class="post">
+              <a href="/blog/2013/07/23/developing-ruby-on-rails-on-windows/">Developing Ruby on Rails on Windows</a>
+            </li>
+
+            <li class="post">
+              <a href="/blog/2013/03/04/rails-belongs-to-to-has-many/">Rails belongs_to to has_many</a>
+            </li>
+
+            <li class="post">
+              <a href="/blog/2012/11/13/sidekiq-on-heroku-with-redistogo-nano/">Sidekiq on Heroku with Redis To Go
+                Nano</a>
+            </li>
+
+            <li class="post">
+              <a href="/blog/2012/11/13/scalable-heroku-worker-for-sidekiq/">Scalable Heroku worker for Sidekiq</a>
+            </li>
+
+            <li class="post">
+              <a href="/blog/2012/09/17/yeoman-meets-travis-ci/">Yeoman meets Travis CI</a>
+            </li>
+
+            <li class="post">
+              <a href="/blog/2012/07/26/select-total-rows-from-database/">SELECT total_rows FROM database</a>
+            </li>
+
+            <li class="post">
+              <a href="/blog/2012/06/22/integrate-travis-ci-into-grunt/">Integrate Travis CI into Grunt</a>
+            </li>
+
+            <li class="post">
+              <a href="/blog/2012/06/20/taking-memsql-for-a-spin/">Taking MemSQL for a spin</a>
+            </li>
+
+          </ul>
+        </section>
+
+
+
+
+        <section class="googleplus googleplus-hidden">
+          <h1>
+            <a href="https://plus.google.com/117895812778172164201?rel=author">
+              <img src="https://www.google.com/images/icons/ui/gprofile_button-32.png" width="32" height="32">
+              Google+
+            </a>
+          </h1>
+        </section>
+
+
+
+        <section id="stackoverflow">
+          <h1>Stack Overflow</h1>
+          <a href="https://stackoverflow.com/users/959041/manuel-van-rijn">
+            <img src="https://stackoverflow.com/users/flair/959041.png?theme=default" width="208" height="58"
+              alt="profile for Manuel van Rijn at Stack Overflow, Q&amp;A for professional and enthusiast programmers"
+              title="profile for Manuel van Rijn at Stack Overflow, Q&amp;A for professional and enthusiast programmers">
+          </a>
+        </section>
+
+
+
+      </aside>
 
 
     </div>
   </div>
-  <footer role="contentinfo"><p>
-  Copyright &copy; 2016 - Manuel van Rijn -
-  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
-</p>
+  <footer role="contentinfo">
+    <p>
+      Copyright &copy; 2016 - Manuel van Rijn -
+      <span class="credit">Powered by <a href="https://octopress.org">Octopress</a></span>
+    </p>
 
-</footer>
-  
+  </footer>
 
-<script type="text/javascript">
-      var disqus_shortname = 'manuelvanrijn';
-      
-        
-        // var disqus_developer = 1;
-        var disqus_identifier = 'http://manuelvanrijn.nl/blog/2013/03/04/rails-belongs-to-to-has-many/';
-        var disqus_url = 'http://manuelvanrijn.nl/blog/2013/03/04/rails-belongs-to-to-has-many/';
-        var disqus_script = 'embed.js';
-      
+
+  <script type="text/javascript">
+    var disqus_shortname = 'manuelvanrijn';
+
+
+    // var disqus_developer = 1;
+    var disqus_identifier = 'https://manuelvanrijn.nl/blog/2013/03/04/rails-belongs-to-to-has-many/';
+    var disqus_url = 'https://manuelvanrijn.nl/blog/2013/03/04/rails-belongs-to-to-has-many/';
+    var disqus_script = 'embed.js';
+
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      dsq.src = 'https://' + disqus_shortname + '.disqus.com/' + disqus_script;
       (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
     }());
-</script>
+  </script>
 
 
 
@@ -488,11 +605,11 @@
 
 
   <script type="text/javascript">
-    (function(){
+    (function () {
       var twitterWidgets = document.createElement('script');
       twitterWidgets.type = 'text/javascript';
       twitterWidgets.async = true;
-      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      twitterWidgets.src = 'https://platform.twitter.com/widgets.js';
       document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
     })();
   </script>
@@ -502,4 +619,5 @@
 
 
 </body>
+
 </html>

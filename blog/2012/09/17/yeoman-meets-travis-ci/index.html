@@ -1,24 +1,26 @@
-
 <!DOCTYPE html>
 <!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
 <!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
-<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!-->
+<html class="no-js" lang="en"><!--<![endif]-->
+
 <head>
   <meta charset="utf-8">
   <title>Yeoman meets Travis CI - Manuel van Rijn</title>
   <meta name="author" content="Manuel van Rijn">
 
-  
-  <meta name="description" content="Today I&#8217;d like to show how you can integrate Travis CI within your Yeoman project. Travis CI is a hosted continuous integration service for &hellip;">
-  
 
-  <!-- http://t.co/dKP3o1e -->
+  <meta name="description"
+    content="Today I&#8217;d like to show how you can integrate Travis CI within your Yeoman project. Travis CI is a hosted continuous integration service for &hellip;">
+
+
+  <!-- https://t.co/dKP3o1e -->
   <meta name="HandheldFriendly" content="True">
   <meta name="MobileOptimized" content="320">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  
-  <link rel="canonical" href="http://manuelvanrijn.nl/blog/2012/09/17/yeoman-meets-travis-ci/">
+
+  <link rel="canonical" href="https://manuelvanrijn.nl/blog/2012/09/17/yeoman-meets-travis-ci/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/stylesheets/zocial/zocial.css" media="screen, projection" rel="stylesheet" type="text/css">
@@ -27,65 +29,70 @@
   <script src="/javascripts/ender.js"></script>
   <script src="/javascripts/octopress.js" type="text/javascript"></script>
   <link href="/atom.xml" rel="alternate" title="Manuel van Rijn" type="application/atom+xml">
-  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
-<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
-<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+  <!--Fonts from Google"s Web font directory at https://google.com/webfonts -->
+  <link href="https://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet"
+    type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet"
+    type="text/css">
 
-  
-  <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-PYTQBZ3YZT"></script>
   <script>
-    (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
-    function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
-    e=o.createElement(i);r=o.getElementsByTagName(i)[0];
-    e.src='https://www.google-analytics.com/analytics.js';
-    r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
-    ga('create','UA-17149124-1','auto');ga('send','pageview');
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+
+    gtag('config', 'G-PYTQBZ3YZT');
   </script>
+  <script async src="https://analytics.uppersource.nl/script.js"
+    data-website-id="49f17683-91d9-4ec5-82db-80a3857595e7"></script>
 
 
 
 </head>
 
-<body   >
-  <header role="banner"><hgroup>
-  <h1><a href="/">Manuel van Rijn</a></h1>
-  
-    <h2>Bit blog</h2>
-  
-</hgroup>
+<body>
+  <header role="banner">
+    <hgroup>
+      <h1><a href="/">Manuel van Rijn</a></h1>
 
-</header>
-  <nav role="navigation"><ul class="subscription" data-subscription="rss">
-  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
-  
-</ul>
-  
-<form action="http://google.com/search" method="get">
-  <fieldset role="search">
-    <input type="hidden" name="q" value="site:manuelvanrijn.nl" />
-    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
-  </fieldset>
-</form>
-  
-<ul class="main-navigation">
-  <li><a href="/">Blog</a></li>
-  <li><a href="/blog/archives">Archives</a></li>
-  <li><a href="/work">Work</a></li>
-</ul>
+      <h2>Bit blog</h2>
 
-</nav>
+    </hgroup>
+
+  </header>
+  <nav role="navigation">
+    <ul class="subscription" data-subscription="rss">
+      <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+
+    </ul>
+
+    <form action="https://google.com/search" method="get">
+      <fieldset role="search">
+        <input type="hidden" name="q" value="site:manuelvanrijn.nl" />
+        <input class="search" type="text" name="q" results="0" placeholder="Search" />
+      </fieldset>
+    </form>
+
+    <ul class="main-navigation">
+      <li><a href="/">Blog</a></li>
+      <li><a href="/blog/archives">Archives</a></li>
+      <li><a href="/work">Work</a></li>
+    </ul>
+
+  </nav>
   <div id="main">
     <div id="content">
       <div>
-<article class="hentry" role="article">
-  
-  <header>
-    
-      <h1 class="entry-title">Yeoman meets Travis CI</h1>
-    
-    
-      <p class="meta">
-        
+        <article class="hentry" role="article">
+
+          <header>
+
+            <h1 class="entry-title">Yeoman meets Travis CI</h1>
+
+
+            <p class="meta">
 
 
 
@@ -94,267 +101,354 @@
 
 
 
-  
 
 
-<time datetime="2012-09-17T14:45:00+02:00" pubdate data-updated="true">Sep 17<span>th</span>, 2012</time>
-        
-      </p>
-    
-  </header>
 
 
-<div class="entry-content"><p><a href="/blog/2012/06/22/integrate-travis-ci-into-grunt/"><img class="right" src="/images/posts/yeoman-logo.png" width="200" height="200" title="Yeoman" ></a> Today I&#8217;d like to show how you can integrate Travis CI within your Yeoman project.</p>
+              <time datetime="2012-09-17T14:45:00+02:00" pubdate data-updated="true">Sep 17<span>th</span>, 2012</time>
 
-<p><a href="http://travis-ci.org/">Travis CI</a> is a hosted continuous integration service for open source projects and <a href="http://yeoman.io">Yeoman</a> is a robust and opinionated set of tools, libraries, and a workflow that can help developers quickly build beautiful, compelling web apps.</p>
+            </p>
 
-<!-- more -->
+          </header>
 
 
-<h2>Adding Travis CI support</h2>
+          <div class="entry-content">
+            <p><a href="/blog/2012/06/22/integrate-travis-ci-into-grunt/"><img class="right"
+                  src="/images/posts/yeoman-logo.png" width="200" height="200" title="Yeoman"></a> Today I&#8217;d like
+              to show how you can integrate Travis CI within your Yeoman project.</p>
 
-<p>When Yeoman was released I&#8217;ve tried to add Travis CI support to a test project. After setting everything up there seemed to be a problem with the update check being fired when running tests. This was annoying because Travis CI was waiting for input from the user.</p>
+            <p><a href="https://travis-ci.org/">Travis CI</a> is a hosted continuous integration service for open source
+              projects and <a href="https://yeoman.io">Yeoman</a> is a robust and opinionated set of tools, libraries,
+              and a workflow that can help developers quickly build beautiful, compelling web apps.</p>
 
-<p>So I&#8217;ve fixed the issue and created a <a href="https://github.com/yeoman/yeoman/pull/369">pull request</a> that was merged very quick thanks to <a href="http://www.addyosmani.com">Addy Osmani</a>.</p>
+            <!-- more -->
 
-<p>Anyway today I saw that there was a new version released which includes my fix and I like to share how you can make your Yeoman project be tested within Travis CI.</p>
 
-<h3>TL;DR;</h3>
+            <h2>Adding Travis CI support</h2>
 
-<p>See <a href="https://github.com/manuelvanrijn/yeoman-travis-ci/commit/32203d84ca2dbba2faa671e55afede8a1e6666df">this commit</a> with all the changes you have to make to your existing Yeoman project in order to get Travis CI integration.</p>
+            <p>When Yeoman was released I&#8217;ve tried to add Travis CI support to a test project. After setting
+              everything up there seemed to be a problem with the update check being fired when running tests. This was
+              annoying because Travis CI was waiting for input from the user.</p>
 
-<p>Or just browse my test project here: <a href="https://github.com/manuelvanrijn/yeoman-travis-ci">yeoman-travis-ci</a></p>
+            <p>So I&#8217;ve fixed the issue and created a <a href="https://github.com/yeoman/yeoman/pull/369">pull
+                request</a> that was merged very quick thanks to <a href="https://www.addyosmani.com">Addy Osmani</a>.
+            </p>
 
-<h3>package.json</h3>
+            <p>Anyway today I saw that there was a new version released which includes my fix and I like to share how
+              you can make your Yeoman project be tested within Travis CI.</p>
 
-<h4>Adding the yeoman dependency</h4>
+            <h3>TL;DR;</h3>
 
-<p>First we have to add the yeoman package as a dependency to our <code>package.json</code> file because we can&#8217;t install yeoman globally on Travis CI.</p>
+            <p>See <a
+                href="https://github.com/manuelvanrijn/yeoman-travis-ci/commit/32203d84ca2dbba2faa671e55afede8a1e6666df">this
+                commit</a> with all the changes you have to make to your existing Yeoman project in order to get Travis
+              CI integration.</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+            <p>Or just browse my test project here: <a
+                href="https://github.com/manuelvanrijn/yeoman-travis-ci">yeoman-travis-ci</a></p>
+
+            <h3>package.json</h3>
+
+            <h4>Adding the yeoman dependency</h4>
+
+            <p>First we have to add the yeoman package as a dependency to our <code>package.json</code> file because we
+              can&#8217;t install yeoman globally on Travis CI.</p>
+
+            <figure class='code'>
+              <figcaption><span></span></figcaption>
+              <div class="highlight">
+                <table>
+                  <tr>
+                    <td class="gutter">
+                      <pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='yaml'><span class='line'><span class="s">&quot;devDependencies&quot;</span><span class="p-Indicator">:</span> <span class="p-Indicator">{</span>
+</pre>
+                    </td>
+                    <td class='code'>
+                      <pre><code class='yaml'><span class='line'><span class="s">&quot;devDependencies&quot;</span><span class="p-Indicator">:</span> <span class="p-Indicator">{</span>
 </span><span class='line'>  <span class="s">&quot;yeoman&quot;</span><span class="p-Indicator">:</span> <span class="s">&quot;~0.9.1&quot;</span>
 </span><span class='line'><span class="p-Indicator">}</span>
-</span></code></pre></td></tr></table></div></figure>
+</span></code></pre>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </figure>
 
 
-<p>After adding the dependency and running <code>npm install</code> you&#8217;ll see that yeoman is installed in the <code>node_modules</code> folder of your project.</p>
+            <p>After adding the dependency and running <code>npm install</code> you&#8217;ll see that yeoman is
+              installed in the <code>node_modules</code> folder of your project.</p>
 
-<h4>Setup npm test script</h4>
+            <h4>Setup npm test script</h4>
 
-<p>Travis CI runs the <code>npm test</code> command after fetching the project and installing the dependencies. To make npm test run the Yeoman test task, we need to add the following line into our <code>package.json</code> file.</p>
+            <p>Travis CI runs the <code>npm test</code> command after fetching the project and installing the
+              dependencies. To make npm test run the Yeoman test task, we need to add the following line into our
+              <code>package.json</code> file.
+            </p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+            <figure class='code'>
+              <figcaption><span></span></figcaption>
+              <div class="highlight">
+                <table>
+                  <tr>
+                    <td class="gutter">
+                      <pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='yaml'><span class='line'><span class="s">&quot;scripts&quot;</span><span class="p-Indicator">:</span> <span class="p-Indicator">{</span>
+</pre>
+                    </td>
+                    <td class='code'>
+                      <pre><code class='yaml'><span class='line'><span class="s">&quot;scripts&quot;</span><span class="p-Indicator">:</span> <span class="p-Indicator">{</span>
 </span><span class='line'>  <span class="s">&quot;test&quot;</span><span class="p-Indicator">:</span> <span class="s">&quot;node_modules/.bin/yeoman</span><span class="nv"> </span><span class="s">test</span><span class="nv"> </span><span class="s">--verbose&quot;</span>
 </span><span class='line'><span class="p-Indicator">}</span>
-</span></code></pre></td></tr></table></div></figure>
+</span></code></pre>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </figure>
 
 
-<p>I&#8217;ve added the <code>--verbose</code> argument because I&#8217;d like to see detailed information when my tests fail, but this is an optional argument.</p>
+            <p>I&#8217;ve added the <code>--verbose</code> argument because I&#8217;d like to see detailed information
+              when my tests fail, but this is an optional argument.</p>
 
-<p>At this point you should be able to run <code>npm test</code> and see Yeoman running your tests.</p>
+            <p>At this point you should be able to run <code>npm test</code> and see Yeoman running your tests.</p>
 
-<h3>Add the .travis.yml file</h3>
+            <h3>Add the .travis.yml file</h3>
 
-<p>Finally we have to add a <code>.travis.yml</code> file to let Travis CI know what language our project is and on which version(s) of NodeJS it should use to test our project against (note: Yeoman requires >= 0.8).</p>
+            <p>Finally we have to add a <code>.travis.yml</code> file to let Travis CI know what language our project is
+              and on which version(s) of NodeJS it should use to test our project against (note: Yeoman requires >=
+              0.8).</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+            <figure class='code'>
+              <figcaption><span></span></figcaption>
+              <div class="highlight">
+                <table>
+                  <tr>
+                    <td class="gutter">
+                      <pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='yaml'><span class='line'><span class="l-Scalar-Plain">language</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">node_js</span>
+</pre>
+                    </td>
+                    <td class='code'>
+                      <pre><code class='yaml'><span class='line'><span class="l-Scalar-Plain">language</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">node_js</span>
 </span><span class='line'><span class="l-Scalar-Plain">node_js</span><span class="p-Indicator">:</span>
 </span><span class='line'>  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">0.8</span>
 </span><span class='line'>  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">0.9</span>
-</span></code></pre></td></tr></table></div></figure>
+</span></code></pre>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </figure>
 
 
-<h2>Hook &amp; Push!</h2>
+            <h2>Hook &amp; Push!</h2>
 
-<p>The final step is to add the Travis CI hook to you project in GitHub and push your project.</p>
+            <p>The final step is to add the Travis CI hook to you project in GitHub and push your project.</p>
 
-<p>Happy coding!</p>
-</div>
-
-
-  <footer>
-    <p class="meta">
-      
-  
-
-<span class="byline author vcard">by <span class="fn">Manuel van Rijn</span></span>
-
-      
+            <p>Happy coding!</p>
+          </div>
 
 
+          <footer>
+            <p class="meta">
 
 
 
-
-
-
-  
-
-
-<time datetime="2012-09-17T14:45:00+02:00" pubdate data-updated="true">Sep 17<span>th</span>, 2012</time>
-      
-
-<span class="categories">
-  
-    <a class='category' href='/blog/categories/automation/'>automation</a>, <a class='category' href='/blog/categories/code/'>code</a>, <a class='category' href='/blog/categories/continuous-integration/'>continuous integration</a>, <a class='category' href='/blog/categories/frontend/'>frontend</a>, <a class='category' href='/blog/categories/javascript/'>javascript</a>, <a class='category' href='/blog/categories/testing/'>testing</a>, <a class='category' href='/blog/categories/travis-ci/'>travis-ci</a>, <a class='category' href='/blog/categories/yeoman/'>yeoman</a>
-  
-</span>
-
-
-    </p>
-    
-      <div class="sharing">
-  
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://manuelvanrijn.nl/blog/2012/09/17/yeoman-meets-travis-ci/" data-via="" data-counturl="http://manuelvanrijn.nl/blog/2012/09/17/yeoman-meets-travis-ci/" >Tweet</a>
-  
-  
-  
-</div>
-
-    
-    <p class="meta">
-      
-        <a class="basic-alignment left" href="/blog/2012/07/26/select-total-rows-from-database/" title="Previous Post: SELECT total_rows FROM database">&laquo; SELECT total_rows FROM database</a>
-      
-      
-        <a class="basic-alignment right" href="/blog/2012/11/13/scalable-heroku-worker-for-sidekiq/" title="Next Post: Scalable Heroku worker for Sidekiq">Scalable Heroku worker for Sidekiq &raquo;</a>
-      
-    </p>
-  </footer>
-</article>
-
-  <section>
-    <h1>Comments</h1>
-    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-</div>
-  </section>
-
-</div>
-
-<aside class="sidebar">
-  
-    <section>
-  <h1>About Me</h1>
-  <p>
-    <img class="left" src="http://www.gravatar.com/avatar/5c42621691011e9f8fcabf1b4e23d4ad?s=80" title="Manuel van Rijn" />
-    <small>
-      Manuel van Rijn<br />
-      iOS, Front &amp; Backend Developer<br />
-      Work: <a href="http://www.sping.nl/">www.sping.nl</a><br /><br />
-      <a rel="author" href="https://github.com/manuelvanrijn" class="zocial icon github">Manuel van Rijn on Github</a>
-      <a rel="author" href="http://nl.linkedin.com/in/manuelvanrijn" class="zocial icon linkedin">Manuel van Rijn on LinkedIn</a>
-      <a rel="author" href="http://twitter.com/manuelvanrijn" class="zocial icon twitter">Manuel van Rijn on Twitter</a>
-    </small>
-  </p>
-</section>
-<section>
-  <h1>Recent Posts</h1>
-  <ul id="recent_posts">
-    
-      <li class="post">
-        <a href="/blog/2015/05/19/rails-subdomains-for-localhost-development/">Rails subdomains for localhost/development</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/06/03/osx-10-dot-10-yosemite-crashing-chrome/">OSX 10.10 Yosemite - Crashing Chrome</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/07/23/developing-ruby-on-rails-on-windows/">Developing Ruby on Rails on Windows</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/03/04/rails-belongs-to-to-has-many/">Rails belongs_to to has_many</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/11/13/sidekiq-on-heroku-with-redistogo-nano/">Sidekiq on Heroku with Redis To Go Nano</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/11/13/scalable-heroku-worker-for-sidekiq/">Scalable Heroku worker for Sidekiq</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/09/17/yeoman-meets-travis-ci/">Yeoman meets Travis CI</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/07/26/select-total-rows-from-database/">SELECT total_rows FROM database</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/06/22/integrate-travis-ci-into-grunt/">Integrate Travis CI into Grunt</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/06/20/taking-memsql-for-a-spin/">Taking MemSQL for a spin</a>
-      </li>
-    
-  </ul>
-</section>
+              <span class="byline author vcard">by <span class="fn">Manuel van Rijn</span></span>
 
 
 
 
-<section class="googleplus googleplus-hidden">
-  <h1>
-    <a href="https://plus.google.com/117895812778172164201?rel=author">
-      <img src="http://www.google.com/images/icons/ui/gprofile_button-32.png" width="32" height="32">
-      Google+
-    </a>
-  </h1>
-</section>
 
 
 
-<section id="stackoverflow">
-  <h1>Stack Overflow</h1>
-  <a href="http://stackoverflow.com/users/959041/manuel-van-rijn">
-  <img src="http://stackoverflow.com/users/flair/959041.png?theme=default" width="208" height="58" alt="profile for Manuel van Rijn at Stack Overflow, Q&amp;A for professional and enthusiast programmers" title="profile for Manuel van Rijn at Stack Overflow, Q&amp;A for professional and enthusiast programmers">
-  </a>
-</section>
 
 
-  
-</aside>
+
+
+
+
+              <time datetime="2012-09-17T14:45:00+02:00" pubdate data-updated="true">Sep 17<span>th</span>, 2012</time>
+
+
+              <span class="categories">
+
+                <a class='category' href='/blog/categories/automation/'>automation</a>, <a class='category'
+                  href='/blog/categories/code/'>code</a>, <a class='category'
+                  href='/blog/categories/continuous-integration/'>continuous integration</a>, <a class='category'
+                  href='/blog/categories/frontend/'>frontend</a>, <a class='category'
+                  href='/blog/categories/javascript/'>javascript</a>, <a class='category'
+                  href='/blog/categories/testing/'>testing</a>, <a class='category'
+                  href='/blog/categories/travis-ci/'>travis-ci</a>, <a class='category'
+                  href='/blog/categories/yeoman/'>yeoman</a>
+
+              </span>
+
+
+            </p>
+
+            <div class="sharing">
+
+              <a href="https://twitter.com/share" class="twitter-share-button"
+                data-url="https://manuelvanrijn.nl/blog/2012/09/17/yeoman-meets-travis-ci/" data-via=""
+                data-counturl="https://manuelvanrijn.nl/blog/2012/09/17/yeoman-meets-travis-ci/">Tweet</a>
+
+
+
+            </div>
+
+
+            <p class="meta">
+
+              <a class="basic-alignment left" href="/blog/2012/07/26/select-total-rows-from-database/"
+                title="Previous Post: SELECT total_rows FROM database">&laquo; SELECT total_rows FROM database</a>
+
+
+              <a class="basic-alignment right" href="/blog/2012/11/13/scalable-heroku-worker-for-sidekiq/"
+                title="Next Post: Scalable Heroku worker for Sidekiq">Scalable Heroku worker for Sidekiq &raquo;</a>
+
+            </p>
+          </footer>
+        </article>
+
+        <section>
+          <h1>Comments</h1>
+          <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a
+                href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+          </div>
+        </section>
+
+      </div>
+
+      <aside class="sidebar">
+
+        <section>
+          <h1>About Me</h1>
+          <p>
+            <img class="left" src="https://www.gravatar.com/avatar/5c42621691011e9f8fcabf1b4e23d4ad?s=80"
+              title="Manuel van Rijn" />
+            <small>
+              Manuel van Rijn<br />
+              iOS, Front &amp; Backend Developer<br />
+              Work: <a href="https://www.sping.nl/">www.sping.nl</a><br /><br />
+              <a rel="author" href="https://github.com/manuelvanrijn" class="zocial icon github">Manuel van Rijn on
+                Github</a>
+              <a rel="author" href="https://nl.linkedin.com/in/manuelvanrijn" class="zocial icon linkedin">Manuel van
+                Rijn on LinkedIn</a>
+              <a rel="author" href="https://twitter.com/manuelvanrijn" class="zocial icon twitter">Manuel van Rijn on
+                Twitter</a>
+            </small>
+          </p>
+        </section>
+        <section>
+          <h1>Recent Posts</h1>
+          <ul id="recent_posts">
+
+            <li class="post">
+              <a href="/blog/2015/05/19/rails-subdomains-for-localhost-development/">Rails subdomains for
+                localhost/development</a>
+            </li>
+
+            <li class="post">
+              <a href="/blog/2014/06/03/osx-10-dot-10-yosemite-crashing-chrome/">OSX 10.10 Yosemite - Crashing
+                Chrome</a>
+            </li>
+
+            <li class="post">
+              <a href="/blog/2013/07/23/developing-ruby-on-rails-on-windows/">Developing Ruby on Rails on Windows</a>
+            </li>
+
+            <li class="post">
+              <a href="/blog/2013/03/04/rails-belongs-to-to-has-many/">Rails belongs_to to has_many</a>
+            </li>
+
+            <li class="post">
+              <a href="/blog/2012/11/13/sidekiq-on-heroku-with-redistogo-nano/">Sidekiq on Heroku with Redis To Go
+                Nano</a>
+            </li>
+
+            <li class="post">
+              <a href="/blog/2012/11/13/scalable-heroku-worker-for-sidekiq/">Scalable Heroku worker for Sidekiq</a>
+            </li>
+
+            <li class="post">
+              <a href="/blog/2012/09/17/yeoman-meets-travis-ci/">Yeoman meets Travis CI</a>
+            </li>
+
+            <li class="post">
+              <a href="/blog/2012/07/26/select-total-rows-from-database/">SELECT total_rows FROM database</a>
+            </li>
+
+            <li class="post">
+              <a href="/blog/2012/06/22/integrate-travis-ci-into-grunt/">Integrate Travis CI into Grunt</a>
+            </li>
+
+            <li class="post">
+              <a href="/blog/2012/06/20/taking-memsql-for-a-spin/">Taking MemSQL for a spin</a>
+            </li>
+
+          </ul>
+        </section>
+
+
+
+
+        <section class="googleplus googleplus-hidden">
+          <h1>
+            <a href="https://plus.google.com/117895812778172164201?rel=author">
+              <img src="https://www.google.com/images/icons/ui/gprofile_button-32.png" width="32" height="32">
+              Google+
+            </a>
+          </h1>
+        </section>
+
+
+
+        <section id="stackoverflow">
+          <h1>Stack Overflow</h1>
+          <a href="https://stackoverflow.com/users/959041/manuel-van-rijn">
+            <img src="https://stackoverflow.com/users/flair/959041.png?theme=default" width="208" height="58"
+              alt="profile for Manuel van Rijn at Stack Overflow, Q&amp;A for professional and enthusiast programmers"
+              title="profile for Manuel van Rijn at Stack Overflow, Q&amp;A for professional and enthusiast programmers">
+          </a>
+        </section>
+
+
+
+      </aside>
 
 
     </div>
   </div>
-  <footer role="contentinfo"><p>
-  Copyright &copy; 2016 - Manuel van Rijn -
-  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
-</p>
+  <footer role="contentinfo">
+    <p>
+      Copyright &copy; 2016 - Manuel van Rijn -
+      <span class="credit">Powered by <a href="https://octopress.org">Octopress</a></span>
+    </p>
 
-</footer>
-  
+  </footer>
 
-<script type="text/javascript">
-      var disqus_shortname = 'manuelvanrijn';
-      
-        
-        // var disqus_developer = 1;
-        var disqus_identifier = 'http://manuelvanrijn.nl/blog/2012/09/17/yeoman-meets-travis-ci/';
-        var disqus_url = 'http://manuelvanrijn.nl/blog/2012/09/17/yeoman-meets-travis-ci/';
-        var disqus_script = 'embed.js';
-      
+
+  <script type="text/javascript">
+    var disqus_shortname = 'manuelvanrijn';
+
+
+    // var disqus_developer = 1;
+    var disqus_identifier = 'https://manuelvanrijn.nl/blog/2012/09/17/yeoman-meets-travis-ci/';
+    var disqus_url = 'https://manuelvanrijn.nl/blog/2012/09/17/yeoman-meets-travis-ci/';
+    var disqus_script = 'embed.js';
+
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      dsq.src = 'https://' + disqus_shortname + '.disqus.com/' + disqus_script;
       (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
     }());
-</script>
+  </script>
 
 
 
@@ -363,11 +457,11 @@
 
 
   <script type="text/javascript">
-    (function(){
+    (function () {
       var twitterWidgets = document.createElement('script');
       twitterWidgets.type = 'text/javascript';
       twitterWidgets.async = true;
-      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      twitterWidgets.src = 'https://platform.twitter.com/widgets.js';
       document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
     })();
   </script>
@@ -377,4 +471,5 @@
 
 
 </body>
+
 </html>

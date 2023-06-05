@@ -1,24 +1,26 @@
-
 <!DOCTYPE html>
 <!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
 <!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
-<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!-->
+<html class="no-js" lang="en"><!--<![endif]-->
+
 <head>
   <meta charset="utf-8">
   <title>Scalable Heroku worker for Sidekiq - Manuel van Rijn</title>
   <meta name="author" content="Manuel van Rijn">
 
-  
-  <meta name="description" content="In this post I&#8217;d like to show you guys how to deploy your Rails application to Heroku with a Sidekiq worker that only gets initiated when &hellip;">
-  
 
-  <!-- http://t.co/dKP3o1e -->
+  <meta name="description"
+    content="In this post I&#8217;d like to show you guys how to deploy your Rails application to Heroku with a Sidekiq worker that only gets initiated when &hellip;">
+
+
+  <!-- https://t.co/dKP3o1e -->
   <meta name="HandheldFriendly" content="True">
   <meta name="MobileOptimized" content="320">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  
-  <link rel="canonical" href="http://manuelvanrijn.nl/blog/2012/11/13/scalable-heroku-worker-for-sidekiq/">
+
+  <link rel="canonical" href="https://manuelvanrijn.nl/blog/2012/11/13/scalable-heroku-worker-for-sidekiq/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/stylesheets/zocial/zocial.css" media="screen, projection" rel="stylesheet" type="text/css">
@@ -27,65 +29,70 @@
   <script src="/javascripts/ender.js"></script>
   <script src="/javascripts/octopress.js" type="text/javascript"></script>
   <link href="/atom.xml" rel="alternate" title="Manuel van Rijn" type="application/atom+xml">
-  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
-<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
-<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+  <!--Fonts from Google"s Web font directory at https://google.com/webfonts -->
+  <link href="https://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet"
+    type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet"
+    type="text/css">
 
-  
-  <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-PYTQBZ3YZT"></script>
   <script>
-    (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
-    function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
-    e=o.createElement(i);r=o.getElementsByTagName(i)[0];
-    e.src='https://www.google-analytics.com/analytics.js';
-    r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
-    ga('create','UA-17149124-1','auto');ga('send','pageview');
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+
+    gtag('config', 'G-PYTQBZ3YZT');
   </script>
+  <script async src="https://analytics.uppersource.nl/script.js"
+    data-website-id="49f17683-91d9-4ec5-82db-80a3857595e7"></script>
 
 
 
 </head>
 
-<body   >
-  <header role="banner"><hgroup>
-  <h1><a href="/">Manuel van Rijn</a></h1>
-  
-    <h2>Bit blog</h2>
-  
-</hgroup>
+<body>
+  <header role="banner">
+    <hgroup>
+      <h1><a href="/">Manuel van Rijn</a></h1>
 
-</header>
-  <nav role="navigation"><ul class="subscription" data-subscription="rss">
-  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
-  
-</ul>
-  
-<form action="http://google.com/search" method="get">
-  <fieldset role="search">
-    <input type="hidden" name="q" value="site:manuelvanrijn.nl" />
-    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
-  </fieldset>
-</form>
-  
-<ul class="main-navigation">
-  <li><a href="/">Blog</a></li>
-  <li><a href="/blog/archives">Archives</a></li>
-  <li><a href="/work">Work</a></li>
-</ul>
+      <h2>Bit blog</h2>
 
-</nav>
+    </hgroup>
+
+  </header>
+  <nav role="navigation">
+    <ul class="subscription" data-subscription="rss">
+      <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+
+    </ul>
+
+    <form action="https://google.com/search" method="get">
+      <fieldset role="search">
+        <input type="hidden" name="q" value="site:manuelvanrijn.nl" />
+        <input class="search" type="text" name="q" results="0" placeholder="Search" />
+      </fieldset>
+    </form>
+
+    <ul class="main-navigation">
+      <li><a href="/">Blog</a></li>
+      <li><a href="/blog/archives">Archives</a></li>
+      <li><a href="/work">Work</a></li>
+    </ul>
+
+  </nav>
   <div id="main">
     <div id="content">
       <div>
-<article class="hentry" role="article">
-  
-  <header>
-    
-      <h1 class="entry-title">Scalable Heroku worker for Sidekiq</h1>
-    
-    
-      <p class="meta">
-        
+        <article class="hentry" role="article">
+
+          <header>
+
+            <h1 class="entry-title">Scalable Heroku worker for Sidekiq</h1>
+
+
+            <p class="meta">
 
 
 
@@ -94,41 +101,69 @@
 
 
 
-  
 
 
-<time datetime="2012-11-13T09:02:00+01:00" pubdate data-updated="true">Nov 13<span>th</span>, 2012</time>
-        
-      </p>
-    
-  </header>
 
 
-<div class="entry-content"><p><a href="/blog/2012/11/13/scalable-heroku-worker-for-sidekiq/"><img class="left" src="/images/posts/more-workers.jpg" width="200" height="200" title="More workers" ></a> In this post I&#8217;d like to show you guys how to deploy your Rails application to <a href="http://www.heroku.com/">Heroku</a> with a <a href="http://sidekiq.org/">Sidekiq</a> worker that only gets initiated when there are tasks in the queue to process.</p>
+              <time datetime="2012-11-13T09:02:00+01:00" pubdate data-updated="true">Nov 13<span>th</span>, 2012</time>
 
-<p>Our goal is to start a worker when a task is added to the queue and to destroy the worker after its done processing the queue tasks. This will result in a much lower bill at the end of the month because the worker doesn&#8217;t have to be up the whole month.</p>
+            </p>
 
-<!-- more -->
-
-
-<h2>Setting up Sidekiq</h2>
-
-<p>First let&#8217;s take a look at a default configuration of Sidekiq within a Rails project.</p>
-
-<h3>Add the gem</h3>
-
-<p>First we need to add Sidekiq to our Gemfile and run <code>bundle install</code></p>
-
-<figure class='code'><figcaption><span>Gemfile</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">gem</span> <span class="s1">&#39;sidekiq&#39;</span>
-</span></code></pre></td></tr></table></div></figure>
+          </header>
 
 
-<h3>Create a Sidekiq worker</h3>
+          <div class="entry-content">
+            <p><a href="/blog/2012/11/13/scalable-heroku-worker-for-sidekiq/"><img class="left"
+                  src="/images/posts/more-workers.jpg" width="200" height="200" title="More workers"></a> In this post
+              I&#8217;d like to show you guys how to deploy your Rails application to <a
+                href="https://www.heroku.com/">Heroku</a> with a <a href="https://sidekiq.org/">Sidekiq</a> worker that
+              only gets initiated when there are tasks in the queue to process.</p>
 
-<p>The worker is very basic. It just performs some heavy task and sends an email after it finished.</p>
+            <p>Our goal is to start a worker when a task is added to the queue and to destroy the worker after its done
+              processing the queue tasks. This will result in a much lower bill at the end of the month because the
+              worker doesn&#8217;t have to be up the whole month.</p>
 
-<figure class='code'><figcaption><span>app/workers/my_worker.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+            <!-- more -->
+
+
+            <h2>Setting up Sidekiq</h2>
+
+            <p>First let&#8217;s take a look at a default configuration of Sidekiq within a Rails project.</p>
+
+            <h3>Add the gem</h3>
+
+            <p>First we need to add Sidekiq to our Gemfile and run <code>bundle install</code></p>
+
+            <figure class='code'>
+              <figcaption><span>Gemfile</span></figcaption>
+              <div class="highlight">
+                <table>
+                  <tr>
+                    <td class="gutter">
+                      <pre class="line-numbers"><span class='line-number'>1</span>
+</pre>
+                    </td>
+                    <td class='code'>
+                      <pre><code class='ruby'><span class='line'><span class="n">gem</span> <span class="s1">&#39;sidekiq&#39;</span>
+</span></code></pre>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </figure>
+
+
+            <h3>Create a Sidekiq worker</h3>
+
+            <p>The worker is very basic. It just performs some heavy task and sends an email after it finished.</p>
+
+            <figure class='code'>
+              <figcaption><span>app/workers/my_worker.rb</span></figcaption>
+              <div class="highlight">
+                <table>
+                  <tr>
+                    <td class="gutter">
+                      <pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -137,7 +172,10 @@
 <span class='line-number'>7</span>
 <span class='line-number'>8</span>
 <span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">MyWorker</span>
+</pre>
+                    </td>
+                    <td class='code'>
+                      <pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">MyWorker</span>
 </span><span class='line'>  <span class="kp">include</span> <span class="ss">Sidekiq</span><span class="p">:</span><span class="ss">:Worker</span>
 </span><span class='line'>
 </span><span class='line'>  <span class="k">def</span> <span class="nf">perform</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
@@ -146,99 +184,181 @@
 </span><span class='line'>    <span class="no">UserMailer</span><span class="o">.</span><span class="n">download_is_ready</span><span class="p">(</span><span class="n">object</span><span class="p">)</span><span class="o">.</span><span class="n">deliver</span>
 </span><span class='line'>  <span class="k">end</span>
 </span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
+</span></code></pre>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </figure>
 
 
-<h3>Procfile</h3>
+            <h3>Procfile</h3>
 
-<p>In our Procfile we have to define the <code>worker</code> line to start the Sidekiq server on a Heroku worker dyno.</p>
+            <p>In our Procfile we have to define the <code>worker</code> line to start the Sidekiq server on a Heroku
+              worker dyno.</p>
 
-<figure class='code'><figcaption><span>Procfile</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+            <figure class='code'>
+              <figcaption><span>Procfile</span></figcaption>
+              <div class="highlight">
+                <table>
+                  <tr>
+                    <td class="gutter">
+                      <pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>web: bundle <span class="nb">exec </span>unicorn -p <span class="nv">$PORT</span> -c ./config/unicorn.rb
+</pre>
+                    </td>
+                    <td class='code'>
+                      <pre><code class='bash'><span class='line'>web: bundle <span class="nb">exec </span>unicorn -p <span class="nv">$PORT</span> -c ./config/unicorn.rb
 </span><span class='line'>worker: bundle <span class="nb">exec </span>sidekiq -e production
-</span></code></pre></td></tr></table></div></figure>
+</span></code></pre>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </figure>
 
 
-<h3>Move heavy task to the queue</h3>
+            <h3>Move heavy task to the queue</h3>
 
-<p>On the controller we probably have a line calling <code>object.generate_download</code> which takes to much time. We&#8217;ll change this line to execute the <code>MyWorker</code> instead:</p>
+            <p>On the controller we probably have a line calling <code>object.generate_download</code> which takes to
+              much time. We&#8217;ll change this line to execute the <code>MyWorker</code> instead:</p>
 
-<figure class='code'><figcaption><span>app/controllers/download_controller.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+            <figure class='code'>
+              <figcaption><span>app/controllers/download_controller.rb</span></figcaption>
+              <div class="highlight">
+                <table>
+                  <tr>
+                    <td class="gutter">
+                      <pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
 <span class='line-number'>6</span>
 <span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">DownloadController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+</pre>
+                    </td>
+                    <td class='code'>
+                      <pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">DownloadController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
 </span><span class='line'>  <span class="k">def</span> <span class="nf">generate</span>
 </span><span class='line'>    <span class="n">object</span> <span class="o">=</span> <span class="no">Model</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">param</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span>
 </span><span class='line'>    <span class="c1"># instead of calling object.generate_download we&#39;ll do:</span>
 </span><span class='line'>    <span class="no">MyWorker</span><span class="o">.</span><span class="n">perform_async</span><span class="p">(</span><span class="n">object</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
 </span><span class='line'>  <span class="k">end</span>
 </span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
+</span></code></pre>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </figure>
 
 
-<p><strong>NOTE:</strong> It&#8217;s recommended not to add the whole object into the worker because this is stored in the Redis database. Also the object might be changed before it&#8217;s being processed by Sidekiq. Adding the <code>id</code> and fetching the object in the worker is a better approach.</p>
+            <p><strong>NOTE:</strong> It&#8217;s recommended not to add the whole object into the worker because this is
+              stored in the Redis database. Also the object might be changed before it&#8217;s being processed by
+              Sidekiq. Adding the <code>id</code> and fetching the object in the worker is a better approach.</p>
 
-<h2>So far&#8230;</h2>
+            <h2>So far&#8230;</h2>
 
-<p>At this point we have configured our Rails project to add tasks to Redis and have Sidekiq perform executing the worker when a task is added. If we deploy our Rails app to Heroku we need to add the Redis To Go addon and add a Heroku worker dyno to our application.</p>
+            <p>At this point we have configured our Rails project to add tasks to Redis and have Sidekiq perform
+              executing the worker when a task is added. If we deploy our Rails app to Heroku we need to add the Redis
+              To Go addon and add a Heroku worker dyno to our application.</p>
 
-<h3>Running locally</h3>
+            <h3>Running locally</h3>
 
-<p>To test this locally we need:</p>
+            <p>To test this locally we need:</p>
 
-<ul>
-<li>Redis installed locally and running</li>
-<li>Run the Rails app (<code>bundle exec rails server</code>)</li>
-<li>Run the Sidekiq server (<code>bundle exec sidekiq</code>)</li>
-</ul>
-
-
-<h2>Adding the autoscaler</h2>
-
-<p>At this point the Heroku worker dyno has to be started, to pickup tasks from the queue. It&#8217;s likely you do not need this worker to run the whole day because the queue might be empty most of the time. Here&#8217;s where the <a href="http://github.com/JustinLove/autoscaler/">autoscaler gem</a> come&#8217;s in handy.</p>
-
-<p>This gem acts as Middleware for Sidekiq and performs the following tasks:</p>
-
-<ol>
-<li>When a task is added it checks if a Worker is present.</li>
-<li>When a worker is already running it does nothing and the worker will pickup the task.</li>
-<li>If there isn&#8217;t a worker running it will create a Heroku worker dyno.</li>
-<li>If the worker finished processing the queue it will keep the worker alive for 60 seconds just in case we add a task to the queue within this time. If no tasks are added it will destroy the worker.</li>
-</ol>
+            <ul>
+              <li>Redis installed locally and running</li>
+              <li>Run the Rails app (<code>bundle exec rails server</code>)</li>
+              <li>Run the Sidekiq server (<code>bundle exec sidekiq</code>)</li>
+            </ul>
 
 
-<h3>Add the gem</h3>
+            <h2>Adding the autoscaler</h2>
 
-<p>First we need to add the autoscaler gem to our Gemfile and run <code>bundle install</code></p>
+            <p>At this point the Heroku worker dyno has to be started, to pickup tasks from the queue. It&#8217;s likely
+              you do not need this worker to run the whole day because the queue might be empty most of the time.
+              Here&#8217;s where the <a href="https://github.com/JustinLove/autoscaler/">autoscaler gem</a> come&#8217;s
+              in handy.</p>
 
-<figure class='code'><figcaption><span>Gemfile</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">gem</span> <span class="s1">&#39;autoscaler&#39;</span>
-</span></code></pre></td></tr></table></div></figure>
+            <p>This gem acts as Middleware for Sidekiq and performs the following tasks:</p>
+
+            <ol>
+              <li>When a task is added it checks if a Worker is present.</li>
+              <li>When a worker is already running it does nothing and the worker will pickup the task.</li>
+              <li>If there isn&#8217;t a worker running it will create a Heroku worker dyno.</li>
+              <li>If the worker finished processing the queue it will keep the worker alive for 60 seconds just in case
+                we add a task to the queue within this time. If no tasks are added it will destroy the worker.</li>
+            </ol>
 
 
-<h3>Adding required ENV variables</h3>
+            <h3>Add the gem</h3>
 
-<p>The gem requires two environment variables to be set on your Heroku application. The <code>HEROKU_API_KEY</code> is required to perform creating and removing a Heroku worker dyno and the <code>HEROKU_APP</code> to know on which application it has to create/destroy the worker dyno on.</p>
+            <p>First we need to add the autoscaler gem to our Gemfile and run <code>bundle install</code></p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+            <figure class='code'>
+              <figcaption><span>Gemfile</span></figcaption>
+              <div class="highlight">
+                <table>
+                  <tr>
+                    <td class="gutter">
+                      <pre class="line-numbers"><span class='line-number'>1</span>
+</pre>
+                    </td>
+                    <td class='code'>
+                      <pre><code class='ruby'><span class='line'><span class="n">gem</span> <span class="s1">&#39;autoscaler&#39;</span>
+</span></code></pre>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </figure>
+
+
+            <h3>Adding required ENV variables</h3>
+
+            <p>The gem requires two environment variables to be set on your Heroku application. The
+              <code>HEROKU_API_KEY</code> is required to perform creating and removing a Heroku worker dyno and the
+              <code>HEROKU_APP</code> to know on which application it has to create/destroy the worker dyno on.
+            </p>
+
+            <figure class='code'>
+              <figcaption><span></span></figcaption>
+              <div class="highlight">
+                <table>
+                  <tr>
+                    <td class="gutter">
+                      <pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c"># API KEY can be found on https://dashboard.heroku.com/account</span>
+</pre>
+                    </td>
+                    <td class='code'>
+                      <pre><code class='bash'><span class='line'><span class="c"># API KEY can be found on https://dashboard.heroku.com/account</span>
 </span><span class='line'>heroku config:add <span class="nv">HEROKU_API_KEY</span><span class="o">=</span>123-your-key-456
 </span><span class='line'>heroku config:add <span class="nv">HEROKU_APP</span><span class="o">=</span>your_heroku_app_name
-</span></code></pre></td></tr></table></div></figure>
+</span></code></pre>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </figure>
 
 
-<h3>Tweaking the Sidekiq initializer</h3>
+            <h3>Tweaking the Sidekiq initializer</h3>
 
-<p>Because this gem acts as Middleware we need to create a <code>sidekiq.rb</code> in our initializers folder. This file will check if we are running on Heroku and if so, activates the autoscaler as Middleware.</p>
+            <p>Because this gem acts as Middleware we need to create a <code>sidekiq.rb</code> in our initializers
+              folder. This file will check if we are running on Heroku and if so, activates the autoscaler as
+              Middleware.</p>
 
-<figure class='code'><figcaption><span>app/config/initializers/sidekiq.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+            <figure class='code'>
+              <figcaption><span>app/config/initializers/sidekiq.rb</span></figcaption>
+              <div class="highlight">
+                <table>
+                  <tr>
+                    <td class="gutter">
+                      <pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -265,7 +385,10 @@
 <span class='line-number'>25</span>
 <span class='line-number'>26</span>
 <span class='line-number'>27</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;sidekiq&#39;</span>
+</pre>
+                    </td>
+                    <td class='code'>
+                      <pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;sidekiq&#39;</span>
 </span><span class='line'><span class="nb">require</span> <span class="s1">&#39;autoscaler/sidekiq&#39;</span>
 </span><span class='line'><span class="nb">require</span> <span class="s1">&#39;autoscaler/heroku_scaler&#39;</span>
 </span><span class='line'>
@@ -292,188 +415,216 @@
 </span><span class='line'>    <span class="k">end</span>
 </span><span class='line'>  <span class="k">end</span>
 </span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
+</span></code></pre>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </figure>
 
 
-<h2>Ready to go!</h2>
+            <h2>Ready to go!</h2>
 
-<p>At this point we&#8217;re ready to deploy our application to Heroku and let the autscaler automatically create and destroy a worker dyno whenever it needs to process tasks from the Sidekiq queue.</p>
-</div>
-
-
-  <footer>
-    <p class="meta">
-      
-  
-
-<span class="byline author vcard">by <span class="fn">Manuel van Rijn</span></span>
-
-      
+            <p>At this point we&#8217;re ready to deploy our application to Heroku and let the autscaler automatically
+              create and destroy a worker dyno whenever it needs to process tasks from the Sidekiq queue.</p>
+          </div>
 
 
-
+          <footer>
+            <p class="meta">
 
 
 
-
-
-  
-
-
-<time datetime="2012-11-13T09:02:00+01:00" pubdate data-updated="true">Nov 13<span>th</span>, 2012</time>
-      
-
-<span class="categories">
-  
-    <a class='category' href='/blog/categories/automating/'>automating</a>, <a class='category' href='/blog/categories/heroku/'>heroku</a>, <a class='category' href='/blog/categories/rails/'>rails</a>, <a class='category' href='/blog/categories/redis/'>redis</a>, <a class='category' href='/blog/categories/ruby/'>ruby</a>, <a class='category' href='/blog/categories/scale/'>scale</a>, <a class='category' href='/blog/categories/sidekiq/'>sidekiq</a>, <a class='category' href='/blog/categories/threading/'>threading</a>
-  
-</span>
-
-
-    </p>
-    
-      <div class="sharing">
-  
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://manuelvanrijn.nl/blog/2012/11/13/scalable-heroku-worker-for-sidekiq/" data-via="" data-counturl="http://manuelvanrijn.nl/blog/2012/11/13/scalable-heroku-worker-for-sidekiq/" >Tweet</a>
-  
-  
-  
-</div>
-
-    
-    <p class="meta">
-      
-        <a class="basic-alignment left" href="/blog/2012/09/17/yeoman-meets-travis-ci/" title="Previous Post: Yeoman meets Travis CI">&laquo; Yeoman meets Travis CI</a>
-      
-      
-        <a class="basic-alignment right" href="/blog/2012/11/13/sidekiq-on-heroku-with-redistogo-nano/" title="Next Post: Sidekiq on Heroku with Redis To Go Nano">Sidekiq on Heroku with Redis To Go Nano &raquo;</a>
-      
-    </p>
-  </footer>
-</article>
-
-  <section>
-    <h1>Comments</h1>
-    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-</div>
-  </section>
-
-</div>
-
-<aside class="sidebar">
-  
-    <section>
-  <h1>About Me</h1>
-  <p>
-    <img class="left" src="http://www.gravatar.com/avatar/5c42621691011e9f8fcabf1b4e23d4ad?s=80" title="Manuel van Rijn" />
-    <small>
-      Manuel van Rijn<br />
-      iOS, Front &amp; Backend Developer<br />
-      Work: <a href="http://www.sping.nl/">www.sping.nl</a><br /><br />
-      <a rel="author" href="https://github.com/manuelvanrijn" class="zocial icon github">Manuel van Rijn on Github</a>
-      <a rel="author" href="http://nl.linkedin.com/in/manuelvanrijn" class="zocial icon linkedin">Manuel van Rijn on LinkedIn</a>
-      <a rel="author" href="http://twitter.com/manuelvanrijn" class="zocial icon twitter">Manuel van Rijn on Twitter</a>
-    </small>
-  </p>
-</section>
-<section>
-  <h1>Recent Posts</h1>
-  <ul id="recent_posts">
-    
-      <li class="post">
-        <a href="/blog/2015/05/19/rails-subdomains-for-localhost-development/">Rails subdomains for localhost/development</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/06/03/osx-10-dot-10-yosemite-crashing-chrome/">OSX 10.10 Yosemite - Crashing Chrome</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/07/23/developing-ruby-on-rails-on-windows/">Developing Ruby on Rails on Windows</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/03/04/rails-belongs-to-to-has-many/">Rails belongs_to to has_many</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/11/13/sidekiq-on-heroku-with-redistogo-nano/">Sidekiq on Heroku with Redis To Go Nano</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/11/13/scalable-heroku-worker-for-sidekiq/">Scalable Heroku worker for Sidekiq</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/09/17/yeoman-meets-travis-ci/">Yeoman meets Travis CI</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/07/26/select-total-rows-from-database/">SELECT total_rows FROM database</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/06/22/integrate-travis-ci-into-grunt/">Integrate Travis CI into Grunt</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/06/20/taking-memsql-for-a-spin/">Taking MemSQL for a spin</a>
-      </li>
-    
-  </ul>
-</section>
+              <span class="byline author vcard">by <span class="fn">Manuel van Rijn</span></span>
 
 
 
 
-<section class="googleplus googleplus-hidden">
-  <h1>
-    <a href="https://plus.google.com/117895812778172164201?rel=author">
-      <img src="http://www.google.com/images/icons/ui/gprofile_button-32.png" width="32" height="32">
-      Google+
-    </a>
-  </h1>
-</section>
 
 
 
-<section id="stackoverflow">
-  <h1>Stack Overflow</h1>
-  <a href="http://stackoverflow.com/users/959041/manuel-van-rijn">
-  <img src="http://stackoverflow.com/users/flair/959041.png?theme=default" width="208" height="58" alt="profile for Manuel van Rijn at Stack Overflow, Q&amp;A for professional and enthusiast programmers" title="profile for Manuel van Rijn at Stack Overflow, Q&amp;A for professional and enthusiast programmers">
-  </a>
-</section>
 
 
-  
-</aside>
+
+
+
+
+              <time datetime="2012-11-13T09:02:00+01:00" pubdate data-updated="true">Nov 13<span>th</span>, 2012</time>
+
+
+              <span class="categories">
+
+                <a class='category' href='/blog/categories/automating/'>automating</a>, <a class='category'
+                  href='/blog/categories/heroku/'>heroku</a>, <a class='category'
+                  href='/blog/categories/rails/'>rails</a>, <a class='category'
+                  href='/blog/categories/redis/'>redis</a>, <a class='category' href='/blog/categories/ruby/'>ruby</a>,
+                <a class='category' href='/blog/categories/scale/'>scale</a>, <a class='category'
+                  href='/blog/categories/sidekiq/'>sidekiq</a>, <a class='category'
+                  href='/blog/categories/threading/'>threading</a>
+
+              </span>
+
+
+            </p>
+
+            <div class="sharing">
+
+              <a href="https://twitter.com/share" class="twitter-share-button"
+                data-url="https://manuelvanrijn.nl/blog/2012/11/13/scalable-heroku-worker-for-sidekiq/" data-via=""
+                data-counturl="https://manuelvanrijn.nl/blog/2012/11/13/scalable-heroku-worker-for-sidekiq/">Tweet</a>
+
+
+
+            </div>
+
+
+            <p class="meta">
+
+              <a class="basic-alignment left" href="/blog/2012/09/17/yeoman-meets-travis-ci/"
+                title="Previous Post: Yeoman meets Travis CI">&laquo; Yeoman meets Travis CI</a>
+
+
+              <a class="basic-alignment right" href="/blog/2012/11/13/sidekiq-on-heroku-with-redistogo-nano/"
+                title="Next Post: Sidekiq on Heroku with Redis To Go Nano">Sidekiq on Heroku with Redis To Go Nano
+                &raquo;</a>
+
+            </p>
+          </footer>
+        </article>
+
+        <section>
+          <h1>Comments</h1>
+          <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a
+                href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+          </div>
+        </section>
+
+      </div>
+
+      <aside class="sidebar">
+
+        <section>
+          <h1>About Me</h1>
+          <p>
+            <img class="left" src="https://www.gravatar.com/avatar/5c42621691011e9f8fcabf1b4e23d4ad?s=80"
+              title="Manuel van Rijn" />
+            <small>
+              Manuel van Rijn<br />
+              iOS, Front &amp; Backend Developer<br />
+              Work: <a href="https://www.sping.nl/">www.sping.nl</a><br /><br />
+              <a rel="author" href="https://github.com/manuelvanrijn" class="zocial icon github">Manuel van Rijn on
+                Github</a>
+              <a rel="author" href="https://nl.linkedin.com/in/manuelvanrijn" class="zocial icon linkedin">Manuel van
+                Rijn on LinkedIn</a>
+              <a rel="author" href="https://twitter.com/manuelvanrijn" class="zocial icon twitter">Manuel van Rijn on
+                Twitter</a>
+            </small>
+          </p>
+        </section>
+        <section>
+          <h1>Recent Posts</h1>
+          <ul id="recent_posts">
+
+            <li class="post">
+              <a href="/blog/2015/05/19/rails-subdomains-for-localhost-development/">Rails subdomains for
+                localhost/development</a>
+            </li>
+
+            <li class="post">
+              <a href="/blog/2014/06/03/osx-10-dot-10-yosemite-crashing-chrome/">OSX 10.10 Yosemite - Crashing
+                Chrome</a>
+            </li>
+
+            <li class="post">
+              <a href="/blog/2013/07/23/developing-ruby-on-rails-on-windows/">Developing Ruby on Rails on Windows</a>
+            </li>
+
+            <li class="post">
+              <a href="/blog/2013/03/04/rails-belongs-to-to-has-many/">Rails belongs_to to has_many</a>
+            </li>
+
+            <li class="post">
+              <a href="/blog/2012/11/13/sidekiq-on-heroku-with-redistogo-nano/">Sidekiq on Heroku with Redis To Go
+                Nano</a>
+            </li>
+
+            <li class="post">
+              <a href="/blog/2012/11/13/scalable-heroku-worker-for-sidekiq/">Scalable Heroku worker for Sidekiq</a>
+            </li>
+
+            <li class="post">
+              <a href="/blog/2012/09/17/yeoman-meets-travis-ci/">Yeoman meets Travis CI</a>
+            </li>
+
+            <li class="post">
+              <a href="/blog/2012/07/26/select-total-rows-from-database/">SELECT total_rows FROM database</a>
+            </li>
+
+            <li class="post">
+              <a href="/blog/2012/06/22/integrate-travis-ci-into-grunt/">Integrate Travis CI into Grunt</a>
+            </li>
+
+            <li class="post">
+              <a href="/blog/2012/06/20/taking-memsql-for-a-spin/">Taking MemSQL for a spin</a>
+            </li>
+
+          </ul>
+        </section>
+
+
+
+
+        <section class="googleplus googleplus-hidden">
+          <h1>
+            <a href="https://plus.google.com/117895812778172164201?rel=author">
+              <img src="https://www.google.com/images/icons/ui/gprofile_button-32.png" width="32" height="32">
+              Google+
+            </a>
+          </h1>
+        </section>
+
+
+
+        <section id="stackoverflow">
+          <h1>Stack Overflow</h1>
+          <a href="https://stackoverflow.com/users/959041/manuel-van-rijn">
+            <img src="https://stackoverflow.com/users/flair/959041.png?theme=default" width="208" height="58"
+              alt="profile for Manuel van Rijn at Stack Overflow, Q&amp;A for professional and enthusiast programmers"
+              title="profile for Manuel van Rijn at Stack Overflow, Q&amp;A for professional and enthusiast programmers">
+          </a>
+        </section>
+
+
+
+      </aside>
 
 
     </div>
   </div>
-  <footer role="contentinfo"><p>
-  Copyright &copy; 2016 - Manuel van Rijn -
-  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
-</p>
+  <footer role="contentinfo">
+    <p>
+      Copyright &copy; 2016 - Manuel van Rijn -
+      <span class="credit">Powered by <a href="https://octopress.org">Octopress</a></span>
+    </p>
 
-</footer>
-  
+  </footer>
 
-<script type="text/javascript">
-      var disqus_shortname = 'manuelvanrijn';
-      
-        
-        // var disqus_developer = 1;
-        var disqus_identifier = 'http://manuelvanrijn.nl/blog/2012/11/13/scalable-heroku-worker-for-sidekiq/';
-        var disqus_url = 'http://manuelvanrijn.nl/blog/2012/11/13/scalable-heroku-worker-for-sidekiq/';
-        var disqus_script = 'embed.js';
-      
+
+  <script type="text/javascript">
+    var disqus_shortname = 'manuelvanrijn';
+
+
+    // var disqus_developer = 1;
+    var disqus_identifier = 'https://manuelvanrijn.nl/blog/2012/11/13/scalable-heroku-worker-for-sidekiq/';
+    var disqus_url = 'https://manuelvanrijn.nl/blog/2012/11/13/scalable-heroku-worker-for-sidekiq/';
+    var disqus_script = 'embed.js';
+
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      dsq.src = 'https://' + disqus_shortname + '.disqus.com/' + disqus_script;
       (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
     }());
-</script>
+  </script>
 
 
 
@@ -482,11 +633,11 @@
 
 
   <script type="text/javascript">
-    (function(){
+    (function () {
       var twitterWidgets = document.createElement('script');
       twitterWidgets.type = 'text/javascript';
       twitterWidgets.async = true;
-      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      twitterWidgets.src = 'https://platform.twitter.com/widgets.js';
       document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
     })();
   </script>
@@ -496,4 +647,5 @@
 
 
 </body>
+
 </html>

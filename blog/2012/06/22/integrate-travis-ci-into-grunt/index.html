@@ -1,24 +1,26 @@
-
 <!DOCTYPE html>
 <!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
 <!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
-<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!-->
+<html class="no-js" lang="en"><!--<![endif]-->
+
 <head>
   <meta charset="utf-8">
   <title>Integrate Travis CI into Grunt - Manuel van Rijn</title>
   <meta name="author" content="Manuel van Rijn">
 
-  
-  <meta name="description" content="Today I&#8217;ve done some research how to get my latest jQuery plugin (jquery-numeric_input) to be tested automatically with the help of Travis CI &hellip;">
-  
 
-  <!-- http://t.co/dKP3o1e -->
+  <meta name="description"
+    content="Today I&#8217;ve done some research how to get my latest jQuery plugin (jquery-numeric_input) to be tested automatically with the help of Travis CI &hellip;">
+
+
+  <!-- https://t.co/dKP3o1e -->
   <meta name="HandheldFriendly" content="True">
   <meta name="MobileOptimized" content="320">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  
-  <link rel="canonical" href="http://manuelvanrijn.nl/blog/2012/06/22/integrate-travis-ci-into-grunt/">
+
+  <link rel="canonical" href="https://manuelvanrijn.nl/blog/2012/06/22/integrate-travis-ci-into-grunt/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/stylesheets/zocial/zocial.css" media="screen, projection" rel="stylesheet" type="text/css">
@@ -27,65 +29,70 @@
   <script src="/javascripts/ender.js"></script>
   <script src="/javascripts/octopress.js" type="text/javascript"></script>
   <link href="/atom.xml" rel="alternate" title="Manuel van Rijn" type="application/atom+xml">
-  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
-<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
-<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+  <!--Fonts from Google"s Web font directory at https://google.com/webfonts -->
+  <link href="https://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet"
+    type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet"
+    type="text/css">
 
-  
-  <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-PYTQBZ3YZT"></script>
   <script>
-    (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
-    function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
-    e=o.createElement(i);r=o.getElementsByTagName(i)[0];
-    e.src='https://www.google-analytics.com/analytics.js';
-    r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
-    ga('create','UA-17149124-1','auto');ga('send','pageview');
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+
+    gtag('config', 'G-PYTQBZ3YZT');
   </script>
+  <script async src="https://analytics.uppersource.nl/script.js"
+    data-website-id="49f17683-91d9-4ec5-82db-80a3857595e7"></script>
 
 
 
 </head>
 
-<body   >
-  <header role="banner"><hgroup>
-  <h1><a href="/">Manuel van Rijn</a></h1>
-  
-    <h2>Bit blog</h2>
-  
-</hgroup>
+<body>
+  <header role="banner">
+    <hgroup>
+      <h1><a href="/">Manuel van Rijn</a></h1>
 
-</header>
-  <nav role="navigation"><ul class="subscription" data-subscription="rss">
-  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
-  
-</ul>
-  
-<form action="http://google.com/search" method="get">
-  <fieldset role="search">
-    <input type="hidden" name="q" value="site:manuelvanrijn.nl" />
-    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
-  </fieldset>
-</form>
-  
-<ul class="main-navigation">
-  <li><a href="/">Blog</a></li>
-  <li><a href="/blog/archives">Archives</a></li>
-  <li><a href="/work">Work</a></li>
-</ul>
+      <h2>Bit blog</h2>
 
-</nav>
+    </hgroup>
+
+  </header>
+  <nav role="navigation">
+    <ul class="subscription" data-subscription="rss">
+      <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+
+    </ul>
+
+    <form action="https://google.com/search" method="get">
+      <fieldset role="search">
+        <input type="hidden" name="q" value="site:manuelvanrijn.nl" />
+        <input class="search" type="text" name="q" results="0" placeholder="Search" />
+      </fieldset>
+    </form>
+
+    <ul class="main-navigation">
+      <li><a href="/">Blog</a></li>
+      <li><a href="/blog/archives">Archives</a></li>
+      <li><a href="/work">Work</a></li>
+    </ul>
+
+  </nav>
   <div id="main">
     <div id="content">
       <div>
-<article class="hentry" role="article">
-  
-  <header>
-    
-      <h1 class="entry-title">Integrate Travis CI into Grunt</h1>
-    
-    
-      <p class="meta">
-        
+        <article class="hentry" role="article">
+
+          <header>
+
+            <h1 class="entry-title">Integrate Travis CI into Grunt</h1>
+
+
+            <p class="meta">
 
 
 
@@ -94,300 +101,408 @@
 
 
 
-  
 
 
-<time datetime="2012-06-22T15:04:00+02:00" pubdate data-updated="true">Jun 22<span>nd</span>, 2012</time>
-        
-      </p>
-    
-  </header>
 
 
-<div class="entry-content"><p><a href="/blog/2012/06/22/integrate-travis-ci-into-grunt/"><img class="right" src="/images/posts/travis-grunt.jpg" width="200" height="200" title="Code Fail" ></a> Today I&#8217;ve done some research how to get my latest jQuery plugin (<a href="http://manuelvanrijn.nl/jquery-numeric_input/">jquery-numeric_input</a>) to be tested automatically with the help of <a href="http://travis-ci.org/">Travis CI</a>. Travis CI is a hosted continuous integration service for open source projects.</p>
+              <time datetime="2012-06-22T15:04:00+02:00" pubdate data-updated="true">Jun 22<span>nd</span>, 2012</time>
 
-<p>Because I&#8217;ve just finished the latest functionality of the plugin I wanted to add the project to Travis CI, just like I do with all my other projects (the ones with unit tests).</p>
+            </p>
 
-<!-- more -->
-
-
-<h2>Grunt</h2>
-
-<p>For the development of the plugin I used <a href="http://gruntjs.com/">Grunt</a> which is a task-based command line build tool for JavaScript projects. Starting a new project is as easy as running <code>grunt init:jquery</code> and you have a entire generated jQuery plugin project.</p>
-
-<p>By default this command configures a jQuery plugin, QUnit test suite, sample plugin, sample tests and some grunt tasks you can use. Running the <code>grunt</code> command in your project folder will execute the default task meaning:</p>
-
-<ol>
-<li>lint - Analysis your code with <a href="https://github.com/douglascrockford/JSLint/">JSLint</a></li>
-<li>qunit - Runs your QUnit tests using <a href="http://phantomjs.org/">PhantomJS</a> (so it supports the exit code for success or failure)</li>
-<li>concat - Concatenate your project files</li>
-<li>min - Minify your project files using <a href="https://github.com/mishoo/UglifyJS/">UglifyJS</a></li>
-</ol>
+          </header>
 
 
-<p>Really easy to get started coding instead of setting up your environment :)</p>
+          <div class="entry-content">
+            <p><a href="/blog/2012/06/22/integrate-travis-ci-into-grunt/"><img class="right"
+                  src="/images/posts/travis-grunt.jpg" width="200" height="200" title="Code Fail"></a> Today I&#8217;ve
+              done some research how to get my latest jQuery plugin (<a
+                href="https://manuelvanrijn.nl/jquery-numeric_input/">jquery-numeric_input</a>) to be tested
+              automatically with the help of <a href="https://travis-ci.org/">Travis CI</a>. Travis CI is a hosted
+              continuous integration service for open source projects.</p>
 
-<h2>Integration with Travis CI</h2>
+            <p>Because I&#8217;ve just finished the latest functionality of the plugin I wanted to add the project to
+              Travis CI, just like I do with all my other projects (the ones with unit tests).</p>
 
-<p>Ok so at this point I want to add my project to Travis CI so that it tests my suite when pushing new branches/commits to Github. To do this we have to make a few changes.</p>
+            <!-- more -->
 
-<h3>TL;DR</h3>
 
-<p>Here&#8217;s the <a href="https://github.com/manuelvanrijn/jquery-numeric_input/commit/188e1fa53ca565b2901f0ac4b6de102b6349577b">travis ci integration commit</a> from my plugin with all the steps described below.</p>
+            <h2>Grunt</h2>
 
-<h3>Registering the travis task</h3>
+            <p>For the development of the plugin I used <a href="https://gruntjs.com/">Grunt</a> which is a task-based
+              command line build tool for JavaScript projects. Starting a new project is as easy as running
+              <code>grunt init:jquery</code> and you have a entire generated jQuery plugin project.
+            </p>
 
-<p>I&#8217;d like to keep the Grunt tasks organized so I register a new task called <code>travis</code> below the <code>default</code> task.</p>
+            <p>By default this command configures a jQuery plugin, QUnit test suite, sample plugin, sample tests and
+              some grunt tasks you can use. Running the <code>grunt</code> command in your project folder will execute
+              the default task meaning:</p>
 
-<figure class='code'><figcaption><span>grunt.js</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+            <ol>
+              <li>lint - Analysis your code with <a href="https://github.com/douglascrockford/JSLint/">JSLint</a></li>
+              <li>qunit - Runs your QUnit tests using <a href="https://phantomjs.org/">PhantomJS</a> (so it supports the
+                exit code for success or failure)</li>
+              <li>concat - Concatenate your project files</li>
+              <li>min - Minify your project files using <a href="https://github.com/mishoo/UglifyJS/">UglifyJS</a></li>
+            </ol>
+
+
+            <p>Really easy to get started coding instead of setting up your environment :)</p>
+
+            <h2>Integration with Travis CI</h2>
+
+            <p>Ok so at this point I want to add my project to Travis CI so that it tests my suite when pushing new
+              branches/commits to Github. To do this we have to make a few changes.</p>
+
+            <h3>TL;DR</h3>
+
+            <p>Here&#8217;s the <a
+                href="https://github.com/manuelvanrijn/jquery-numeric_input/commit/188e1fa53ca565b2901f0ac4b6de102b6349577b">travis
+                ci integration commit</a> from my plugin with all the steps described below.</p>
+
+            <h3>Registering the travis task</h3>
+
+            <p>I&#8217;d like to keep the Grunt tasks organized so I register a new task called <code>travis</code>
+              below the <code>default</code> task.</p>
+
+            <figure class='code'>
+              <figcaption><span>grunt.js</span></figcaption>
+              <div class="highlight">
+                <table>
+                  <tr>
+                    <td class="gutter">
+                      <pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="c1">// Default task.</span>
+</pre>
+                    </td>
+                    <td class='code'>
+                      <pre><code class='javascript'><span class='line'><span class="c1">// Default task.</span>
 </span><span class='line'><span class="nx">grunt</span><span class="p">.</span><span class="nx">registerTask</span><span class="p">(</span><span class="s1">&#39;default&#39;</span><span class="p">,</span> <span class="s1">&#39;lint qunit concat min&#39;</span><span class="p">);</span>
 </span><span class='line'>
 </span><span class='line'><span class="c1">// Travis CI task.</span>
 </span><span class='line'><span class="nx">grunt</span><span class="p">.</span><span class="nx">registerTask</span><span class="p">(</span><span class="s1">&#39;travis&#39;</span><span class="p">,</span> <span class="s1">&#39;lint qunit&#39;</span><span class="p">);</span>
-</span></code></pre></td></tr></table></div></figure>
+</span></code></pre>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </figure>
 
 
-<p>As you can see I only added <code>lint</code> and <code>qunit</code> because we don&#8217;t have to concatenate or minify a new build of our plugin. At this point you are able to run <code>grunt travis</code> from the command line.</p>
+            <p>As you can see I only added <code>lint</code> and <code>qunit</code> because we don&#8217;t have to
+              concatenate or minify a new build of our plugin. At this point you are able to run
+              <code>grunt travis</code> from the command line.
+            </p>
 
-<h3>Adding the dependency</h3>
+            <h3>Adding the dependency</h3>
 
-<p>Now we have to add Grunt as a dependency to our <code>package.json</code> file so that npm running on Travis CI knows it has to install Grunt. Mine dependencies block looks like this:</p>
+            <p>Now we have to add Grunt as a dependency to our <code>package.json</code> file so that npm running on
+              Travis CI knows it has to install Grunt. Mine dependencies block looks like this:</p>
 
-<figure class='code'><figcaption><span>package.json</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+            <figure class='code'>
+              <figcaption><span>package.json</span></figcaption>
+              <div class="highlight">
+                <table>
+                  <tr>
+                    <td class="gutter">
+                      <pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
 <span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='json'><span class='line'><span class="s2">&quot;dependencies&quot;</span><span class="err">:</span> <span class="p">{</span>
+</pre>
+                    </td>
+                    <td class='code'>
+                      <pre><code class='json'><span class='line'><span class="s2">&quot;dependencies&quot;</span><span class="err">:</span> <span class="p">{</span>
 </span><span class='line'>  <span class="nt">&quot;jQuery&quot;</span><span class="p">:</span> <span class="s2">&quot;~1.7.3&quot;</span>
 </span><span class='line'><span class="p">}</span><span class="err">,</span>
 </span><span class='line'><span class="s2">&quot;devDependencies&quot;</span><span class="err">:</span> <span class="p">{</span>
 </span><span class='line'>  <span class="nt">&quot;grunt&quot;</span><span class="p">:</span> <span class="s2">&quot;~0.3.14&quot;</span>
 </span><span class='line'><span class="p">}</span><span class="err">,</span>
-</span></code></pre></td></tr></table></div></figure>
+</span></code></pre>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </figure>
 
 
-<h3>Adding the npm task</h3>
+            <h3>Adding the npm task</h3>
 
-<p>Travis CI runs <code>npm test</code> after it fetched your project and installed the dependencies, so we need to add this task to the <code>package.json</code> file.</p>
+            <p>Travis CI runs <code>npm test</code> after it fetched your project and installed the dependencies, so we
+              need to add this task to the <code>package.json</code> file.</p>
 
-<figure class='code'><figcaption><span>package.json</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+            <figure class='code'>
+              <figcaption><span>package.json</span></figcaption>
+              <div class="highlight">
+                <table>
+                  <tr>
+                    <td class="gutter">
+                      <pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='json'><span class='line'><span class="s2">&quot;scripts&quot;</span><span class="err">:</span> <span class="p">{</span>
+</pre>
+                    </td>
+                    <td class='code'>
+                      <pre><code class='json'><span class='line'><span class="s2">&quot;scripts&quot;</span><span class="err">:</span> <span class="p">{</span>
 </span><span class='line'>  <span class="nt">&quot;test&quot;</span><span class="p">:</span> <span class="s2">&quot;grunt travis --verbose&quot;</span>
 </span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
+</span></code></pre>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </figure>
 
 
-<p>I&#8217;ve added the <code>--verbose</code> option, so we&#8217;ll see more output of what is going on.</p>
+            <p>I&#8217;ve added the <code>--verbose</code> option, so we&#8217;ll see more output of what is going on.
+            </p>
 
-<h3>Adding the .travis.yml</h3>
+            <h3>Adding the .travis.yml</h3>
 
-<p>Every Travis CI project needs to have a <code>.travis.yml</code> file in the root of the project folder, so it know what platform and version it should use to build/test your project. Here&#8217;s the one I used:</p>
+            <p>Every Travis CI project needs to have a <code>.travis.yml</code> file in the root of the project folder,
+              so it know what platform and version it should use to build/test your project. Here&#8217;s the one I
+              used:</p>
 
-<figure class='code'><figcaption><span>.travis.yml</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+            <figure class='code'>
+              <figcaption><span>.travis.yml</span></figcaption>
+              <div class="highlight">
+                <table>
+                  <tr>
+                    <td class="gutter">
+                      <pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='yaml'><span class='line'><span class="l-Scalar-Plain">language</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">node_js</span>
+</pre>
+                    </td>
+                    <td class='code'>
+                      <pre><code class='yaml'><span class='line'><span class="l-Scalar-Plain">language</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">node_js</span>
 </span><span class='line'><span class="l-Scalar-Plain">node_js</span><span class="p-Indicator">:</span>
 </span><span class='line'>  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">0.6</span>
 </span><span class='line'>  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">0.8</span>
 </span><span class='line'>  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">0.9</span>
-</span></code></pre></td></tr></table></div></figure>
+</span></code></pre>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </figure>
 
 
-<h2>Ready to go!</h2>
+            <h2>Ready to go!</h2>
 
-<p>Alright after these changes your project is ready to be continuously builded with Travis CI. But don&#8217;t forget to setup the Service Hook on Github!</p>
+            <p>Alright after these changes your project is ready to be continuously builded with Travis CI. But
+              don&#8217;t forget to setup the Service Hook on Github!</p>
 
-<h2>Update</h2>
+            <h2>Update</h2>
 
-<p>Thanks to <strong>Ryan Seddon</strong> and <strong>Ariya Hidayat</strong> for noticing me that the <code>before_script</code> section for running PhantomJS on the headless server on Travis CI isn&#8217;t needed. See <a href="http://about.travis-ci.org/docs/user/gui-and-headless-browsers/">this link</a></p>
-</div>
-
-
-  <footer>
-    <p class="meta">
-      
-  
-
-<span class="byline author vcard">by <span class="fn">Manuel van Rijn</span></span>
-
-      
+            <p>Thanks to <strong>Ryan Seddon</strong> and <strong>Ariya Hidayat</strong> for noticing me that the
+              <code>before_script</code> section for running PhantomJS on the headless server on Travis CI isn&#8217;t
+              needed. See <a href="https://about.travis-ci.org/docs/user/gui-and-headless-browsers/">this link</a>
+            </p>
+          </div>
 
 
-
-
-
+          <footer>
+            <p class="meta">
 
 
 
-  
-
-
-<time datetime="2012-06-22T15:04:00+02:00" pubdate data-updated="true">Jun 22<span>nd</span>, 2012</time>
-      
-
-<span class="categories">
-  
-    <a class='category' href='/blog/categories/code/'>code</a>, <a class='category' href='/blog/categories/continuous-integration/'>continuous integration</a>, <a class='category' href='/blog/categories/grunt/'>grunt</a>, <a class='category' href='/blog/categories/javascript/'>javascript</a>, <a class='category' href='/blog/categories/jquery/'>jquery</a>, <a class='category' href='/blog/categories/qunit/'>qunit</a>, <a class='category' href='/blog/categories/testing/'>testing</a>, <a class='category' href='/blog/categories/travis-ci/'>travis-ci</a>
-  
-</span>
-
-
-    </p>
-    
-      <div class="sharing">
-  
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://manuelvanrijn.nl/blog/2012/06/22/integrate-travis-ci-into-grunt/" data-via="" data-counturl="http://manuelvanrijn.nl/blog/2012/06/22/integrate-travis-ci-into-grunt/" >Tweet</a>
-  
-  
-  
-</div>
-
-    
-    <p class="meta">
-      
-        <a class="basic-alignment left" href="/blog/2012/06/20/taking-memsql-for-a-spin/" title="Previous Post: Taking MemSQL for a spin">&laquo; Taking MemSQL for a spin</a>
-      
-      
-        <a class="basic-alignment right" href="/blog/2012/07/26/select-total-rows-from-database/" title="Next Post: SELECT total_rows FROM database">SELECT total_rows FROM database &raquo;</a>
-      
-    </p>
-  </footer>
-</article>
-
-  <section>
-    <h1>Comments</h1>
-    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-</div>
-  </section>
-
-</div>
-
-<aside class="sidebar">
-  
-    <section>
-  <h1>About Me</h1>
-  <p>
-    <img class="left" src="http://www.gravatar.com/avatar/5c42621691011e9f8fcabf1b4e23d4ad?s=80" title="Manuel van Rijn" />
-    <small>
-      Manuel van Rijn<br />
-      iOS, Front &amp; Backend Developer<br />
-      Work: <a href="http://www.sping.nl/">www.sping.nl</a><br /><br />
-      <a rel="author" href="https://github.com/manuelvanrijn" class="zocial icon github">Manuel van Rijn on Github</a>
-      <a rel="author" href="http://nl.linkedin.com/in/manuelvanrijn" class="zocial icon linkedin">Manuel van Rijn on LinkedIn</a>
-      <a rel="author" href="http://twitter.com/manuelvanrijn" class="zocial icon twitter">Manuel van Rijn on Twitter</a>
-    </small>
-  </p>
-</section>
-<section>
-  <h1>Recent Posts</h1>
-  <ul id="recent_posts">
-    
-      <li class="post">
-        <a href="/blog/2015/05/19/rails-subdomains-for-localhost-development/">Rails subdomains for localhost/development</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/06/03/osx-10-dot-10-yosemite-crashing-chrome/">OSX 10.10 Yosemite - Crashing Chrome</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/07/23/developing-ruby-on-rails-on-windows/">Developing Ruby on Rails on Windows</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/03/04/rails-belongs-to-to-has-many/">Rails belongs_to to has_many</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/11/13/sidekiq-on-heroku-with-redistogo-nano/">Sidekiq on Heroku with Redis To Go Nano</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/11/13/scalable-heroku-worker-for-sidekiq/">Scalable Heroku worker for Sidekiq</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/09/17/yeoman-meets-travis-ci/">Yeoman meets Travis CI</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/07/26/select-total-rows-from-database/">SELECT total_rows FROM database</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/06/22/integrate-travis-ci-into-grunt/">Integrate Travis CI into Grunt</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/06/20/taking-memsql-for-a-spin/">Taking MemSQL for a spin</a>
-      </li>
-    
-  </ul>
-</section>
+              <span class="byline author vcard">by <span class="fn">Manuel van Rijn</span></span>
 
 
 
 
-<section class="googleplus googleplus-hidden">
-  <h1>
-    <a href="https://plus.google.com/117895812778172164201?rel=author">
-      <img src="http://www.google.com/images/icons/ui/gprofile_button-32.png" width="32" height="32">
-      Google+
-    </a>
-  </h1>
-</section>
 
 
 
-<section id="stackoverflow">
-  <h1>Stack Overflow</h1>
-  <a href="http://stackoverflow.com/users/959041/manuel-van-rijn">
-  <img src="http://stackoverflow.com/users/flair/959041.png?theme=default" width="208" height="58" alt="profile for Manuel van Rijn at Stack Overflow, Q&amp;A for professional and enthusiast programmers" title="profile for Manuel van Rijn at Stack Overflow, Q&amp;A for professional and enthusiast programmers">
-  </a>
-</section>
 
 
-  
-</aside>
+
+
+
+
+              <time datetime="2012-06-22T15:04:00+02:00" pubdate data-updated="true">Jun 22<span>nd</span>, 2012</time>
+
+
+              <span class="categories">
+
+                <a class='category' href='/blog/categories/code/'>code</a>, <a class='category'
+                  href='/blog/categories/continuous-integration/'>continuous integration</a>, <a class='category'
+                  href='/blog/categories/grunt/'>grunt</a>, <a class='category'
+                  href='/blog/categories/javascript/'>javascript</a>, <a class='category'
+                  href='/blog/categories/jquery/'>jquery</a>, <a class='category'
+                  href='/blog/categories/qunit/'>qunit</a>, <a class='category'
+                  href='/blog/categories/testing/'>testing</a>, <a class='category'
+                  href='/blog/categories/travis-ci/'>travis-ci</a>
+
+              </span>
+
+
+            </p>
+
+            <div class="sharing">
+
+              <a href="https://twitter.com/share" class="twitter-share-button"
+                data-url="https://manuelvanrijn.nl/blog/2012/06/22/integrate-travis-ci-into-grunt/" data-via=""
+                data-counturl="https://manuelvanrijn.nl/blog/2012/06/22/integrate-travis-ci-into-grunt/">Tweet</a>
+
+
+
+            </div>
+
+
+            <p class="meta">
+
+              <a class="basic-alignment left" href="/blog/2012/06/20/taking-memsql-for-a-spin/"
+                title="Previous Post: Taking MemSQL for a spin">&laquo; Taking MemSQL for a spin</a>
+
+
+              <a class="basic-alignment right" href="/blog/2012/07/26/select-total-rows-from-database/"
+                title="Next Post: SELECT total_rows FROM database">SELECT total_rows FROM database &raquo;</a>
+
+            </p>
+          </footer>
+        </article>
+
+        <section>
+          <h1>Comments</h1>
+          <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a
+                href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+          </div>
+        </section>
+
+      </div>
+
+      <aside class="sidebar">
+
+        <section>
+          <h1>About Me</h1>
+          <p>
+            <img class="left" src="https://www.gravatar.com/avatar/5c42621691011e9f8fcabf1b4e23d4ad?s=80"
+              title="Manuel van Rijn" />
+            <small>
+              Manuel van Rijn<br />
+              iOS, Front &amp; Backend Developer<br />
+              Work: <a href="https://www.sping.nl/">www.sping.nl</a><br /><br />
+              <a rel="author" href="https://github.com/manuelvanrijn" class="zocial icon github">Manuel van Rijn on
+                Github</a>
+              <a rel="author" href="https://nl.linkedin.com/in/manuelvanrijn" class="zocial icon linkedin">Manuel van
+                Rijn on LinkedIn</a>
+              <a rel="author" href="https://twitter.com/manuelvanrijn" class="zocial icon twitter">Manuel van Rijn on
+                Twitter</a>
+            </small>
+          </p>
+        </section>
+        <section>
+          <h1>Recent Posts</h1>
+          <ul id="recent_posts">
+
+            <li class="post">
+              <a href="/blog/2015/05/19/rails-subdomains-for-localhost-development/">Rails subdomains for
+                localhost/development</a>
+            </li>
+
+            <li class="post">
+              <a href="/blog/2014/06/03/osx-10-dot-10-yosemite-crashing-chrome/">OSX 10.10 Yosemite - Crashing
+                Chrome</a>
+            </li>
+
+            <li class="post">
+              <a href="/blog/2013/07/23/developing-ruby-on-rails-on-windows/">Developing Ruby on Rails on Windows</a>
+            </li>
+
+            <li class="post">
+              <a href="/blog/2013/03/04/rails-belongs-to-to-has-many/">Rails belongs_to to has_many</a>
+            </li>
+
+            <li class="post">
+              <a href="/blog/2012/11/13/sidekiq-on-heroku-with-redistogo-nano/">Sidekiq on Heroku with Redis To Go
+                Nano</a>
+            </li>
+
+            <li class="post">
+              <a href="/blog/2012/11/13/scalable-heroku-worker-for-sidekiq/">Scalable Heroku worker for Sidekiq</a>
+            </li>
+
+            <li class="post">
+              <a href="/blog/2012/09/17/yeoman-meets-travis-ci/">Yeoman meets Travis CI</a>
+            </li>
+
+            <li class="post">
+              <a href="/blog/2012/07/26/select-total-rows-from-database/">SELECT total_rows FROM database</a>
+            </li>
+
+            <li class="post">
+              <a href="/blog/2012/06/22/integrate-travis-ci-into-grunt/">Integrate Travis CI into Grunt</a>
+            </li>
+
+            <li class="post">
+              <a href="/blog/2012/06/20/taking-memsql-for-a-spin/">Taking MemSQL for a spin</a>
+            </li>
+
+          </ul>
+        </section>
+
+
+
+
+        <section class="googleplus googleplus-hidden">
+          <h1>
+            <a href="https://plus.google.com/117895812778172164201?rel=author">
+              <img src="https://www.google.com/images/icons/ui/gprofile_button-32.png" width="32" height="32">
+              Google+
+            </a>
+          </h1>
+        </section>
+
+
+
+        <section id="stackoverflow">
+          <h1>Stack Overflow</h1>
+          <a href="https://stackoverflow.com/users/959041/manuel-van-rijn">
+            <img src="https://stackoverflow.com/users/flair/959041.png?theme=default" width="208" height="58"
+              alt="profile for Manuel van Rijn at Stack Overflow, Q&amp;A for professional and enthusiast programmers"
+              title="profile for Manuel van Rijn at Stack Overflow, Q&amp;A for professional and enthusiast programmers">
+          </a>
+        </section>
+
+
+
+      </aside>
 
 
     </div>
   </div>
-  <footer role="contentinfo"><p>
-  Copyright &copy; 2016 - Manuel van Rijn -
-  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
-</p>
+  <footer role="contentinfo">
+    <p>
+      Copyright &copy; 2016 - Manuel van Rijn -
+      <span class="credit">Powered by <a href="https://octopress.org">Octopress</a></span>
+    </p>
 
-</footer>
-  
+  </footer>
 
-<script type="text/javascript">
-      var disqus_shortname = 'manuelvanrijn';
-      
-        
-        // var disqus_developer = 1;
-        var disqus_identifier = 'http://manuelvanrijn.nl/blog/2012/06/22/integrate-travis-ci-into-grunt/';
-        var disqus_url = 'http://manuelvanrijn.nl/blog/2012/06/22/integrate-travis-ci-into-grunt/';
-        var disqus_script = 'embed.js';
-      
+
+  <script type="text/javascript">
+    var disqus_shortname = 'manuelvanrijn';
+
+
+    // var disqus_developer = 1;
+    var disqus_identifier = 'https://manuelvanrijn.nl/blog/2012/06/22/integrate-travis-ci-into-grunt/';
+    var disqus_url = 'https://manuelvanrijn.nl/blog/2012/06/22/integrate-travis-ci-into-grunt/';
+    var disqus_script = 'embed.js';
+
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      dsq.src = 'https://' + disqus_shortname + '.disqus.com/' + disqus_script;
       (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
     }());
-</script>
+  </script>
 
 
 
@@ -396,11 +511,11 @@
 
 
   <script type="text/javascript">
-    (function(){
+    (function () {
       var twitterWidgets = document.createElement('script');
       twitterWidgets.type = 'text/javascript';
       twitterWidgets.async = true;
-      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      twitterWidgets.src = 'https://platform.twitter.com/widgets.js';
       document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
     })();
   </script>
@@ -410,4 +525,5 @@
 
 
 </body>
+
 </html>

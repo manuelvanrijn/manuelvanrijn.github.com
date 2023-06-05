@@ -1,24 +1,26 @@
-
 <!DOCTYPE html>
 <!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
 <!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
-<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!-->
+<html class="no-js" lang="en"><!--<![endif]-->
+
 <head>
   <meta charset="utf-8">
   <title>SELECT total_rows FROM database - Manuel van Rijn</title>
   <meta name="author" content="Manuel van Rijn">
 
-  
-  <meta name="description" content="On the first of August this year, Heroku will add 2 new plans to their database add-on known as Dev and Basic. Both plans have a row limit &hellip;">
-  
 
-  <!-- http://t.co/dKP3o1e -->
+  <meta name="description"
+    content="On the first of August this year, Heroku will add 2 new plans to their database add-on known as Dev and Basic. Both plans have a row limit &hellip;">
+
+
+  <!-- https://t.co/dKP3o1e -->
   <meta name="HandheldFriendly" content="True">
   <meta name="MobileOptimized" content="320">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  
-  <link rel="canonical" href="http://manuelvanrijn.nl/blog/2012/07/26/select-total-rows-from-database/">
+
+  <link rel="canonical" href="https://manuelvanrijn.nl/blog/2012/07/26/select-total-rows-from-database/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/stylesheets/zocial/zocial.css" media="screen, projection" rel="stylesheet" type="text/css">
@@ -27,65 +29,70 @@
   <script src="/javascripts/ender.js"></script>
   <script src="/javascripts/octopress.js" type="text/javascript"></script>
   <link href="/atom.xml" rel="alternate" title="Manuel van Rijn" type="application/atom+xml">
-  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
-<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
-<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+  <!--Fonts from Google"s Web font directory at https://google.com/webfonts -->
+  <link href="https://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet"
+    type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet"
+    type="text/css">
 
-  
-  <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-PYTQBZ3YZT"></script>
   <script>
-    (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
-    function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
-    e=o.createElement(i);r=o.getElementsByTagName(i)[0];
-    e.src='https://www.google-analytics.com/analytics.js';
-    r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
-    ga('create','UA-17149124-1','auto');ga('send','pageview');
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+
+    gtag('config', 'G-PYTQBZ3YZT');
   </script>
+  <script async src="https://analytics.uppersource.nl/script.js"
+    data-website-id="49f17683-91d9-4ec5-82db-80a3857595e7"></script>
 
 
 
 </head>
 
-<body   >
-  <header role="banner"><hgroup>
-  <h1><a href="/">Manuel van Rijn</a></h1>
-  
-    <h2>Bit blog</h2>
-  
-</hgroup>
+<body>
+  <header role="banner">
+    <hgroup>
+      <h1><a href="/">Manuel van Rijn</a></h1>
 
-</header>
-  <nav role="navigation"><ul class="subscription" data-subscription="rss">
-  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
-  
-</ul>
-  
-<form action="http://google.com/search" method="get">
-  <fieldset role="search">
-    <input type="hidden" name="q" value="site:manuelvanrijn.nl" />
-    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
-  </fieldset>
-</form>
-  
-<ul class="main-navigation">
-  <li><a href="/">Blog</a></li>
-  <li><a href="/blog/archives">Archives</a></li>
-  <li><a href="/work">Work</a></li>
-</ul>
+      <h2>Bit blog</h2>
 
-</nav>
+    </hgroup>
+
+  </header>
+  <nav role="navigation">
+    <ul class="subscription" data-subscription="rss">
+      <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+
+    </ul>
+
+    <form action="https://google.com/search" method="get">
+      <fieldset role="search">
+        <input type="hidden" name="q" value="site:manuelvanrijn.nl" />
+        <input class="search" type="text" name="q" results="0" placeholder="Search" />
+      </fieldset>
+    </form>
+
+    <ul class="main-navigation">
+      <li><a href="/">Blog</a></li>
+      <li><a href="/blog/archives">Archives</a></li>
+      <li><a href="/work">Work</a></li>
+    </ul>
+
+  </nav>
   <div id="main">
     <div id="content">
       <div>
-<article class="hentry" role="article">
-  
-  <header>
-    
-      <h1 class="entry-title">SELECT total_rows FROM database</h1>
-    
-    
-      <p class="meta">
-        
+        <article class="hentry" role="article">
+
+          <header>
+
+            <h1 class="entry-title">SELECT total_rows FROM database</h1>
+
+
+            <p class="meta">
 
 
 
@@ -94,43 +101,59 @@
 
 
 
-  
-
-
-<time datetime="2012-07-26T14:34:00+02:00" pubdate data-updated="true">Jul 26<span>th</span>, 2012</time>
-        
-      </p>
-    
-  </header>
-
-
-<div class="entry-content"><p><a href="/blog/2012/07/26/select-total-rows-from-database/"><img class="left" src="/images/posts/heroku-postgres.png" width="200" height="200" title="Heroku Postgres" ></a> On the first of August this year, <a href="http://www.heroku.com">Heroku</a> will add 2 new plans to their database add-on known as <strong>Dev</strong> and <strong>Basic</strong>. Both plans have a row limit restriction and that made me thinking how I could fetch that number with one simple query.</p>
-
-<!-- more -->
 
 
 
 
-<div class="clearfix"></div>
+              <time datetime="2012-07-26T14:34:00+02:00" pubdate data-updated="true">Jul 26<span>th</span>, 2012</time>
+
+            </p>
+
+          </header>
 
 
-<h2>TL;DR</h2>
+          <div class="entry-content">
+            <p><a href="/blog/2012/07/26/select-total-rows-from-database/"><img class="left"
+                  src="/images/posts/heroku-postgres.png" width="200" height="200" title="Heroku Postgres"></a> On the
+              first of August this year, <a href="https://www.heroku.com">Heroku</a> will add 2 new plans to their
+              database add-on known as <strong>Dev</strong> and <strong>Basic</strong>. Both plans have a row limit
+              restriction and that made me thinking how I could fetch that number with one simple query.</p>
 
-<p>Of course you already know the stuff described below so go to <a href="#final-query">the final query</a>.</p>
-
-<h2>Getting the list with tables</h2>
-
-<p>For retrieving almost any information about your database you can query the <code>pg_class</code> see <a href="http://www.postgresql.org/docs/9.1/static/catalog-pg-class.html">Postgres documentation</a>.</p>
-
-<ul>
-<li>The <code>relkind</code> is set to <code>r</code> to query only ordinary table information.</li>
-<li>We are joining the <code>pg_namespace</code> table to filter out the <code>pg_catalog</code> and <code>information_schema</code> tables</li>
-</ul>
+            <!-- more -->
 
 
-<p>As result we&#8217;ll have on column called <code>tableName</code> with all tables from the database</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+
+            <div class="clearfix"></div>
+
+
+            <h2>TL;DR</h2>
+
+            <p>Of course you already know the stuff described below so go to <a href="#final-query">the final query</a>.
+            </p>
+
+            <h2>Getting the list with tables</h2>
+
+            <p>For retrieving almost any information about your database you can query the <code>pg_class</code> see <a
+                href="https://www.postgresql.org/docs/9.1/static/catalog-pg-class.html">Postgres documentation</a>.</p>
+
+            <ul>
+              <li>The <code>relkind</code> is set to <code>r</code> to query only ordinary table information.</li>
+              <li>We are joining the <code>pg_namespace</code> table to filter out the <code>pg_catalog</code> and
+                <code>information_schema</code> tables
+              </li>
+            </ul>
+
+
+            <p>As result we&#8217;ll have on column called <code>tableName</code> with all tables from the database</p>
+
+            <figure class='code'>
+              <figcaption><span></span></figcaption>
+              <div class="highlight">
+                <table>
+                  <tr>
+                    <td class="gutter">
+                      <pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -139,7 +162,10 @@
 <span class='line-number'>7</span>
 <span class='line-number'>8</span>
 <span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="k">SELECT</span>
+</pre>
+                    </td>
+                    <td class='code'>
+                      <pre><code class='sql'><span class='line'><span class="k">SELECT</span>
 </span><span class='line'>  <span class="n">pgClass</span><span class="p">.</span><span class="n">relname</span> <span class="k">AS</span> <span class="n">tableName</span>
 </span><span class='line'><span class="k">FROM</span>
 </span><span class='line'>  <span class="n">pg_class</span> <span class="n">pgClass</span>
@@ -148,16 +174,30 @@
 </span><span class='line'><span class="k">WHERE</span>
 </span><span class='line'>  <span class="n">pgNamespace</span><span class="p">.</span><span class="n">nspname</span> <span class="k">NOT</span> <span class="k">IN</span> <span class="p">(</span><span class="s1">&#39;pg_catalog&#39;</span><span class="p">,</span> <span class="s1">&#39;information_schema&#39;</span><span class="p">)</span> <span class="k">AND</span>
 </span><span class='line'>  <span class="n">pgClass</span><span class="p">.</span><span class="n">relkind</span><span class="o">=</span><span class="s1">&#39;r&#39;</span>
-</span></code></pre></td></tr></table></div></figure>
+</span></code></pre>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </figure>
 
 
-<h3>Adding the row count</h3>
+            <h3>Adding the row count</h3>
 
-<p>Adding the total number of rows was quite simple after reading the <a href="http://www.postgresql.org/docs/9.1/static/catalog-pg-class.html">Postgres documentation</a>. It seems that the <code>pg_class</code> contains a column called <code>reltuples</code> that holds the number of rows in the table.</p>
+            <p>Adding the total number of rows was quite simple after reading the <a
+                href="https://www.postgresql.org/docs/9.1/static/catalog-pg-class.html">Postgres documentation</a>. It
+              seems that the <code>pg_class</code> contains a column called <code>reltuples</code> that holds the number
+              of rows in the table.</p>
 
-<p>So adding this column to the select seems to do the trick:</p>
+            <p>So adding this column to the select seems to do the trick:</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+            <figure class='code'>
+              <figcaption><span></span></figcaption>
+              <div class="highlight">
+                <table>
+                  <tr>
+                    <td class="gutter">
+                      <pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -167,7 +207,10 @@
 <span class='line-number'>8</span>
 <span class='line-number'>9</span>
 <span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="k">SELECT</span>
+</pre>
+                    </td>
+                    <td class='code'>
+                      <pre><code class='sql'><span class='line'><span class="k">SELECT</span>
 </span><span class='line'>  <span class="n">pgClass</span><span class="p">.</span><span class="n">relname</span>   <span class="k">AS</span> <span class="n">tableName</span><span class="p">,</span>
 </span><span class='line'>  <span class="n">pgClass</span><span class="p">.</span><span class="n">reltuples</span> <span class="k">AS</span> <span class="n">rowCount</span>
 </span><span class='line'><span class="k">FROM</span>
@@ -177,196 +220,224 @@
 </span><span class='line'><span class="k">WHERE</span>
 </span><span class='line'>  <span class="n">pgNamespace</span><span class="p">.</span><span class="n">nspname</span> <span class="k">NOT</span> <span class="k">IN</span> <span class="p">(</span><span class="s1">&#39;pg_catalog&#39;</span><span class="p">,</span> <span class="s1">&#39;information_schema&#39;</span><span class="p">)</span> <span class="k">AND</span>
 </span><span class='line'>  <span class="n">pgClass</span><span class="p">.</span><span class="n">relkind</span><span class="o">=</span><span class="s1">&#39;r&#39;</span>
-</span></code></pre></td></tr></table></div></figure>
+</span></code></pre>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </figure>
 
 
-<p><a id="final-query"></a></p>
+            <p><a id="final-query"></a></p>
 
-<h2>Selecting the total count</h2>
+            <h2>Selecting the total count</h2>
 
-<p>With this query it was easy to transform it into a SUM for all rowCount&#8217;s we retrieve. Here&#8217;s the final query to retrieve the total number of rows from all tables of a Postgres database</p>
+            <p>With this query it was easy to transform it into a SUM for all rowCount&#8217;s we retrieve. Here&#8217;s
+              the final query to retrieve the total number of rows from all tables of a Postgres database</p>
 
-<div><script src='https://gist.github.com/3205631.js'></script>
-<noscript><pre><code></code></pre></noscript></div>
-
-
-
-</div>
-
-
-  <footer>
-    <p class="meta">
-      
-  
-
-<span class="byline author vcard">by <span class="fn">Manuel van Rijn</span></span>
-
-      
+            <div>
+              <script src='https://gist.github.com/3205631.js'></script>
+              <noscript>
+                <pre><code></code></pre>
+              </noscript>
+            </div>
 
 
 
+          </div>
+
+
+          <footer>
+            <p class="meta">
 
 
 
-
-
-  
-
-
-<time datetime="2012-07-26T14:34:00+02:00" pubdate data-updated="true">Jul 26<span>th</span>, 2012</time>
-      
-
-<span class="categories">
-  
-    <a class='category' href='/blog/categories/database/'>database</a>, <a class='category' href='/blog/categories/heroku/'>heroku</a>, <a class='category' href='/blog/categories/postgres/'>postgres</a>, <a class='category' href='/blog/categories/query/'>query</a>, <a class='category' href='/blog/categories/sql/'>sql</a>
-  
-</span>
-
-
-    </p>
-    
-      <div class="sharing">
-  
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://manuelvanrijn.nl/blog/2012/07/26/select-total-rows-from-database/" data-via="" data-counturl="http://manuelvanrijn.nl/blog/2012/07/26/select-total-rows-from-database/" >Tweet</a>
-  
-  
-  
-</div>
-
-    
-    <p class="meta">
-      
-        <a class="basic-alignment left" href="/blog/2012/06/22/integrate-travis-ci-into-grunt/" title="Previous Post: Integrate Travis CI into Grunt">&laquo; Integrate Travis CI into Grunt</a>
-      
-      
-        <a class="basic-alignment right" href="/blog/2012/09/17/yeoman-meets-travis-ci/" title="Next Post: Yeoman meets Travis CI">Yeoman meets Travis CI &raquo;</a>
-      
-    </p>
-  </footer>
-</article>
-
-  <section>
-    <h1>Comments</h1>
-    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-</div>
-  </section>
-
-</div>
-
-<aside class="sidebar">
-  
-    <section>
-  <h1>About Me</h1>
-  <p>
-    <img class="left" src="http://www.gravatar.com/avatar/5c42621691011e9f8fcabf1b4e23d4ad?s=80" title="Manuel van Rijn" />
-    <small>
-      Manuel van Rijn<br />
-      iOS, Front &amp; Backend Developer<br />
-      Work: <a href="http://www.sping.nl/">www.sping.nl</a><br /><br />
-      <a rel="author" href="https://github.com/manuelvanrijn" class="zocial icon github">Manuel van Rijn on Github</a>
-      <a rel="author" href="http://nl.linkedin.com/in/manuelvanrijn" class="zocial icon linkedin">Manuel van Rijn on LinkedIn</a>
-      <a rel="author" href="http://twitter.com/manuelvanrijn" class="zocial icon twitter">Manuel van Rijn on Twitter</a>
-    </small>
-  </p>
-</section>
-<section>
-  <h1>Recent Posts</h1>
-  <ul id="recent_posts">
-    
-      <li class="post">
-        <a href="/blog/2015/05/19/rails-subdomains-for-localhost-development/">Rails subdomains for localhost/development</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/06/03/osx-10-dot-10-yosemite-crashing-chrome/">OSX 10.10 Yosemite - Crashing Chrome</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/07/23/developing-ruby-on-rails-on-windows/">Developing Ruby on Rails on Windows</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/03/04/rails-belongs-to-to-has-many/">Rails belongs_to to has_many</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/11/13/sidekiq-on-heroku-with-redistogo-nano/">Sidekiq on Heroku with Redis To Go Nano</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/11/13/scalable-heroku-worker-for-sidekiq/">Scalable Heroku worker for Sidekiq</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/09/17/yeoman-meets-travis-ci/">Yeoman meets Travis CI</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/07/26/select-total-rows-from-database/">SELECT total_rows FROM database</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/06/22/integrate-travis-ci-into-grunt/">Integrate Travis CI into Grunt</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/06/20/taking-memsql-for-a-spin/">Taking MemSQL for a spin</a>
-      </li>
-    
-  </ul>
-</section>
+              <span class="byline author vcard">by <span class="fn">Manuel van Rijn</span></span>
 
 
 
 
-<section class="googleplus googleplus-hidden">
-  <h1>
-    <a href="https://plus.google.com/117895812778172164201?rel=author">
-      <img src="http://www.google.com/images/icons/ui/gprofile_button-32.png" width="32" height="32">
-      Google+
-    </a>
-  </h1>
-</section>
 
 
 
-<section id="stackoverflow">
-  <h1>Stack Overflow</h1>
-  <a href="http://stackoverflow.com/users/959041/manuel-van-rijn">
-  <img src="http://stackoverflow.com/users/flair/959041.png?theme=default" width="208" height="58" alt="profile for Manuel van Rijn at Stack Overflow, Q&amp;A for professional and enthusiast programmers" title="profile for Manuel van Rijn at Stack Overflow, Q&amp;A for professional and enthusiast programmers">
-  </a>
-</section>
 
 
-  
-</aside>
+
+
+
+
+              <time datetime="2012-07-26T14:34:00+02:00" pubdate data-updated="true">Jul 26<span>th</span>, 2012</time>
+
+
+              <span class="categories">
+
+                <a class='category' href='/blog/categories/database/'>database</a>, <a class='category'
+                  href='/blog/categories/heroku/'>heroku</a>, <a class='category'
+                  href='/blog/categories/postgres/'>postgres</a>, <a class='category'
+                  href='/blog/categories/query/'>query</a>, <a class='category' href='/blog/categories/sql/'>sql</a>
+
+              </span>
+
+
+            </p>
+
+            <div class="sharing">
+
+              <a href="https://twitter.com/share" class="twitter-share-button"
+                data-url="https://manuelvanrijn.nl/blog/2012/07/26/select-total-rows-from-database/" data-via=""
+                data-counturl="https://manuelvanrijn.nl/blog/2012/07/26/select-total-rows-from-database/">Tweet</a>
+
+
+
+            </div>
+
+
+            <p class="meta">
+
+              <a class="basic-alignment left" href="/blog/2012/06/22/integrate-travis-ci-into-grunt/"
+                title="Previous Post: Integrate Travis CI into Grunt">&laquo; Integrate Travis CI into Grunt</a>
+
+
+              <a class="basic-alignment right" href="/blog/2012/09/17/yeoman-meets-travis-ci/"
+                title="Next Post: Yeoman meets Travis CI">Yeoman meets Travis CI &raquo;</a>
+
+            </p>
+          </footer>
+        </article>
+
+        <section>
+          <h1>Comments</h1>
+          <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a
+                href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+          </div>
+        </section>
+
+      </div>
+
+      <aside class="sidebar">
+
+        <section>
+          <h1>About Me</h1>
+          <p>
+            <img class="left" src="https://www.gravatar.com/avatar/5c42621691011e9f8fcabf1b4e23d4ad?s=80"
+              title="Manuel van Rijn" />
+            <small>
+              Manuel van Rijn<br />
+              iOS, Front &amp; Backend Developer<br />
+              Work: <a href="https://www.sping.nl/">www.sping.nl</a><br /><br />
+              <a rel="author" href="https://github.com/manuelvanrijn" class="zocial icon github">Manuel van Rijn on
+                Github</a>
+              <a rel="author" href="https://nl.linkedin.com/in/manuelvanrijn" class="zocial icon linkedin">Manuel van
+                Rijn on LinkedIn</a>
+              <a rel="author" href="https://twitter.com/manuelvanrijn" class="zocial icon twitter">Manuel van Rijn on
+                Twitter</a>
+            </small>
+          </p>
+        </section>
+        <section>
+          <h1>Recent Posts</h1>
+          <ul id="recent_posts">
+
+            <li class="post">
+              <a href="/blog/2015/05/19/rails-subdomains-for-localhost-development/">Rails subdomains for
+                localhost/development</a>
+            </li>
+
+            <li class="post">
+              <a href="/blog/2014/06/03/osx-10-dot-10-yosemite-crashing-chrome/">OSX 10.10 Yosemite - Crashing
+                Chrome</a>
+            </li>
+
+            <li class="post">
+              <a href="/blog/2013/07/23/developing-ruby-on-rails-on-windows/">Developing Ruby on Rails on Windows</a>
+            </li>
+
+            <li class="post">
+              <a href="/blog/2013/03/04/rails-belongs-to-to-has-many/">Rails belongs_to to has_many</a>
+            </li>
+
+            <li class="post">
+              <a href="/blog/2012/11/13/sidekiq-on-heroku-with-redistogo-nano/">Sidekiq on Heroku with Redis To Go
+                Nano</a>
+            </li>
+
+            <li class="post">
+              <a href="/blog/2012/11/13/scalable-heroku-worker-for-sidekiq/">Scalable Heroku worker for Sidekiq</a>
+            </li>
+
+            <li class="post">
+              <a href="/blog/2012/09/17/yeoman-meets-travis-ci/">Yeoman meets Travis CI</a>
+            </li>
+
+            <li class="post">
+              <a href="/blog/2012/07/26/select-total-rows-from-database/">SELECT total_rows FROM database</a>
+            </li>
+
+            <li class="post">
+              <a href="/blog/2012/06/22/integrate-travis-ci-into-grunt/">Integrate Travis CI into Grunt</a>
+            </li>
+
+            <li class="post">
+              <a href="/blog/2012/06/20/taking-memsql-for-a-spin/">Taking MemSQL for a spin</a>
+            </li>
+
+          </ul>
+        </section>
+
+
+
+
+        <section class="googleplus googleplus-hidden">
+          <h1>
+            <a href="https://plus.google.com/117895812778172164201?rel=author">
+              <img src="https://www.google.com/images/icons/ui/gprofile_button-32.png" width="32" height="32">
+              Google+
+            </a>
+          </h1>
+        </section>
+
+
+
+        <section id="stackoverflow">
+          <h1>Stack Overflow</h1>
+          <a href="https://stackoverflow.com/users/959041/manuel-van-rijn">
+            <img src="https://stackoverflow.com/users/flair/959041.png?theme=default" width="208" height="58"
+              alt="profile for Manuel van Rijn at Stack Overflow, Q&amp;A for professional and enthusiast programmers"
+              title="profile for Manuel van Rijn at Stack Overflow, Q&amp;A for professional and enthusiast programmers">
+          </a>
+        </section>
+
+
+
+      </aside>
 
 
     </div>
   </div>
-  <footer role="contentinfo"><p>
-  Copyright &copy; 2016 - Manuel van Rijn -
-  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
-</p>
+  <footer role="contentinfo">
+    <p>
+      Copyright &copy; 2016 - Manuel van Rijn -
+      <span class="credit">Powered by <a href="https://octopress.org">Octopress</a></span>
+    </p>
 
-</footer>
-  
+  </footer>
 
-<script type="text/javascript">
-      var disqus_shortname = 'manuelvanrijn';
-      
-        
-        // var disqus_developer = 1;
-        var disqus_identifier = 'http://manuelvanrijn.nl/blog/2012/07/26/select-total-rows-from-database/';
-        var disqus_url = 'http://manuelvanrijn.nl/blog/2012/07/26/select-total-rows-from-database/';
-        var disqus_script = 'embed.js';
-      
+
+  <script type="text/javascript">
+    var disqus_shortname = 'manuelvanrijn';
+
+
+    // var disqus_developer = 1;
+    var disqus_identifier = 'https://manuelvanrijn.nl/blog/2012/07/26/select-total-rows-from-database/';
+    var disqus_url = 'https://manuelvanrijn.nl/blog/2012/07/26/select-total-rows-from-database/';
+    var disqus_script = 'embed.js';
+
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      dsq.src = 'https://' + disqus_shortname + '.disqus.com/' + disqus_script;
       (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
     }());
-</script>
+  </script>
 
 
 
@@ -375,11 +446,11 @@
 
 
   <script type="text/javascript">
-    (function(){
+    (function () {
       var twitterWidgets = document.createElement('script');
       twitterWidgets.type = 'text/javascript';
       twitterWidgets.async = true;
-      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      twitterWidgets.src = 'https://platform.twitter.com/widgets.js';
       document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
     })();
   </script>
@@ -389,4 +460,5 @@
 
 
 </body>
+
 </html>
